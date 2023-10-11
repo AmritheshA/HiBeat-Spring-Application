@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <link th:href="@{/css/Admin/addProduct.css}" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Hibeat</h3>
+        </div>
+        <ul class="list-unstyled components">
+
+            <li class="nav-item listed-items">
+                <a class="nav-link" href="#"><i class='bx bxs-chalkboard nav_icon'></i> <span
+                        class="nav_name">Dashboard</span></a>
+            </li>
+
+            <li class="nav-item listed-items">
+                <a class="nav-link" href="#"><i class='bx bx-user nav_icon'></i><span class="nav_name">Users</span></a>
+            </li>
+            <li class="nav-item listed-items">
+                <a class="nav-link" th:href="@{/admin/products}"><i class="bx bx-shopping-bag"></i><span>Products</span></a>
+            </li>
+            <li class="nav-item listed-items">
+                <a class="nav-link" href="#"><i class='bx bxs-dollar-circle nav_icon'></i><span
+                        class="nav_name">Sellers</span></a>
+            </li>
+            <li class="nav-item listed-items">
+                <a class="nav-link" href="#"><i class='bx bx-cart nav_icon'></i><span
+                        class="nav_name">Orders</span></a>
+            </li>
+            <li class="nav-item listed-items">
+                <a class="nav-link" href="#"><i class='bx bx-category-alt nav_icon'></i> <span
+                        class="nav_name">Categories & Brands</span></a>
+            </li>
+            <li class="nav-item listed-items">
+                <a class="nav-link" href="#"><i class='bx bx-dice-2 nav_icon'></i> <span
+                        class="nav_name">Variants</span></a>
+            </li>
+            <li class="nav-item listed-items">
+                <a class="nav-link" href="#"><i class='bx bxs-coupon nav_icon'></i><span
+                        class="nav_name">Coupons</span></a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content">
+
+        <button id="sidebarCollapse" class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#sidebarNav"
+                aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span> > </span>
+        </button>
+
+        <div class=" content">
+            <main class="col-lg-9 col-md-8 col-sm-12 content">
+                <form th:action="@{/admin/add-product}" method="post" enctype="multipart/form-data">
+                    <div class="content-header">
+                        <h1>Add Products</h1>
+                        <div class="button-container">
+                            <button class="add-product-button">Cancel</button>
+                            <button type="submit" class="add-product-button">Add Product</button>
+                        </div>
+                    </div>
+
+                    <div class="product-box">
+                        <label for="productName">Product Name:</label>
+                        <input type="text" id="productName" name="productName" placeholder="Enter product name">
+
+                        <label for="productDescription">Product Description:</label>
+                        <div class="textarea-container">
+                        <textarea id="productDescription" name="productDescription"
+                                  placeholder="Enter product description"></textarea>
+                            <div class="word-count"><span id="wordCount">0</span>/100</div>
+                        </div>
+                        <p id="message" style="color: red;"></p> <!-- Message element for displaying the message -->
+                    </div>
+
+                    <div class="form">
+                        <div class="text">Media</div>
+                        <div class="body">
+                            <div class="with-label-media">
+
+                                <div class="media-upload">
+                                    <div class="img-list">
+                                        <div class="group"><img class="media" src="/image/Add-image.svg" alt="Image 1"/>
+                                        </div>
+                                        <div class="media-wrapper"><img class="media" src="/image/Add-image.svg"
+                                                                        alt="Image 2"/>
+                                        </div>
+                                        <div class="img-wrapper"><img class="media" src="/image/Add-image.svg"
+                                                                      alt="Image 3"/></div>
+                                    </div>
+                                    <input type="file" multiple id="image" name="image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="additional-details">
+                        <label for="basePrice">Base Price:</label>
+                        <input type="number" id="basePrice" name="price" placeholder="Enter base price">
+                    </div>
+
+                    <div class="additional-details">
+                        <div class="input-group">
+                            <div class="input-field">
+                                <label for="quantity">Quantity:</label>
+                                <input type="number" id="quantity" name="stock" placeholder="Enter quantity">
+                            </div>
+                            <div class="input-field">
+                                <label for="categories">Categories:</label>
+                                <select id="categories" name="categories">
+                                    <option name="categories" th:each="category : ${categories}" th:value="${category.id}" th:text="${category.categoryName}"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="additional-details">
+                        <div class="input-group">
+                            <div class="input-field">
+                                <label for="colorType1">Colors</label>
+                                <input type="text" id="colorType1" name="color" placeholder="Enter color type 1">
+                            </div>
+                            <div class="input-field">
+                                <label for="colorType2">Type</label>
+                                <input type="text" id="colorType2" name="type" placeholder="Enter color type 2">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </main>
+
+        </div>
+
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+</script>
+</body>
+</html>

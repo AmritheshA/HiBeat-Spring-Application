@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+
+    <link th:href="@{/css/Admin/addProduct.css}" rel="stylesheet" type="text/css">
+
+    <style>
+        /* Sidebar styles */
+        .sidebar {
+            height: 100%;
+            width: 20%; /* Set the desired width of the sidebar */
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+        }
+
+        /* Responsive styles for sidebar */
+        @media (max-width: 789px) {
+            .sidebar {
+                width: 35%; /* Reduce the width to a small value */
+            }
+            .sidebar.collapse {
+                width: 250px; /* Revert to the original width when expanded */
+            }
+        }
+
+        /* Content styles */
+        .content {
+            margin-left: 170px; /* Set margin-left to the same width as the sidebar */
+            padding: 15px;
+        }
+
+        /* Responsive styles for content */
+        @media (max-width: 789px) {
+            .content {
+                margin-left: 0px; /* Adjust the margin-left when the sidebar is collapsed */
+            }
+        }
+        .nav-link{
+            margin: 10px;
+        }
+        .navbar-brand {
+            text-align: left; /* Align the brand name to the left */
+            display: none; /* Enable flexbox layout for brand and toggle button */
+            align-items: center; /* Center items vertically in flex layout */
+        }
+
+        .navbar-toggler {
+            margin-left: 15px ; /* Move the toggle button to the right */
+            margin-right: auto; /* Add some spacing */
+        }
+    </style>
+</head>
+
+<body id="body-pd">
+<div th:fragment="navigation">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <nav class="navbar navbar-light ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebarNav"
+                    aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="#">HiBeat</a>
+
+        </nav>
+        <ul class="navbar-nav collapse" id="sidebarNav">
+            <!-- Sidebar links -->
+            <li class="nav-item active">
+                <a class="nav-link" href="#"><i class='bx bxs-chalkboard nav_icon'></i> <span class="nav_name">Dashboard</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class='bx bx-user nav_icon'></i><span class="nav_name">Users</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class='bx bx-user nav_icon'></i><span class="nav_name">Users</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="bx bx-shopping-bag"></i><span>Products</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class='bx bxs-dollar-circle nav_icon'></i><span
+                        class="nav_name">Sellers</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class='bx bx-cart nav_icon'></i><span
+                        class="nav_name">Orders</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class='bx bx-category-alt nav_icon'></i> <span
+                        class="nav_name">Categories & Brands</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class='bx bx-dice-2 nav_icon'></i> <span
+                        class="nav_name">Variants</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class='bx bxs-coupon nav_icon'></i><span
+                        class="nav_name">Coupons</span></a>
+            </li>
+            <!-- Add more sidebar links as needed -->
+        </ul>
+    </div>
+</div>
+<div class=" content">
+    <main class="col-lg-9 col-md-8 col-sm-12 content">
+        <form th:action="@{/sample}" method="post">
+            <div class="content-header">
+                <h1>Add Products</h1>
+                <div class="button-container">
+                    <button class="add-product-button">Cancel</button>
+                    <button type="submit" class="add-product-button">Add Product</button>
+                </div>
+            </div>
+
+            <div class="product-box">
+                <label for="productName">Product Name:</label>
+                <input type="text" id="productName" name="productName" placeholder="Enter product name">
+
+                <label for="productDescription">Product Description:</label>
+                <div class="textarea-container">
+                        <textarea id="productDescription" name="productDescription"
+                                  placeholder="Enter product description"></textarea>
+                    <div class="word-count"><span id="wordCount">0</span>/100</div>
+                </div>
+                <p id="message" style="color: red;"></p> <!-- Message element for displaying the message -->
+            </div>
+
+            <div class="form">
+                <div class="text">Media</div>
+                <div class="body">
+                    <div class="with-label-media">
+
+                        <div class="media-upload">
+                            <div class="img-list">
+                                <div class="group"><img class="media" src="/image/Add-image.svg" alt="Image 1"/></div>
+                                <div class="media-wrapper"><img class="media" src="/image/Add-image.svg" alt="Image 2"/>
+                                </div>
+                                <div class="img-wrapper"><img class="media" src="/image/Add-image.svg" alt="Image 3"/></div>
+                            </div>
+                            <p class="div">Drag and drop an image here, or click "Add Image"</p>
+
+                            <input type="file" id="image" name="image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="additional-details">
+                <label for="basePrice">Base Price:</label>
+                <input type="number" id="basePrice" name="basePrice" placeholder="Enter base price">
+            </div>
+
+            <div class="additional-details">
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" placeholder="Enter quantity">
+                    </div>
+                    <div class="input-field">
+                        <label for="categories">Categories:</label>
+                        <select id="categories" name="categories">
+                            <option value="category1">Category 1</option>
+                            <option value="category2">Category 2</option>
+                            <option value="category3">Category 3</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="additional-details">
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="colorType1">Colors</label>
+                        <input type="text" id="colorType1" name="colorType1" placeholder="Enter color type 1">
+                    </div>
+                    <div class="input-field">
+                        <label for="colorType2">Type</label>
+                        <input type="text" id="colorType2" name="colorType2" placeholder="Enter color type 2">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </main>
+
+</div>
+
+<!-- Bootstrap JavaScript and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

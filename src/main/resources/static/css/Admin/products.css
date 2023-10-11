@@ -1,0 +1,144 @@
+/* Style for the navbar */
+.navbar {
+    width: 250px;
+    background-color: #333;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    padding: 20px;
+    color: #fff;
+}
+
+.navbar ul {
+    list-style-type: none;
+    padding: 0;
+    padding-top:50px;
+}
+
+.navbar ul li {
+    margin-bottom: 25px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar a img {
+    width: 24px;
+    height: 24px;
+}
+
+
+.navbar .brand {
+    margin-bottom: 50px;
+    text-align: center; /* Center-align the text within the brand */
+
+}
+/* Style for the content */
+.content {
+    margin-left: 260px;
+    padding: 20px;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.content-header h1 {
+    margin-left: 15px;
+    font-family: 'Inter-semiBold', sans-serif;
+    font-size:24px;
+}
+
+.content-header .new-product {
+    background-color: #844646; /* Button background color */
+    color: #fff; /* Button text color */
+    padding: 5px 10px; /* Button padding */
+    border: none; /* Remove button border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Cursor style on hover */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+/* Hover effect for the button */
+.content-header button:hover {
+    background-color: #0056b3; /* Change background color on hover */
+}
+/* Add this CSS to your stylesheet */
+.select-date {
+    margin-left: 15px;
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 5px;
+    border:2px solid;
+    color:black;
+}
+/* Add this CSS to your stylesheet */
+.search-box {
+    float:right;
+}
+
+.search-box input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.search-items {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 5px;
+    cursor: pointer;
+}
+
+/* Style for the content */
+.content {
+    margin-left: 260px;
+    padding: 20px;
+}
+ /* Add some basic table styling */
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 50px auto;
+
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Style the action links as buttons */
+        .action-link {
+            text-decoration: none;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            background-color: #0056b3;
+        }

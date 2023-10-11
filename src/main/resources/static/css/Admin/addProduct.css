@@ -1,0 +1,417 @@
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #844646;
+    color: #fff;
+    transition: all 0.3s;
+    margin: -10px;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #844646;
+    display: flex;
+    justify-content: center;
+}
+
+#sidebar ul.components {
+    padding: 0px 0;
+    list-style-type: none;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+
+#sidebar ul li a:hover {
+    color: #ffffff;
+    background: #6a4040;
+}
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"] {
+    color: #fff;
+    background: #6d7fcc;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+a.download {
+    background: #fff;
+    color: #7386D5;
+}
+
+a.article,
+a.article:hover {
+    background: #6d7fcc !important;
+    color: #fff !important;
+}
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: -10px;
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+}
+
+#sidebarCollapse {
+    background-color: #007BFF; /* Background color */
+    color: #fff; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px 20px; /* Padding */
+    cursor: pointer; /* Cursor style */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+#sidebarCollapse:hover {
+    background-color: #0056b3; /* Background color on hover */
+}
+
+.listed-items{
+    margin-bottom: 10px;
+}
+  .content {
+    margin: 20px;
+    /*padding: 20px;*/
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.content-header h1 {
+    margin-left: 15px;
+    font-family: 'Inter-semiBold', sans-serif;
+    font-size: 24px;
+}
+
+
+@media (max-width: 800px) {
+    .content-header h1 {
+        margin-left: 5px;
+        font-family: 'Inter-semiBold', sans-serif;
+        font-size: 15px;
+    }
+
+}
+
+
+.add-product-button {
+    background-color: #844646; /* Button background color */
+    color: #fff; /* Button text color */
+    padding: 10px 20px; /* Button padding */
+    border: none; /* Remove button border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Cursor style on hover */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+    margin-right: 5px; /* Add a small margin to separate buttons */
+
+}
+
+
+@media (max-width: 800px) {
+    .add-product-button {
+        background-color: #844646;
+        color: #fff;
+        padding: 8px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-right: 0px;
+        height: 30px;
+    }
+}
+
+/* Hover effect for the button */
+.content-header button:hover {
+    background-color: #0056b3; /* Change background color on hover */
+}
+
+/* Style for the product box */
+.product-box {
+    background-color: #f5f5f5; /* Light gray background */
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc; /* Gray border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle lift */
+    margin-top: 20px;
+}
+
+.product-box label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.product-box input[type="text"],
+.product-box textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: -10px;
+}
+
+.product-box textarea {
+    height: 150px; /* Adjust the height as needed */
+}
+
+.product-box button {
+    background-color: #844646;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 5px;
+}
+
+/* Hover effect for the button within the product box */
+.product-box button:hover {
+    background-color: #0056b3; /* Change background color on hover */
+}
+
+.word-count {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 20px;
+}
+
+/* Style for the image upload box */
+.form {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 25px;
+}
+
+
+/* Style for the "Media" text */
+.text {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+
+/* Style for the media upload container */
+.media-upload {
+    border: 1px dashed #ccc;
+    padding: 20px;
+    height: 230px;
+}
+
+
+@media (max-width: 768px) {
+    .media-upload {
+        height: 350px;
+    }
+}
+
+/* Style for the image list container */
+.img-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap; /* Wrap images to the next line on smaller screens */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Style individual image containers */
+.group,
+.media-wrapper,
+.img-wrapper {
+    flex: 1; /* Make the image containers equally distribute the available width */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Style the images */
+.media {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Style the "Drag and drop" text */
+.div {
+    color: #777;
+    margin-top: 10px;
+}
+
+/* Style the "Add Image" button */
+.primary-button {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Style for the additional-details div */
+.additional-details {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+}
+
+/* Style for labels */
+.additional-details label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Style for input fields */
+.additional-details input[type="number"],
+.additional-details select,
+.additional-details input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-left: -10px;
+}
+
+/* Style for the "Add Product" button */
+.additional-details button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.additional-details button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive adjustments for smaller screens *

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link th:href="@{/css/Admin/addCategory.css}" rel="stylesheet" type="text/css">
+
+    <title>Add Category</title>
+
+</head>
+<body>
+<nav class="navbar">
+    <!-- Your navigation links go here -->
+    <div class="brand">
+        <h2>HiBeat</h2>
+    </div>
+    <ul>
+        <li>
+            <a href="#">
+                <img th:src="@{/image/Dashboard.svg}" alt="Dashboard">
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="/admin/products">
+                <img th:src="@{/image/Products.svg}" alt="Products">
+                Products
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <img th:src="@{/image/Orders.svg}" alt="Orders">
+                Order
+            </a>
+        </li>
+        <li>
+            <a href="/admin/customers">
+                <img th:src="@{/image/Customers.svg}" alt="Customers">
+                Customers
+            </a>
+        </li>
+        <li>
+            <a href="/admin/categories">
+                <img th:src="@{/image/Coupons.svg}" alt="Coupons">
+                Categories
+            </a>
+        </li>
+    </ul>
+</nav>
+<main class="content">
+    <form th:action="@{/admin/add-categories}" th:method="POST">
+        <div class="content-header">
+            <h1>Add Category</h1>
+            <div class="button-container">
+                <button>Cancel</button>
+                <button type="submit" class="add-product-button">Add Product</button>
+            </div>
+        </div>
+
+        <div class="product-box">
+            <label for="newCategory">Category:</label>
+            <input type="text" id="newCategory" name="newCategory" placeholder="Enter New Category">
+        </div>
+
+    </form>
+
+</main>
+
+
+</body>
+</html>
