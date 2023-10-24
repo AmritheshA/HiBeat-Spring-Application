@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Wallet</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+</head>
+<body>
+
+<header th:replace="navfragment :: header">
+</header>
+
+<div class="container">
+    <h1 class="mt-5">My Wallet</h1>
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card border  shadow ">
+                <div class="card-body">
+                    <h3>Wallet Balance</h3>
+                    <p  style="text-align:center;font-size: 40px;" class="text-success">₹9,00,000</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border shadow">
+                <div class="card-body">
+                    <h3>Transaction History</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">Deposit - ₹10,000 <br><sub class="text-muted">2023-10-14</sub></li>
+                        <li class="list-group-item">Withdraw - ₹5,000 <br> <sub class="text-muted">- 2023-10-13</sub></li>
+                        <li class="list-group-item">Deposit - ₹15,000 <br> <sub class="text-muted">- 2023-10-12</sub></li>
+                        <li class="list-group-item">Withdraw - ₹3,000 <br> <sub class="text-muted">- 2023-10-11</sub></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>

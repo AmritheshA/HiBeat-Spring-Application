@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link th:href="@{/css/Admin/order.css}" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+
+
+    <title>Orders</title>
+</head>
+<body>
+
+<header th:replace="fragment :: admin-header">
+
+</header>
+
+
+<div class="row" style="flex-wrap: nowrap;">
+    <!-- Sidebar -->
+    <nav th:replace="fragment :: admin-navbar">
+
+    </nav>
+
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <button id="sidebarCollapse" class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#sidebarNav"
+                aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span> <i class="fa-solid fa-bars" style="color: #ffffff;"></i> </span>
+        </button>
+
+        <main>
+            <div class="content-header">
+                <h1>Orders</h1>
+                <a th:href="@{/admin/add-product}" class="new-product">Download</a>
+            </div>
+<!--            <form th:action="@{/admin/product/search-product}" method="get">-->
+<!--                <div class="search-box">-->
+<!--                    <input type="text" placeholder="Search..." name="value">-->
+<!--                    <button type="submit" class="action-link">Search</button>-->
+<!--                </div>-->
+<!--            </form>-->
+
+<!--            <div class="time-filter">-->
+<!--                <div class="toggle-switch">-->
+<!--                    <div class="toggle-option active">-->
+<!--                        <input type="radio" id="all-time" name="time-filter" class="toggle-radio">-->
+<!--                        <label for="all-time" class="toggle-label">All Time</label>-->
+<!--                    </div>-->
+<!--                    <div class="toggle-option">-->
+<!--                        <input type="radio" id="1-month" name="time-filter" class="toggle-radio">-->
+<!--                        <label for="1-month" class="toggle-label">1 Month</label>-->
+<!--                    </div>-->
+<!--                    <div class="toggle-option">-->
+<!--                        <input type="radio" id="7-days" name="time-filter" class="toggle-radio">-->
+<!--                        <label for="7-days" class="toggle-label">7 Days</label>-->
+<!--                    </div>-->
+<!--                    <div class="toggle-option">-->
+<!--                        <input type="radio" id="24-hr" name="time-filter" class="toggle-radio">-->
+<!--                        <label for="24-hr" class="toggle-label">24 Hours</label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Order Id</th>
+                    <th>Product Name</th>
+                    <th>Product Price</th>
+                    <th>Stock</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="orderProduct, index : ${orders}">
+                    <td th:text="${orderProduct.orders.orderId}"></td>
+
+                    <td>
+                        <img th:src="@{'/uploads/' + ${orderProduct.product.images_path[0]}}" alt="Product A Image"
+                             width="50" height="50">
+                        <span th:text="${orderProduct.product.name}">Product Name</span>
+                    </td>
+                    <td th:text="${orderProduct.product.price}"></td>
+                    <td th:text="${orderProduct.product.stock}"></td>
+                    <td th:text="${orderProduct.quantity}"></td>
+                    <td th:text="${orderProduct.quantity} * ${orderProduct.product.price} "></td>
+                    <td th:id="${orderProduct.orders.orderId}" th:text="${orderProduct.orders.status}"></td>
+
+                    <td>
+                        <select id="orderStatus" name="orderStatus" th:data-name="${orderProduct.orders.orderId}"
+                                th:onchange="updateOrderStatus(this)">
+                            <option value="Processing">Processing</option>
+                            <option active value="Shipped" >Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Return">Return</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </main>
+
+
+    </div>
+</div>
+
+
+
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css'>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/js/bootstrap.min.js'></script>
+
+<!--Add scri-->
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css'>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/js/bootstrap.min.js'></script>
+
+
+<!-- Add scripts for tooltips and icons -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Add Font Awesome for icons (make sure to include the library) -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<!-- Initialize tooltips -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+
+    function updateOrderStatus(element) {
+
+        var orderId = element.getAttribute('data-name');
+        var values = element.value;
+        console.log(orderId);
+        console.log(values);
+
+        var orderStatusTd = document.getElementById(orderId);
+
+        orderStatusTd.textContent = values;
+
+
+        // Perform the AJAX request
+        $.ajax({
+            method: 'POST',
+            url: "/admin/updateOrderStatus",
+            data: "orderId=" + orderId + "&selecteds=" + values,
+            contentType: "application/x-www-form-urlencoded",
+            success: function (response) {
+                $("#responseMessage").text(response);
+            },
+            error: function () {
+                $("#responseMessage").text("Error occurred during the request.");
+            }
+        });
+
+    }
+
+</script>
+
+
+</body>
+</html>

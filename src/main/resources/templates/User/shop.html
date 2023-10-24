@@ -7,64 +7,19 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!-- Style.css -->
     <link th:href="@{/css/User/shoppageStyle.css}" rel="stylesheet" type="text/css">
 
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="padding-top:20px;">
-    <div class="container">
-        <a class="navbar-brand custom-text-shadow" style="font-family: 'Arial', sans-serif;font-weight:bold;" href="#">HIBEAT</a>
 
-        <!-- Align the toggle button to the right -->
-        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<header th:replace="navfragment :: header">
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item ml-auto">
-                    <a class="nav-link text-dark font-weight-bold" style="font-family: 'poppins', sans-serif;" href="#">HOME</a>
-                </li>
-                <li class="nav-item ml-auto">
-                    <a class="nav-link text-dark font-weight-bold" style="font-family: 'poppins', sans-serif;" href="#">SHOP</a>
-                </li>
-                <li class="nav-item ml-auto">
-                    <a class="nav-link text-dark font-weight-bold" style="font-family: 'poppins', sans-serif;" href="#">ABOUT</a>
-                </li>
+</header>
 
-                <li class="nav-item ml-auto dropdown">
-                    <a class="nav-link text-dark font-weight-bold dropdown-toggle" href="#" id="categoriesDropdown"
-                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        CATEGORIES
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                        <a class="dropdown-item" href="#">Headphone</a>
-                        <a class="dropdown-item" href="#">NeckBand</a>
-                        <a class="dropdown-item" href="#">Ear Buds</a>
-                        <!--                        <a class="dropdown-item" href="#">Second Hand Products</a>-->
-                    </div>
-                </li>
-                <li class="nav-item ml-auto">
-                    <a class="nav-link text-dark font-weight-bold" style="font-family: 'poppins', sans-serif;" href="#">CONTACT
-                        US</a>
-                </li>
-            </ul>
-            <!-- Icons on larger screens -->
-            <div class="navbar-nav ml-auto d-none d-lg-flex">
-                <img class="images" th:src="@{/image/cart.svg}">
-                <img class="images" th:src="@{/image/love.png}">
-                <img class="images" th:src="@{/image/profile.svg}">
-            </div>
-            <!-- Text on smaller screens when collapsed -->
-            <div class="navbar-nav ml-auto d-lg-none">
-                <span class="nav-link ml-auto">Cart</span>
-                <span class="nav-link ml-auto">Favorites</span>
-                <span class="nav-link ml-auto">Profile</span>
-            </div>
-        </div>
-    </div>
-</nav>
 <!--Navi-bar Closed-->
 <div class="container mt-4">
     <div class="row">
@@ -90,8 +45,8 @@
                              href="/home">
                             <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
                                  data-mdb-ripple-color="light">
-                                <img th:src="@{'/uploads/' + ${product.image_path}}" class="card-img-top"
-                                     alt="Product Image"/>
+                                <img th:src="@{'/uploads/' + ${product.getImages_path[0]}}" class="card-img-top"
+                                     alt="Product Image">
                                 <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
                                         style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
                                         alt="Add to Favorites"></a>
@@ -105,7 +60,7 @@
                                    th:text="${product.description}">Product description</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h6 class="card-text" th:text="${'Price: $' + product.price}">Product price</h6>
-                                    <button class="btn btn-primary">Add to Cart</button>
+                                    <a class="btn btn-primary" th:href="@{/user/add-to-cart(id=${product.id})}">Add to Cart</a>
                                 </div>
                             </div>
                         </div>

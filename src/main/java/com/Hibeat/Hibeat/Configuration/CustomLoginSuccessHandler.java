@@ -84,12 +84,12 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         }
 
         else if (roles.contains("super_admin")) {
-            response.sendRedirect("/admin/products");
+            response.sendRedirect("/admin/dashboard");
         }
 
         else if(roles.contains("user")){
 //            Here the home page is required but the lack of pages i use shop to display
-            response.sendRedirect("/user/shop");
+            response.sendRedirect("/user/home");
         }else{
             throw new UsernameNotFoundException("User Is Not Found");
         }

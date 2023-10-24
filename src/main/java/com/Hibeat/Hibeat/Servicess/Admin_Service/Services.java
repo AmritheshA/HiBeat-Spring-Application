@@ -2,6 +2,7 @@ package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
 import com.Hibeat.Hibeat.Model.Admin;
 import com.Hibeat.Hibeat.Model.Categories;
+import com.Hibeat.Hibeat.Model.Orders;
 import com.Hibeat.Hibeat.Model.Products;
 import org.springframework.stereotype.Service;
 
@@ -26,4 +27,7 @@ public interface Services {
     List<Categories> findAll();
 
     List<Products> findByNameContaining(String keyword);
+
+    Orders findByOrderId(String orderId);
+
 }

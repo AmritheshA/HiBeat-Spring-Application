@@ -18,7 +18,7 @@ public class Products {
     private Integer id;
 
     @Column(name = "price")
-    private String price;
+    private double price;
 
     @Column(name = "selling_price")
     private String sellingPrice;
@@ -29,11 +29,8 @@ public class Products {
     @Column(name = "description")
     private String description;
 
-//    @Column(name = "specification")
-//    private String[] specification;
-
-    @Column(name = "images")
-    private String image_path;
+    @Column(name = "images",columnDefinition = "text[]")
+    private String[] images_path = new String[3];
 
     @Column(name = "rating")
     private float rating;

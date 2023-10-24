@@ -7,317 +7,109 @@
 
     <link th:href="@{/css/Admin/products.css}" rel="stylesheet" type="text/css">
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <title>Products</title>
-    <style>
-
-        @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #fafafa;
-        }
-
-        p {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1em;
-            font-weight: 300;
-            line-height: 1.7em;
-            color: #999;
-        }
-
-        a,
-        a:hover,
-        a:focus {
-            color: inherit;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .navbar {
-            padding: 15px 10px;
-            background: #fff;
-            border: none;
-            border-radius: 0;
-            margin-bottom: 40px;
-            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar-btn {
-            box-shadow: none;
-            outline: none !important;
-            border: none;
-        }
-
-        .line {
-            width: 100%;
-            height: 1px;
-            border-bottom: 1px dashed #ddd;
-            margin: 40px 0;
-        }
-
-        /* ---------------------------------------------------
-            SIDEBAR STYLE
-        ----------------------------------------------------- */
-
-        .wrapper {
-            display: flex;
-            width: 100%;
-            align-items: stretch;
-        }
-
-        #sidebar {
-            min-width: 250px;
-            max-width: 250px;
-            background: #844646;
-            color: #fff;
-            transition: all 0.3s;
-            margin: -10px;
-        }
-
-        #sidebar.active {
-            margin-left: -250px;
-        }
-
-        #sidebar .sidebar-header {
-            padding: 20px;
-            background: #844646;
-            display: flex;
-            justify-content: center;
-        }
-
-        #sidebar ul.components {
-            padding: 0px 0;
-            list-style-type: none;
-        }
-
-        #sidebar ul p {
-            color: #fff;
-            padding: 10px;
-        }
-
-        #sidebar ul li a {
-            padding: 10px;
-            font-size: 1.1em;
-            display: block;
-        }
-
-        #sidebar ul li a:hover {
-            color: #ffffff;
-            background: #6a4040;
-        }
-
-        #sidebar ul li.active>a,
-        a[aria-expanded="true"] {
-            color: #fff;
-            background: #6d7fcc;
-        }
-
-        a[data-toggle="collapse"] {
-            position: relative;
-        }
-
-        .dropdown-toggle::after {
-            display: block;
-            position: absolute;
-            top: 50%;
-            right: 20px;
-            transform: translateY(-50%);
-        }
-
-        ul ul a {
-            font-size: 0.9em !important;
-            padding-left: 30px !important;
-            background: #6d7fcc;
-        }
-
-        ul.CTAs {
-            padding: 20px;
-        }
-
-        ul.CTAs a {
-            text-align: center;
-            font-size: 0.9em !important;
-            display: block;
-            border-radius: 5px;
-            margin-bottom: 5px;
-        }
-
-        a.download {
-            background: #fff;
-            color: #7386D5;
-        }
-
-        a.article,
-        a.article:hover {
-            background: #6d7fcc !important;
-            color: #fff !important;
-        }
-
-        /* ---------------------------------------------------
-            CONTENT STYLE
-        ----------------------------------------------------- */
-
-        #content {
-            width: 100%;
-            padding: 20px;
-            min-height: 100vh;
-            transition: all 0.3s;
-        }
-
-        /* ---------------------------------------------------
-            MEDIAQUERIES
-        ----------------------------------------------------- */
-
-        @media (max-width: 768px) {
-            #sidebar {
-                margin-left: -250px;
-            }
-            #sidebar.active {
-                margin-left: -10px;
-            }
-            #sidebarCollapse span {
-                display: none;
-            }
-        }
-
-        #sidebarCollapse {
-            background-color: #007BFF; /* Background color */
-            color: #fff; /* Text color */
-            border: none; /* Remove border */
-            border-radius: 4px; /* Rounded corners */
-            padding: 10px 20px; /* Padding */
-            cursor: pointer; /* Cursor style */
-            transition: background-color 0.3s ease; /* Smooth transition for background color */
-        }
-
-        #sidebarCollapse:hover {
-            background-color: #0056b3; /* Background color on hover */
-        }
-
-        .listed-items{
-            margin-bottom: 10px;
-        }
-
-    </style>
 
 </head>
 <body>
-<div class="wrapper">
-    <!-- Sidebar  -->
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3>Hibeat</h3>
-        </div>
-        <ul class="list-unstyled components">
 
-            <li class="nav-item listed-items">
-                <a class="nav-link" href="#"><i class='bx bxs-chalkboard nav_icon'></i> <span class="nav_name">Dashboard</span></a>
-            </li>
+<header th:replace="fragment :: admin-header">
 
-            <li class="nav-item listed-items">
-                <a class="nav-link" href="/admin/customers"><i class='bx bx-user nav_icon'></i><span class="nav_name">Users</span></a>
-            </li>
-            <li class="nav-item listed-items">
-                <a class="nav-link" th:href="@{/admin/products}"><i class="bx bx-shopping-bag"></i><span>Products</span></a>
-            </li>
-            <li class="nav-item listed-items">
-                <a class="nav-link" href="#"><i class='bx bxs-dollar-circle nav_icon'></i><span
-                        class="nav_name">Sellers</span></a>
-            </li>
-            <li class="nav-item listed-items">
-                <a class="nav-link" href="#"><i class='bx bx-cart nav_icon'></i><span
-                        class="nav_name">Orders</span></a>
-            </li>
-            <li class="nav-item listed-items">
-                <a class="nav-link" href="/admin/categories"><i class='bx bx-category-alt nav_icon'></i> <span
-                        class="nav_name">Categories</span></a>
-            </li>
-            <li class="nav-item listed-items">
-                <a class="nav-link" href="#"><i class='bx bx-dice-2 nav_icon'></i> <span
-                        class="nav_name">Variants</span></a>
-            </li>
-            <li class="nav-item listed-items">
-                <a class="nav-link" href="#"><i class='bx bxs-coupon nav_icon'></i><span
-                        class="nav_name">Coupons</span></a>
-            </li>
-        </ul>
+</header>
+
+
+<div class="row">
+    <!-- Sidebar -->
+    <nav th:replace="fragment :: admin-navbar">
+
     </nav>
 
-    <!-- Page Content  -->
-    <div id="content">
 
-        <button id="sidebarCollapse" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebarNav"
-                aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span> > </span>
-        </button>
+    <!-- Main Content -->
+    <div id="contents" class="col-md-9">
+        <div id="content">
 
-        <main>
-            <div class="content-header">
-                <h1>Products</h1>
-                <a  th:href="@{/admin/add-product}" class="new-product">New Product</a>
-            </div>
-            <form th:action="@{/admin/product/search-product}" method="get">
-                <div class="search-box">
-                    <input type="text" placeholder="Search..." name="value">
-                    <button type="submit" class="action-link">Search</button>
+            <button id="sidebarCollapse" class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#sidebarNav"
+                    aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span> <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path
+                        d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg> </span>
+            </button>
+
+            <main>
+                <div class="content-header">
+                    <h1>Products</h1>
+                    <a th:href="@{/admin/add-product}" class="new-product">New Product</a>
                 </div>
-            </form>
+                <form th:action="@{/admin/product/search-product}" method="get">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search..." name="value">
+                        <button type="submit" class="action-link">Search</button>
+                    </div>
+                </form>
 
-            <!--            <div class="select-date">-->
-<!--                Select Date-->
-<!--            </div>-->
+                <!--            <div class="select-date">-->
+                <!--                Select Date-->
+                <!--            </div>-->
 
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Product Name</th>
-                    <th>Stock</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- Use Thymeleaf to loop through your product data and display it in the table -->
-                <tr th:each="product : ${products}" th:style="${product.status == 'IN-ACTIVE' ? 'background-color: #ffaaaa;' : 'background-color: #d4d4d4'}">
-                    <td th:text="${product.id}"></td>
-                    <td th:text="${product.name}"></td>
-                    <td th:text="${product.stock}"></td>
-                    <td th:text="${product.price}"></td>
-                    <td th:text="${product.status}"
-                        th:style="${product.status == 'IN-ACTIVE' ? 'color: red;' : 'white'}">
-                    </td>
-                    <td>
-                        <!-- Style the action links as buttons -->
-                        <a th:href="@{/admin/edit-product/{id}(id=${product.id})}" class="action-link">Edit</a>
-                        <a th:href="@{/admin/disableproduct/{id}(id=${product.id})}" class="action-link">
-                            [[${product.status == 'ACTIVE' ? 'Disable' : 'Enable'}]]
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product Name</th>
+                        <th>Stock</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Use Thymeleaf to loop through your product data and display it in the table -->
+                    <tr th:each="product : ${products}"
+                        th:style="${product.status == 'IN-ACTIVE' ? 'background-color: #ffaaaa;' : 'background-color: #d4d4d4'}">
+                        <td th:text="${product.id}"></td>
+                        <td th:text="${product.name}"></td>
+                        <td th:text="${product.stock}"></td>
+                        <td th:text="${product.price}"></td>
+                        <td th:text="${product.status}"
+                            th:style="${product.status == 'IN-ACTIVE' ? 'color: red;' : 'white'}">
+                        </td>
+                        <td>
+                            <!-- Style the action links as buttons -->
+                            <a th:href="@{/admin/edit-product/{id}(id=${product.id})}" class="action-link">Edit</a>
+                            <a th:href="@{/admin/disableproduct/{id}(id=${product.id})}" class="action-link">
+                                [[${product.status == 'ACTIVE' ? 'Disable' : 'Enable'}]]
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
-            <!-- Pagination controls -->
-            <!--    <div class="pagination">-->
-            <!--        <ul>-->
-            <!--            <li th:if="${currentPage > 1}">-->
-            <!--                <a th:href="@{/products(page=1)}">First</a>-->
-            <!--            </li>-->
-            <!--            <li th:if="${currentPage > 1}">-->
-            <!--                <a th:href="@{/products(page=${currentPage - 1})}">Previous</a>-->
-            <!--            </li>-->
-            <!--            <li th:if="${currentPage < totalPages}">-->
-            <!--                <a th:href="@{/products(page=${currentPage + 1})}">Next</a>-->
-            <!--            </li>-->
-            <!--            <li th:if="${currentPage < totalPages}">-->
-            <!--                <a th:href="@{/products(page=${totalPages})}">Last</a>-->
-            <!--            </li>-->
-            <!--        </ul>-->
-            <!--    </div>-->
+                <!-- Pagination controls -->
+                <!--    <div class="pagination">-->
+                <!--        <ul>-->
+                <!--            <li th:if="${currentPage > 1}">-->
+                <!--                <a th:href="@{/products(page=1)}">First</a>-->
+                <!--            </li>-->
+                <!--            <li th:if="${currentPage > 1}">-->
+                <!--                <a th:href="@{/products(page=${currentPage - 1})}">Previous</a>-->
+                <!--            </li>-->
+                <!--            <li th:if="${currentPage < totalPages}">-->
+                <!--                <a th:href="@{/products(page=${currentPage + 1})}">Next</a>-->
+                <!--            </li>-->
+                <!--            <li th:if="${currentPage < totalPages}">-->
+                <!--                <a th:href="@{/products(page=${totalPages})}">Last</a>-->
+                <!--            </li>-->
+                <!--        </ul>-->
+                <!--    </div>-->
 
-        </main>
+            </main>
 
+
+        </div>
 
     </div>
 </div>

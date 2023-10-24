@@ -1,13 +1,15 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
-import com.Hibeat.Hibeat.Model.Admin;
+import com.Hibeat.Hibeat.Model.Cart;
+import com.Hibeat.Hibeat.Model.Orders;
 import com.Hibeat.Hibeat.Model.Products;
 import com.Hibeat.Hibeat.Model.User;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
-import com.Hibeat.Hibeat.Repository.AdminRepository;
+import com.Hibeat.Hibeat.Repository.CartRepository;
+import com.Hibeat.Hibeat.Repository.OrderRepository;
+import com.Hibeat.Hibeat.Repository.ProductRepository;
 import com.Hibeat.Hibeat.Repository.UserRepository;
-import com.Hibeat.Hibeat.Servicess.User_Service.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,23 +20,29 @@ import java.util.List;
 public class User_ServiceImplementation implements Services {
 
 
-
     private final UserRepository userRepository;
 
+    private final CartRepository cartRepository;
+
+    private final ProductRepository productRepository;
+
+    private final OrderRepository orderRepository;
     private final PasswordEncoder passwordEncoder;
 
     private final ModelMapperConverter modelMapperConverter;
+
     @Autowired
-    public User_ServiceImplementation(UserRepository userRepository,
-                                      ModelMapperConverter modelMapperConverter,
-                                      PasswordEncoder passwordEncoder) {
+    public User_ServiceImplementation(UserRepository userRepository, CartRepository cartRepository, ProductRepository productRepository, OrderRepository orderRepository, ModelMapperConverter modelMapperConverter, PasswordEncoder passwordEncoder) {
+        this.cartRepository = cartRepository;
+        this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
         this.modelMapperConverter = modelMapperConverter;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public User save(DTO userDetails) {
+    public User save_user(DTO userDetails) {
 
         User userInfo = modelMapperConverter.DTOToUser(userDetails);
 //        Before saving Encoding the password
@@ -68,5 +76,22 @@ public class User_ServiceImplementation implements Services {
         return userRepository.findByNameContaining(keyword);
     }
 
+    @Override
+    public Cart save_cart(Cart cart) {
+        return cartRepository.save(cart);
+    }
+
+    @Override
+    public Orders save_orders(Orders orders) {
+        return orderRepository.save(orders);
+    }
+
+    public List<Products> findAllByIsdIn(List<Integer> productIds) {
+        return productRepository.findAllByIdIn(productIds);
+    }
+    @Override
+    public List<Orders> findByUser(User user) {
+        return orderRepository.findByUser(user);
+    }
 
 }

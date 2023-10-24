@@ -8,25 +8,27 @@ import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
 import com.Hibeat.Hibeat.Repository.CategoryRepository;
 import com.Hibeat.Hibeat.Repository.ProductRepository;
 import com.Hibeat.Hibeat.Repository.UserRepository;
-import org.apache.tomcat.util.modeler.modules.ModelerSource;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Controller
+@Slf4j
 @RequestMapping("/admin")
 public class AdminController {
+
 
     ProductRepository productRepository;
     UserRepository userRepository;
@@ -47,13 +49,14 @@ public class AdminController {
     @GetMapping("/products")
     public String searchProduct(Model model) {
 
+        List<Products> products = productRepository.findAll();
 
-        List<Products> products = productRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+
 
         if (!(products.isEmpty())) {
             model.addAttribute("products", products);
-        }else {
-            System.out.printf("False.....");
+        }else{
+            log.info("There is no product in the database...");
         }
         return "Admin/products";
     }
@@ -77,23 +80,35 @@ public class AdminController {
 
         List<Categories> categories = categoryRepository.findAll();
 
-        model.addAttribute("categories",categories);
+        model.addAttribute("categories", categories);
         return "Admin/addProduct";
     }
+
+    @GetMapping("/order-details")
+    public String orderDetails() {
+        return "Admin/order-details";
+    }
+
+
 
     @PostMapping("/add-product")
     public String add_product(@ModelAttribute Product_DTO productDetails) throws IOException {
 
         String file = "D:\\Brocamp_Task\\week_11\\Project\\Hibeat\\src\\main\\resources\\static\\uploads\\";
 
-        String filepath = file + productDetails.getImage().getOriginalFilename();
         Products productInfo = modelMapperConverter.DTOToProduct(productDetails);
 
-        productInfo.setImage_path(productDetails.getImage().getOriginalFilename());
+        MultipartFile[] files = productDetails.getImage();
+        String[] images = productInfo.getImages_path();
+
+        for (int i = 0; i < files.length; i++) {
+            images[i] = files[i].getOriginalFilename();
+            files[i].transferTo(new File(file + files[i].getOriginalFilename()));
+        }
+        productInfo.setImages_path(images);
 
         productRepository.save(productInfo);
 
-        productDetails.getImage().transferTo(new File(filepath));
 
         return "redirect:/admin/add-product";
     }
@@ -103,8 +118,8 @@ public class AdminController {
 
         Products products = productRepository.findAllById(product_id);
 
-        if (products != null){
-            model.addAttribute("products",products);
+        if (products != null) {
+            model.addAttribute("products", products);
         }
 
         List<Categories> categorys = categoryRepository.findAll((Sort.by(Sort.Direction.ASC, "id")));
@@ -119,29 +134,29 @@ public class AdminController {
         return "Admin/editProduct";
     }
 
-    @PostMapping("/edit-product/{id}")
-    public String edit_product(@ModelAttribute Product_DTO productDetails,
-                               @PathVariable("id") int product_id) throws IOException {
-
-        Products products = productRepository.findAllById(product_id);
-
-        if (products != null && products.getStatus().contains("ACTIVE")) {
-            String file = "D:\\Brocamp_Task\\week_11\\Project\\Hibeat\\src\\main\\resources\\static\\uploads\\";
-
-            String filepath = file + productDetails.getImage().getOriginalFilename();
-            products.setImage_path(productDetails.getImage().getOriginalFilename());
-            products.setName(productDetails.getProductName());
-            products.setPrice(productDetails.getPrice());
-            products.setStock(productDetails.getStock());
-
-            productRepository.save(products);
-
-            productDetails.getImage().transferTo(new File(filepath));
-
-            return "redirect:/admin/products";
-        }
-        return "redirect:/admin/products";
-    }
+//    @PostMapping("/edit-product/{id}")
+//    public String edit_product(@ModelAttribute Product_DTO productDetails,
+//                               @PathVariable("id") int product_id) throws IOException {
+//
+//        Products products = productRepository.findAllById(product_id);
+//
+//        if (products != null && products.getStatus().contains("ACTIVE")) {
+//            String file = "D:\\Brocamp_Task\\week_11\\Project\\Hibeat\\src\\main\\resources\\static\\uploads\\";
+//
+//            String filepath = file + productDetails.getImage().getOriginalFilename();
+//            products.setImage_path(productDetails.getImage().getOriginalFilename());
+//            products.setName(productDetails.getProductName());
+//            products.setPrice(productDetails.getPrice());
+//            products.setStock(productDetails.getStock());
+//
+//            productRepository.save(products);
+//
+//            productDetails.getImage().transferTo(new File(filepath));
+//
+//            return "redirect:/admin/products";
+//        }
+//        return "redirect:/admin/products";
+//    }
 
     @GetMapping("/disableproduct/{id}")
     public String disableProduct(@PathVariable("id") int product_id) {
@@ -174,7 +189,7 @@ public class AdminController {
     }
 
     @GetMapping("/blockuser/{id}")
-    public String blockUser(@PathVariable("id") int product_id){
+    public String blockUser(@PathVariable("id") int product_id) {
         User user = (User) userRepository.findAllById(product_id);
 
         if (user != null && user.getStatus().equals("UN-BLOCKED")) {
@@ -208,6 +223,7 @@ public class AdminController {
     public String categories(Model model) {
 
         List<Categories> category = categoryRepository.findAll((Sort.by(Sort.Direction.ASC, "id")));
+
         if (!(category.isEmpty())) {
             model.addAttribute("categories", category);
         }
@@ -230,34 +246,20 @@ public class AdminController {
         return "redirect:/admin/categories";
     }
 
-    @GetMapping("/edit-categories/{id}")
-    public String editCategories(@PathVariable("id") int categoryId,Model model){
 
-        Optional<Categories> categories = categoryRepository.findById(categoryId);
+    @GetMapping("/edit-categories")
+    public String edit_categories(@RequestParam("id") int id,
+                                  @RequestParam("newName") String newCategoryName) {
 
-        if (categories.isPresent()) {
-            Categories category = categories.get();
+        Optional<Categories> categorys = categoryRepository.findById(id);
+        Categories category = categorys.get();
 
-            if (category.getStatus().equals("ACTIVE")) {
 
-                return "Admin/editCategory";
-            }
-        }
-        return "redirect:/admin/categories";
-    }
+        if (categorys.isPresent() && category.getStatus().equals("ACTIVE")) {
 
-    @PostMapping("/edit-categories/{id}")
-    public String edit_categories(@ModelAttribute Categories categories,
-                                    @PathVariable("id") int categoryId){
-        System.out.printf("cattt"+categories.getCategoryName());
+            category.setCategoryName(newCategoryName);
 
-        Optional<Categories> categorys = categoryRepository.findById(categoryId);
-        if (categorys.isPresent()) {
-            Categories category = categorys.get();
-
-            category.setCategoryName(categories.getCategoryName());
-            System.out.printf("Updated Cat"+category.getCategoryName());
-
+            log.info("updated Categories"+newCategoryName);
             categoryRepository.save(category);
         }
 
@@ -265,7 +267,7 @@ public class AdminController {
     }
 
     @GetMapping("/disableCategory/{id}")
-    public String disableCategory(@PathVariable("id") int id ) {
+    public String disableCategory(@PathVariable("id") int id) {
 
         Optional<Categories> categories = categoryRepository.findById(id);
 
@@ -288,12 +290,14 @@ public class AdminController {
     }
 
 
+    //    For Testing Purposse
 
-//    For Testing Purposse
-    @GetMapping("/sample")
-    public String sample() {
 
-        return "/sam";
+    @GetMapping("/dashboard")
+    public String dashboard(){
+
+        return "Admin/dashboard";
     }
+
 
 }

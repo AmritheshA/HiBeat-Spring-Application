@@ -1,0 +1,143 @@
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.custom-header.transparent-bg {
+    background-color: transparent; /* Set the background to transparent */
+    position: absolute; /* Position the header absolutely */
+    width: 100%; /* Make it stretch the full width */
+    z-index: 1; /* Ensure it's above the carousel */
+}
+
+.headphone1-image {
+    position: absolute;
+    top: 10%; /* Adjust the top position as a percentage of the slide's height */
+    right: 0%; /* Adjust the right position as a percentage of the slide's width */
+    width: 50%; /* Set the width as a percentage of the slide's width */
+    max-width: 100%; /* Ensure it doesn't exceed the slide's width */
+    height: auto; /* Maintain aspect ratio */
+    z-index: 2; /* Ensure it's above the other content */
+}
+
+.headphone2-image {
+    position: absolute;
+    top: 10%;
+    right: 6%;
+    width: 45%;
+    max-width: 100%;
+    height: auto;
+    z-index: 2;
+}
+
+.headphone3-image {
+    position: absolute;
+    top: 10%; /* Adjust the top position as a percentage of the slide's height */
+    right: 0%; /* Adjust the right position as a percentage of the slide's width */
+    width: 45%; /* Set the width as a percentage of the slide's width */
+    max-width: 100%; /* Ensure it doesn't exceed the slide's width */
+    height: auto; /* Maintain aspect ratio */
+    z-index: 2; /* Ensure it's above the other content */
+}
+
+.text-one {
+
+    position: absolute;
+    top: 40%; /* Adjust the top position as a percentage of the slide's height */
+    left: 15%; /* Adjust the right position as a percentage of the slide's width */
+    width: 50%; /* Set the width as a percentage of the slide's width */
+    max-width: 100%; /* Ensure it doesn't exceed the slide's width */
+    height: auto; /* Maintain aspect ratio */
+    z-index: 2;
+}
+
+/* Style for the responsive text */
+.responsive-text {
+    font-size: 40px;
+    line-height: 1.1;
+    font-family: 'Montserrat';
+    font-weight: 1000;
+}
+
+/* Media query for smaller screens (adjust the max-width as needed) */
+@media (max-width: 768px) {
+    .responsive-text {
+        font-size: 25px; /* Decrease font size for smaller screens */
+    }
+}
+
+.product-card {
+    width: 300px;
+    border: 1px solid #e1e1e1;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.logo-carousel {
+    display: flex; /* Display images in a row */
+    overflow: hidden; /* Hide overflow if there are too many logos */
+}
+
+/* Style for each logo image with the class 'logo_slider' */
+.logo_slider {
+    flex: 0 0 auto; /* Prevent images from growing/shrinking */
+    margin-right: 10px; /* Add spacing between images */
+}
+
+/* If you want to remove the right margin from the last image with the class 'logo_slider' */
+.logo_slider:last-child {
+    margin-right: 0;
+}
+
+/* Adjust the maximum width of each logo */
+.logo_slider img {
+    max-width: 200px; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+}
+
+@media (max-width: 768px) {
+    .logo-carousel {
+        flex-wrap: wrap; /* Allow images to wrap to the next line on smaller screens */
+    }
+
+    .logo_slider {
+        flex-basis: calc(33.33% - 10px); /* Adjust the width for smaller screens, considering margins */
+        margin-right: 0; /* No right margin on smaller screens */
+    }
+
+    .logo_slider:last-child {
+        margin-right: 10px; /* Add right margin to the last logo on the previous row */
+    }
+
+    .logo_slider img {
+        max-width: 100%; /* Make images responsive within their containers */
+    }
+}
+
+.ads1 {
+    background-color: black;
+    max-height: 350px;
+}
+
+.ads2 {
+    background-image: url("/image/ads2Image.png"); /* Note the leading slash */
+    background-size: cover;
+    max-height: 350px;
+}
+
+.ads1 img{
+    height: 60%;
+    float: right;
+    max-width: 20%;
+}
+.ads {
+    width: 100%;
+    height: 300px; /* Let the height adjust automatically based on the image's aspect ratio */
+}
+.ads img {
+    width: 100%;
+    height: 300px; /* Make the image fill the entire div */
+    object-fit: fill; /* Maintain the image's aspect ratio and cover the entire div */
+}

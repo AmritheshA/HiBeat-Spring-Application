@@ -8,7 +8,7 @@ public class Product_DTO {
 
     private String productName;
     private String productDescription;
-    private MultipartFile image;
+    private MultipartFile[] image;
     private String price;
     private int stock;
     private int categories;

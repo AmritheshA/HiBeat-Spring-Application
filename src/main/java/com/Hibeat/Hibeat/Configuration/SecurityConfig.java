@@ -10,6 +10,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @EnableWebSecurity
 @Configuration
@@ -27,8 +33,9 @@ public class SecurityConfig {
 
         http
                 .authorizeRequests((requests) -> requests
-
+//For testing Purpose i just make it commend
                         .requestMatchers("/admin/**").hasAuthority("super_admin")
+                        .requestMatchers("/user/home","user/shop","user/orders").permitAll()
                         .requestMatchers("/user/**").hasAnyAuthority("user","super_admin")
                         .anyRequest().permitAll()
                 )
@@ -51,7 +58,8 @@ public class SecurityConfig {
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(true)
                         .expiredUrl("/login")
-                );
+                ).cors( cors -> cors.disable())
+                .csrf(csrf -> csrf.disable());
         return http.build();
 
     }
@@ -63,5 +71,15 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

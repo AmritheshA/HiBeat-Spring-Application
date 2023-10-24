@@ -2,10 +2,12 @@ package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
 import com.Hibeat.Hibeat.Model.Admin;
 import com.Hibeat.Hibeat.Model.Categories;
+import com.Hibeat.Hibeat.Model.Orders;
 import com.Hibeat.Hibeat.Model.Products;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
 import com.Hibeat.Hibeat.Repository.AdminRepository;
 import com.Hibeat.Hibeat.Repository.CategoryRepository;
+import com.Hibeat.Hibeat.Repository.OrderRepository;
 import com.Hibeat.Hibeat.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class Admin_ServiceImplementation implements Services{
     AdminRepository adminRepository;
     ProductRepository productRepository;
     CategoryRepository categoryRepository;
+    OrderRepository orderRepository;
     ModelMapperConverter modelMapperConverter;
 
 
@@ -27,11 +30,13 @@ public class Admin_ServiceImplementation implements Services{
     public Admin_ServiceImplementation(AdminRepository adminRepository,
                                        ProductRepository productRepository,
                                        ModelMapperConverter modelMapperConverter,
-                                       CategoryRepository categoryRepository) {
+                                       CategoryRepository categoryRepository,
+                                       OrderRepository orderRepository) {
         this.adminRepository = adminRepository;
         this.productRepository = productRepository;
         this.modelMapperConverter = modelMapperConverter;
         this.categoryRepository = categoryRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Override
@@ -62,8 +67,6 @@ public class Admin_ServiceImplementation implements Services{
     public Optional<Categories> findById(int categoryId) {
         return categoryRepository.findById(categoryId);
     }
-
-
     @Override
     public List<Categories> findAll() {
         return categoryRepository.findAll();
@@ -71,6 +74,10 @@ public class Admin_ServiceImplementation implements Services{
     @Override
     public List<Products> findByNameContaining(String keyword) {
         return productRepository.findByNameContaining(keyword);
+    }
+    @Override
+    public Orders findByOrderId(String orderId) {
+        return orderRepository.findByOrderId(orderId);
     }
 
 }

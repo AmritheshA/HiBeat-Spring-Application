@@ -6,10 +6,10 @@ import lombok.Data;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-
 //Adding Lombok
 @Data
 public class User {
@@ -30,10 +30,11 @@ public class User {
     private String email;
 
     @Column(name = "mobile")
-    private BigInteger mobile;
+    private String mobile;
 
-    @Column(name = "address")
-    private String[] address;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private List<Address> addresses;
 
     @Column(name = "create_date")
     private Date create_date;
@@ -43,6 +44,9 @@ public class User {
 
     @Column(name = "role")
     private String role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Orders> orders;
 
     @Column(name = "status")
     private String status= "UN-BLOCKED";

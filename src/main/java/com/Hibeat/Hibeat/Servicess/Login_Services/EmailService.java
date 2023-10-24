@@ -1,5 +1,6 @@
 package com.Hibeat.Hibeat.Servicess.Login_Services;
 
+import com.Hibeat.Hibeat.Model.Admin;
 import com.Hibeat.Hibeat.Model.User;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
@@ -25,6 +26,8 @@ public class EmailService {
     ModelMapperConverter modelMapperConverter;
     PasswordEncoder passwordEncoder;
 
+    AdminRepository adminRepository;
+
     @Autowired
     public EmailService(JavaMailSender javaMailSender,
                         HttpSession session,
@@ -37,6 +40,7 @@ public class EmailService {
         this.userRepository = userRepository;
         this.modelMapperConverter = modelMapperConverter;
         this.passwordEncoder = passwordEncoder;
+        this.adminRepository = adminRepository;
     }
 
     public void sendEmails(String to){
@@ -88,6 +92,7 @@ public class EmailService {
             userInfo.setRole("user");
             userInfo.setCreate_date(getCurrentDate());
             userRepository.save((userInfo));
+
 
             return true;
         }

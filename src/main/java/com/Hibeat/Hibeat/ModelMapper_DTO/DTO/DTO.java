@@ -12,5 +12,6 @@ public class DTO {
     private String password;
     private String token;
     private String role;
+    private String mobile;
 
 }

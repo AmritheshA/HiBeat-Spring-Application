@@ -38,7 +38,7 @@ public class LoginController {
             if (authentication.getPrincipal() instanceof UserDetails) {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 if (userDetails.getAuthorities().contains("user")) {
-                    return "redirect:/user/shop";
+                    return "redirect:/user/home";
                 }
             }
         }
@@ -67,7 +67,7 @@ public class LoginController {
 
         if (emailService.isOTPVerified(otp)) {
             if (emailService.isOTPExpired()) {
-                return "redirect:/user/shop";
+                return "redirect:/user/home";
             } else {
                 model.addAttribute("error", "OTP is valid but has not expired yet.");
             }
@@ -108,14 +108,10 @@ public class LoginController {
 
     @PostMapping("/resetOrContinue")
     public String handleFormSubmission(@RequestParam("action") String action) {
-//        if user choose restPassword
-        if ("resetPassword".equals(action)) {
-            restPasswordService.initialPasswordRest();
-            return "LoginRegistration/Login";
-//Else Continue as Logged In
-        }
-//        lack of home page i use shop for Now...
-        return "redirect:/user/shop";
+
+        restPasswordService.initialPasswordRest();
+        return "LoginRegistration/Login";
+
     }
 
     @GetMapping("/reset-password")
@@ -138,5 +134,10 @@ public class LoginController {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         return "redirect:/login?logout";
+    }
+
+    @GetMapping("/error-page")
+    public String error(){
+        return "LoginRegistration/404";
     }
 }

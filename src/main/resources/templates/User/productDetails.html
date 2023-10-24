@@ -3,116 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Product Page</title>
-    <!-- Include Bootstrap CSS and any other necessary stylesheets -->
+    <title>Product-Details</title>
+
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 
     <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
 
     <link th:href="@{/css/User/productDetails.css}" rel="stylesheet" type="text/css">
 
 
-
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="padding-top:20px;">
-    <div class="container">
-        <a class="navbar-brand custom-text-shadow" style="font-family: 'Arial', sans-serif;font-weight:bold;" href="#">HIBEAT</a>
+<!--Header-->
+<header th:replace="navfragment :: header">
 
-        <!-- Align the toggle button to the right -->
-        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+</header>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item ml-auto">
-                    <a class="nav-link text-dark font-weight-bold" style="font-family: 'poppins', sans-serif;" href="#">HOME</a>
-                </li>
-                <li class="nav-item ml-auto">
-                    <a class="nav-link text-dark font-weight-bold" style="font-family: 'poppins', sans-serif;" href="#">SHOP</a>
-                </li>
-                <li class="nav-item ml-auto">
-                    <a class="nav-link text-dark font-weight-bold" style="font-family: 'poppins', sans-serif;" href="#">ABOUT</a>
-                </li>
 
-                <li class="nav-item ml-auto dropdown">
-                    <a class="nav-link text-dark font-weight-bold dropdown-toggle" href="#" id="categoriesDropdown"
-                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        CATEGORIES
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                        <a class="dropdown-item" href="#">Headphone</a>
-                        <a class="dropdown-item" href="#">NeckBand</a>
-                        <a class="dropdown-item" href="#">Ear Buds</a>
-                        <!--                        <a class="dropdown-item" href="#">Second Hand Products</a>-->
-                    </div>
-                </li>
-                <li class="nav-item ml-auto">
-                    <a class="nav-link text-dark font-weight-bold" style="font-family: 'poppins', sans-serif;" href="#">CONTACT
-                        US</a>
-                </li>
-            </ul>
-            <!-- Icons on larger screens -->
-            <div class="navbar-nav ml-auto d-none d-lg-flex">
-                <img class="images" th:src="@{/image/cart.svg}">
-                <img class="images" th:src="@{/image/love.png}">
-                <img class="images" th:src="@{/image/profile.svg}">
-            </div>
-            <!-- Text on smaller screens when collapsed -->
-            <div class="navbar-nav ml-auto d-lg-none">
-                <span class="nav-link ml-auto">Cart</span>
-                <span class="nav-link ml-auto">Favorites</span>
-                <span class="nav-link ml-auto">Profile</span>
-            </div>
-        </div>
-    </div>
-</nav>
-
+<!--Content-->
 <div class="container">
+
     <div class="row" style="margin-top:20px;">
         <div class="col-md-6">
-            <div class="product-container">
-                <div id="productImagessss" class="product">
-                    <img class="headphone" th:src="@{'/uploads/' + ${product.image_path}}" alt="Headphone">
+            <div id="productImages" class="product">
+                <img id="mainImage" class="headphone" th:src="@{'/uploads/' + ${product.getImages_path[0]}}"
+                     alt="Headphone" style="width: 100%">
+            </div>
+            <div class="row mt-4" style="margin-left: 5%;">
+                <div class="col">
+                    <img class="thumbnail" th:src="@{'/uploads/' + ${product.getImages_path[1]}}"
+                         th:attr="data-image-src=@{'/uploads/' + ${product.getImages_path[1]}}"
+                         alt="Thumbnail 1"
+                         style="width: 80px; height: 50px">
                 </div>
-                <div class="row mt-4" style="margin-left: 5%;">
-                    <div class="col">
-                        <img class="thumbnail" th:src="@{'/uploads/' + ${product.image_path}}" alt="Thumbnail 1">
-                    </div>
-                    <div class="col">
-                        <img class="thumbnail" th:src="@{'/uploads/' + ${product.image_path}}" alt="Thumbnail 2">
-                    </div>
-                    <div class="col">
-                        <img class="thumbnail" th:src="@{'/uploads/' + ${product.image_path}} "alt="Thumbnail 2">
-                    </div>
+                <div class="col">
+                    <img class="thumbnail" th:src="@{'/uploads/' + ${product.getImages_path[2]}}"
+                         th:attr="data-image-src=@{'/uploads/' + ${product.getImages_path[2]}}"
+                         alt="Thumbnail 2"
+                         style="width: 80px; height: 50px">
+                </div>
+                <div class="col">
+                    <img class="thumbnail" th:src="@{'/uploads/' + ${product.getImages_path[0]}}"
+                         th:attr="data-image-src=@{'/uploads/' + ${product.getImages_path[0]}}"
+                         alt="Thumbnail 3"
+                         style="width: 80px; height: 50px">
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="product-details">
+            <div class="product-details" style="margin-top: 10px;">
                 <h2 th:text="${product.name}"></h2>
                 <p style="font-family:'Jomhuria';font-weight:bold;font-size:20px;" th:text="${product.description}"></p>
                 <p style="font-family:'Inria Serif';font-weight:bold;font-size:15px;">
                     Name: <span th:text="${product.name}"></span> <br>
                     Over Ear Connectivity Technology: Bluetooth 5.2
                 </p>
-
-                <p style="font-family:'Montserrat';font-size:25px;font-weight:bold;"th:text="${'₹'+product.price}"></p>
-
+                <p style="font-family:'Montserrat';font-size:25px;font-weight:bold;" th:text="${'₹'+product.price}"></p>
                 <div class="d-flex align-items-center">
                     <button class="btn btn-primary" id="add-to-cart">Add to Cart</button>
-                    <div class="quantity-controls ml-3">
-                        <button class="btn btn-secondary" id="decrement">-</button>
-                        <span id="quantity-label">Quantity:</span>
-                        <span id="quantity">1</span>
-                        <button class="btn btn-secondary" id="increment">+</button>
-                    </div>
                 </div>
-
             </div>
         </div>
     </div>
+
 
     <!--    Descriptions-->
     <div class="row mt-4">
@@ -131,7 +89,7 @@
                  style="border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;">
                 <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
                      data-mdb-ripple-color="light">
-                    <img th:src="@{'/uploads/' + ${product.image_path}}" style="width: 300px; height: 200px;"
+                    <img th:src="@{'/uploads/' + ${product.getImages_path[0]}}" style="width: 250px; height: 200px;"
                          class="card-img-top" alt="Product Image"/>
                     <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
                             style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
@@ -157,14 +115,13 @@
 
 </div>
 
-</div>
 
 <!-- Footer -->
 <footer class=" text-center text-lg-start bg-dark text-muted">
 
     <!-- Section: Links  -->
     <section class="">
-        <div class="container text-center text-md-start mt-5">
+        <div class="container text-center text-md-start mt-5" style="margin-top: 50px;">
             <!-- Grid row -->
             <div class="row mt-3">
                 <!-- Grid column -->
@@ -252,34 +209,30 @@
 
 
 <script>
-    const quantityElement = document.getElementById('quantity');
-    const decrementButton = document.getElementById('decrement');
-    const incrementButton = document.getElementById('increment');
-
-    let quantity = 1;
-
-    function updateQuantity() {
-        quantityElement.textContent = quantity;
-    }
-
-    decrementButton.addEventListener('click', () => {
-        if (quantity > 1) {
-            quantity--;
-            updateQuantity();
-        }
-    });
-
-    incrementButton.addEventListener('click', () => {
-        quantity++;
-        updateQuantity();
-    });
-
-    var options = {
-        width: 350,
-        zoomWidth: 300,
+    const options = {
+        width: 250,
+        height: 300,
+        zoomWidth: 500,
+        offset: {vertical: 0, horizontal: 0},
     };
-    new ImageZoom(document.getElementById("productImagessss"), options);
+    const imageZoom = new ImageZoom(document.getElementById("productImages"), options);
+
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.getElementById('mainImage');
+    const defaultImageSrc = mainImage.getAttribute('src');
+
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function () {
+            const imageSrc = this.getAttribute('data-image-src');
+            mainImage.src = imageSrc;
+
+            // Reset the image zoom
+            imageZoom.destroy();
+            imageZoom = new ImageZoom(document.getElementById("productImages"), options);
+        });
+    });
 </script>
+
 
 <!-- Include Bootstrap and any other necessary scripts -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
