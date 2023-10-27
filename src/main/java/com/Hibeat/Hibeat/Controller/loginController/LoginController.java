@@ -1,6 +1,8 @@
 package com.Hibeat.Hibeat.Controller.loginController;
 
+import com.Hibeat.Hibeat.Model.User;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
+import com.Hibeat.Hibeat.Repository.UserRepository;
 import com.Hibeat.Hibeat.Servicess.Login_Services.EmailService;
 import com.Hibeat.Hibeat.Servicess.Login_Services.RestPasswordService;
 import com.Hibeat.Hibeat.Servicess.User_Service.Services;
@@ -16,11 +18,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller
 public class LoginController {
 
     private final EmailService emailService;
     private final RestPasswordService restPasswordService;
+
 
     @Autowired
     public LoginController(EmailService emailService,
@@ -30,20 +35,45 @@ public class LoginController {
     }
 
 
+
     @GetMapping("/login")
     public String login() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
 
+        if (authentication != null && authentication.isAuthenticated()) {
             if (authentication.getPrincipal() instanceof UserDetails) {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                if (userDetails.getAuthorities().contains("user")) {
-                    return "redirect:/user/home";
+
+                // Check if the user has the "user" role or "admin" role
+                if (userDetails.getAuthorities().stream()
+                        .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("user")
+                                || grantedAuthority.getAuthority().equals("admin"))) {
+                    if (userDetails.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("user"))) {
+                        return "redirect:/user/home";
+                    } else if (userDetails.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("super_admin"))) {
+                        return "redirect:/admin/dashboard";
+                    }
                 }
             }
         }
         return "LoginRegistration/Login";
     }
+
+
+//    @GetMapping("/login")
+//    public String login() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication != null && authentication.isAuthenticated()) {
+//
+//            if (authentication.getPrincipal() instanceof UserDetails) {
+//                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//                if (userDetails.getAuthorities().contains("user")) {
+//                    return "redirect:/user/home";
+//                }
+//            }
+//        }
+//        return "LoginRegistration/Login";
+//    }
 
     @GetMapping("/signUp")
     public String signups() {
@@ -137,7 +167,7 @@ public class LoginController {
     }
 
     @GetMapping("/error-page")
-    public String error(){
+    public String error() {
         return "LoginRegistration/404";
     }
 }

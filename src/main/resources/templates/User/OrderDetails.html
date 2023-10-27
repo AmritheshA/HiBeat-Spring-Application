@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>OrderDetails</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+<body>
+
+<div class="container">
+    <h1 class="my-4">Order Details</h1>
+    <div class="row">
+        <!-- Order Details Column -->
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <p th:text="'Order ID:'+${orders.orderId}" ><strong></strong></p>
+                    <p th:text="'Order Date:'+${orders.orderDate}" ><strong></strong></p>
+                    <p th:text="'Payment Method:'+${orders.payments.paymentMethod}" ><strong></strong></p>
+                    <p th:text="'Status:'+${orders.status}" ><strong></strong></p>
+
+                </div>
+            </div>
+
+            <!-- Product Details Cards -->
+            <div class="card mb-3" th:each="orderProduct, index : ${orders.orderProducts}">
+                <div class="card-body">
+                    <h5 class="card-title">Products Ordered</h5>
+
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4" style="max-height: 150px;">
+                                <img style="max-height: 150px;" th:src="@{'/uploads/' + ${orderProduct.product.images_path[0]}}" alt="Product 1"
+                                     class="img-fluid">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 th:text="'Product :' + ${orderProduct.product.name}" class="card-title"></h5>
+                                    <p th:text="'Product Id :' + ${orderProduct.product.id}" class="card-text"></p>
+                                    <p th:text="'Product Price:' + ${orderProduct.product.price}" class="card-text"><strong></strong></p>
+                                    <p th:text="'Product Quantity :' + ${orderProduct.quantity}" class="card-text"><strong></strong> </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Shipping Address Column -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Shipping Address</h5>
+                    <p><strong th:text="'Recipient Name: :' + ${address.name}"></strong> </p>
+                    <p><strong th:text="'House No.: :' + ${address.address}"></strong> </p>
+                    <p><strong th:text="'Locality : :' + ${address.locality}"></strong></p>
+                    <p><strong th:text="'City : :' + ${address.city}"></strong></p>
+                    <p><strong th:text="'Pin Code : :' + ${address.pin}"></strong></p>
+
+                </div>
+            </div>
+            <a th:href="@{/user/cancelOrder(orderId=${orders.orderId})}"><button class="btn-primary" style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px;  cursor: pointer;  transition: background-color 0.3s;">Cancel Order</button></a>
+        </div>
+
+
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script></body>
+
+</html>

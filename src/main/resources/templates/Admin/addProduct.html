@@ -21,12 +21,12 @@
         <ul class="list-unstyled components">
 
             <li class="nav-item listed-items">
-                <a class="nav-link" href="#"><i class='bx bxs-chalkboard nav_icon'></i> <span
+                <a class="nav-link" href="/admin/dashboard"><i class='bx bxs-chalkboard nav_icon'></i> <span
                         class="nav_name">Dashboard</span></a>
             </li>
 
             <li class="nav-item listed-items">
-                <a class="nav-link" href="#"><i class='bx bx-user nav_icon'></i><span class="nav_name">Users</span></a>
+                <a class="nav-link" href="/admin/customers"><i class='bx bx-user nav_icon'></i><span class="nav_name">Users</span></a>
             </li>
             <li class="nav-item listed-items">
                 <a class="nav-link" th:href="@{/admin/products}"><i class="bx bx-shopping-bag"></i><span>Products</span></a>
@@ -36,11 +36,11 @@
                         class="nav_name">Sellers</span></a>
             </li>
             <li class="nav-item listed-items">
-                <a class="nav-link" href="#"><i class='bx bx-cart nav_icon'></i><span
+                <a class="nav-link" href="/admin/orders"><i class='bx bx-cart nav_icon'></i><span
                         class="nav_name">Orders</span></a>
             </li>
             <li class="nav-item listed-items">
-                <a class="nav-link" href="#"><i class='bx bx-category-alt nav_icon'></i> <span
+                <a class="nav-link" href="/admin/categories"><i class='bx bx-category-alt nav_icon'></i> <span
                         class="nav_name">Categories & Brands</span></a>
             </li>
             <li class="nav-item listed-items">
@@ -94,19 +94,20 @@
 
                                 <div class="media-upload">
                                     <div class="img-list">
-                                        <div class="group"><img class="media" src="/image/Add-image.svg" alt="Image 1"/>
+                                        <div class="group " style="display: flex;justify-content: space-between">
+                                            <img class="media" style="width: 150px; height: 150px;" id="image1" src="/image/Add-image.svg" alt="Image 1" />
+                                            <img class="media" style="width: 150px; height: 150px; " id="image2" src="/image/Add-image.svg" alt="Image 2" />
+                                            <img class="media" style="width: 150px; height: 150px;" id="image3" src="/image/Add-image.svg" alt="Image 3" />
                                         </div>
-                                        <div class="media-wrapper"><img class="media" src="/image/Add-image.svg"
-                                                                        alt="Image 2"/>
-                                        </div>
-                                        <div class="img-wrapper"><img class="media" src="/image/Add-image.svg"
-                                                                      alt="Image 3"/></div>
                                     </div>
-                                    <input type="file" multiple id="image" name="image" max="3">
+                                    <input type="file" multiple id="imageInput1" name="image" max="3" onchange="previewSelectedImages('imageInput1', ['image1', 'image2', 'image3'])" />
                                 </div>
+
+
                             </div>
                         </div>
                     </div>
+
 
                     <div class="additional-details">
                         <label for="basePrice">Base Price:</label>
@@ -158,6 +159,30 @@
             $('#sidebar').toggleClass('active');
         });
     });
+
+    // Function to display image preview without page reload
+    // Function to display image previews for each input
+    function previewSelectedImages(inputId, imageIds) {
+        const imageInput = document.getElementById(inputId);
+
+        for (let i = 0; i < imageIds.length; i++) {
+            const imageElement = document.getElementById(imageIds[i]);
+            if (imageInput.files && imageInput.files[i]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    imageElement.src = e.target.result;
+                };
+
+                reader.readAsDataURL(imageInput.files[i]);
+            } else {
+                imageElement.src = "/image/Add-image.svg";
+            }
+        }
+    }
+
+
+
 </script>
 </body>
 </html>

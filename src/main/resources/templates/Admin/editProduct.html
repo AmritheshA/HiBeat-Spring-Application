@@ -80,11 +80,10 @@
 
                         <label for="productDescription">Product Description:</label>
                         <div class="textarea-container">
-                        <textarea id="productDescription" name="productDescription"
+                        <textarea id="productDescription" name="description"
                                   placeholder="Enter product description" th:field="${products.description}"></textarea>
-                            <div class="word-count"><span id="wordCount">0</span>/100</div>
                         </div>
-                        <p id="message" style="color: red;"></p> <!-- Message element for displaying the message -->
+
                     </div>
 
                     <div class="form">
@@ -94,18 +93,23 @@
 
                                 <div class="media-upload">
                                     <div class="img-list">
-                                        <div class="group"><img class="media" src="/image/Add-image.svg" alt="Image 1"/>
+                                        <div class="group" style="display: flex; justify-content: space-between;">
+                                            <div>
+                                                <img class="media" id="image1" style="width: 150px; height: 150px;" th:src="@{'/uploads/' + ${images[0]}}" alt="Image 1" />
+                                                <input type="file" id="imageInput1" name="image1" />
+                                            </div>
+                                            <div>
+                                                <img class="media" id="image2" style="width: 150px; height: 150px;" th:src="@{'/uploads/' + ${images[1]}}" alt="Image 2" />
+                                                <input type="file" id="imageInput2" name="image2" />
+                                            </div>
+                                            <div>
+                                                <img class "media" id="image3" style="width: 150px; height: 150px;" th:src="@{'/uploads/' + ${images[2]}}" alt="Image 3" />
+                                                <input type="file" id="imageInput3" name="image3" />
+                                            </div>
                                         </div>
-                                        <div class="media-wrapper"><img class="media" src="/image/Add-image.svg"
-                                                                        alt="Image 2"/>
-                                        </div>
-                                        <div class="img-wrapper"><img class="media" src="/image/Add-image.svg"
-                                                                      alt="Image 3"/></div>
                                     </div>
-                                    <p class="div">Drag and drop an image here, or click "Add Image"</p>
-
-                                    <input type="file" multiple id="image" name="image">
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -160,6 +164,23 @@
             $('#sidebar').toggleClass('active');
         });
     });
+
+    const container = document.querySelector('.img-list');
+    container.addEventListener('change', function (event) {
+        if (event.target.type === 'file') {
+            const file = event.target.files[0];
+            const imageElement = event.target.previousElementSibling; // Get the previous sibling (the image)
+
+            if (file && imageElement) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imageElement.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+
 </script>
 </body>
 </html>

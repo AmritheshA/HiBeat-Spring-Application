@@ -89,7 +89,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="orderProduct, index : ${orders}">
-                    <td th:text="${orderProduct.orders.orderId}"></td>
+                    <td><a style="text-decoration: none;color: #140e0e;" th:text="${orderProduct.orders.orderId}"  th:href="@{/admin/singleOrderDetails(orderId=${orderProduct.orders.orderId})}"></a></td>
 
                     <td>
                         <img th:src="@{'/uploads/' + ${orderProduct.product.images_path[0]}}" alt="Product A Image"

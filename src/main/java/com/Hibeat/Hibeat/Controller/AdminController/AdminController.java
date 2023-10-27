@@ -52,10 +52,9 @@ public class AdminController {
         List<Products> products = productRepository.findAll();
 
 
-
         if (!(products.isEmpty())) {
             model.addAttribute("products", products);
-        }else{
+        } else {
             log.info("There is no product in the database...");
         }
         return "Admin/products";
@@ -83,12 +82,6 @@ public class AdminController {
         model.addAttribute("categories", categories);
         return "Admin/addProduct";
     }
-
-    @GetMapping("/order-details")
-    public String orderDetails() {
-        return "Admin/order-details";
-    }
-
 
 
     @PostMapping("/add-product")
@@ -125,6 +118,8 @@ public class AdminController {
         List<Categories> categorys = categoryRepository.findAll((Sort.by(Sort.Direction.ASC, "id")));
         if (!(categorys.isEmpty())) {
             model.addAttribute("categories", categorys);
+            assert products != null;
+            model.addAttribute("images", products.getImages_path());
         }
 
         if (products.getStatus().equals("IN-ACTIVE")) {
@@ -132,6 +127,41 @@ public class AdminController {
         }
 
         return "Admin/editProduct";
+    }
+
+    @PostMapping("/edit-product/{id}")
+    public String edit_product(@RequestParam("image1") MultipartFile image1,
+                               @RequestParam("image2") MultipartFile image2,
+                               @RequestParam("image3") MultipartFile image3,
+                               @ModelAttribute Product_DTO productDetails,
+                               @PathVariable("id") int product_id) throws IOException {
+
+        Products products = productRepository.findAllById(product_id);
+
+        String[] images = products.getImages_path();
+        String file = "D:\\Brocamp_Task\\week_11\\Project\\Hibeat\\src\\main\\resources\\static\\uploads\\";
+
+
+        images[0] = image1.getOriginalFilename();
+        image1.transferTo(new File(file + image1.getOriginalFilename()));
+
+        images[1] = image2.getOriginalFilename();
+        image2.transferTo(new File(file + image2.getOriginalFilename()));
+
+        images[2] = image3.getOriginalFilename();
+        image3.transferTo(new File(file + image3.getOriginalFilename()));
+
+        products.setImages_path(images);
+        products.setName(productDetails.getProductName());
+        products.setPrice(Double.parseDouble(productDetails.getPrice()));
+        products.setStock(productDetails.getStock());
+        products.setDescription(productDetails.getDescription());
+        log.info("Product Description" +productDetails.getDescription());
+
+        productRepository.save(products);
+
+
+        return "redirect:/admin/products";
     }
 
 //    @PostMapping("/edit-product/{id}")
@@ -143,15 +173,23 @@ public class AdminController {
 //        if (products != null && products.getStatus().contains("ACTIVE")) {
 //            String file = "D:\\Brocamp_Task\\week_11\\Project\\Hibeat\\src\\main\\resources\\static\\uploads\\";
 //
-//            String filepath = file + productDetails.getImage().getOriginalFilename();
-//            products.setImage_path(productDetails.getImage().getOriginalFilename());
+//
+//            MultipartFile[] files = productDetails.getImage();
+//            String[] images = products.getImages_path();
+//
+//            for (int i = 0; i < files.length; i++) {
+//                images[i] = files[i].getOriginalFilename();
+//                files[i].transferTo(new File(file + files[i].getOriginalFilename()));
+//            }
+//
+//            products.setImages_path(images);
 //            products.setName(productDetails.getProductName());
-//            products.setPrice(productDetails.getPrice());
+//            products.setPrice(Double.parseDouble(productDetails.getPrice()));
 //            products.setStock(productDetails.getStock());
+//            products.setDescription(productDetails.getProductDescription());
 //
 //            productRepository.save(products);
 //
-//            productDetails.getImage().transferTo(new File(filepath));
 //
 //            return "redirect:/admin/products";
 //        }
@@ -259,7 +297,7 @@ public class AdminController {
 
             category.setCategoryName(newCategoryName);
 
-            log.info("updated Categories"+newCategoryName);
+            log.info("updated Categories" + newCategoryName);
             categoryRepository.save(category);
         }
 
@@ -294,7 +332,7 @@ public class AdminController {
 
 
     @GetMapping("/dashboard")
-    public String dashboard(){
+    public String dashboard() {
 
         return "Admin/dashboard";
     }

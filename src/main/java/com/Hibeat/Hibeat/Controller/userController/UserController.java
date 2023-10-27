@@ -51,7 +51,7 @@ public class UserController {
         return "User/shop";
     }
 
-    @GetMapping("/add-to-cart")
+    @GetMapping("/addToCart")
     public String addToCart(@RequestParam("id") int productId, Principal principal) {
         String userName = principal.getName();
         User user = userRepository.findByName(userName);
@@ -247,7 +247,7 @@ public class UserController {
     }
 
     @PostMapping("/new-address")
-    public String newAddress(@ModelAttribute Address addressDetails, Principal principal) {
+    public String newAddressss(@ModelAttribute Address addressDetails, Principal principal) {
         User user = userRepository.findByName(principal.getName());
 
         // Set the user's mobile
@@ -353,11 +353,6 @@ public class UserController {
         return "User/wallet";
     }
 
-    @GetMapping("/wishlist")
-    public String whislist() {
-
-        return "User/wishlist";
-    }
 
 
     @GetMapping("/my-address")
@@ -372,7 +367,7 @@ public class UserController {
         return "User/address";
     }
     @GetMapping("/remove-addressess")
-    public String removeAddressessamps(@RequestParam("index") int index, Principal principal) {
+    public String removeAddersses(@RequestParam("index") int index, Principal principal) {
 
         User user = userRepository.findByName(principal.getName());
 
@@ -382,6 +377,35 @@ public class UserController {
         return "redirect:/user/my-address";
 
     }
+
+
+
+    @GetMapping("/orderDetails")
+    public String orderDetails(@RequestParam("orderId") String orderId,Model model,Principal principal){
+
+
+        Orders orders = orderRepository.findByOrderId(orderId);
+        User user = userRepository.findByName(principal.getName());
+        model.addAttribute("orders" ,orders);
+        model.addAttribute("address",user.getAddresses().get(orders.getAddressIndex()));
+
+
+        return "User/OrderDetails";
+    }
+
+    @GetMapping("/cancelOrder")
+    public String cancelOrder(@RequestParam("orderId") String orderId){
+
+        Orders orders = orderRepository.findByOrderId(orderId);
+
+        orders.setCancelled(true);
+        orders.setStatus("Cancelled");
+        orderRepository.save(orders);
+
+        return  "redirect:/user/my-orders";
+    }
+
+
 
     @GetMapping("/sample")
     public ResponseEntity<String> sample() {

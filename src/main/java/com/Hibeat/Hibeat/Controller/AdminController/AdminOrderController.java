@@ -97,17 +97,31 @@ public class AdminOrderController {
     }
 
 
-    @GetMapping("/singleOrderDetails")
-    public String orderDetails(){
-        return "Admin/orderProductDetails";
-    }
-
     public LocalDate dateFinder(int numOfDates) {
         ZonedDateTime kolkataTime = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"));
 
         ZonedDateTime date = kolkataTime.plusDays(numOfDates);
 
         return date.toLocalDate();
+    }
+    @GetMapping("/order-details")
+    public String orderDetails() {
+        return "Admin/order-details";
+    }
+    @GetMapping("/singleOrderDetails")
+    public String orderDetailss(@RequestParam("orderId") String orderId,Model model,Principal principal){
+
+
+        Orders orders = orderRepository.findByOrderId(orderId);
+        User user = orders.getUser();
+
+        model.addAttribute("orders" ,orders);
+        model.addAttribute("address",user.getAddresses().get(orders.getAddressIndex()));
+
+        log.info("inside the singleOrderDetails");
+
+
+        return "Admin/order-details";
     }
 
 }

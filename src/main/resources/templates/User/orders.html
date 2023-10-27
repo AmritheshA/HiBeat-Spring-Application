@@ -202,6 +202,7 @@
             <td th:text="${orderProduct.product.price} * ${orderProduct.quantity}"></td>
             <td  class="available"><a th:text="${orderProduct.orders.status}"   data-toggle="modal" style="color: blue"></a>
             </td>
+            <td><a th:href="@{/user/orderDetails(orderId=${orderProduct.orders.orderId})}">More Details</a></td>
         </tr>
         </tbody>
     </table>

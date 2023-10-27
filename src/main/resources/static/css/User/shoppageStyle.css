@@ -33,8 +33,10 @@ margin-right:15px;
 }
 
 .card-img-top{
-    width: 100%;
+    width: 80%;
     height: 250px;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 .card-icon {
     position: absolute;

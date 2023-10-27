@@ -32,7 +32,7 @@ public class CustomUserDetailService implements UserDetailsService {
         User user = userRepository.findByName(username);
         Admin admin = adminRepository.findByAdminName(username);
 
-        if(user != null) {
+        if(user != null && user.getStatus().equals("UN-BLOCKED")) {
 
             return new CustomUserDetails(modelMapperConverter.userToDTO(user));
         }

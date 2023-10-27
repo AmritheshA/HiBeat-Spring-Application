@@ -65,7 +65,7 @@
                 </p>
                 <p style="font-family:'Montserrat';font-size:25px;font-weight:bold;" th:text="${'₹'+product.price}"></p>
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary" id="add-to-cart">Add to Cart</button>
+                    <button class="btn btn-primary" id="add-to-cart"><a th:href="@{/user/addToCart(id=${product.id})}">Add to Cart</a></button>
                 </div>
             </div>
         </div>

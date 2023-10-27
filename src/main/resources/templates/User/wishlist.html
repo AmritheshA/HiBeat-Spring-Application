@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/User/wishlist.css" type="text/css">
 
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
@@ -30,26 +35,43 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td> <img src="" alt="product image"></td>
-            <td>$99.99</td>
-            <td class="available">In Stock</td>
-            <td><button class="btn btn-primary action-button">Add to Cart</button></td>
+        <tr th:id="'tr-'+${wishlistItem.product.id}" th:each="wishlistItem : ${wishlistItems}">
+            <td><img style="height: 150px;width: 150px;" th:src="'/uploads/'+${wishlistItem.product.images_path[0]}"
+                     alt="product image"><strong style="margin-left: 20px;"
+                                                 th:text="${wishlistItem.product.name}"></strong></td>
+            <td><strong style="font-size: 25px;" th:text=" '₹'+ ${wishlistItem.product.price}"></strong></td>
+            <td class="available">
+                <span style="font-size: 25px;" th:if="${wishlistItem.product.stock < 2}">Out of Stock</span>
+                <span style="font-size: 25px;" th:if="${wishlistItem.product.stock >= 2}">In Stock</span></td>
+            <td style="text-align: center;">
+                <a class="btn btn-primary" th:href="@{/user/addToCart(id=${wishlistItem.product.id})}">Add to Cart</a>
+                <button class="btn btn-danger" th:data-product-id="${wishlistItem.product.id}"
+                        onclick="removeProductsFromWishlist(this)">
+                    Remove
+                </button>
+
+            </td>
         </tr>
         </tbody>
     </table>
 </div>
 
+<script>
+    function removeProductsFromWishlist(button) {
+        let productId = button.getAttribute('data-product-id');
+        let tableRow = document.getElementById("tr-" + productId);
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+        $.ajax({
+            url: `/user/removeFromWishlist?id=${productId}`,
+            method: "GET",
+            success: function (response) {
+
+                tableRow.innerHTML = null;
+
+            }
+        });
+    }
+</script>
 
 </body>
 </html>

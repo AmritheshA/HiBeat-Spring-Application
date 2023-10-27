@@ -5,6 +5,9 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 
 import java.math.BigInteger;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -50,5 +53,8 @@ public class User {
 
     @Column(name = "status")
     private String status= "UN-BLOCKED";
+
+    @Column(name = "statusUpdatedTime")
+    private LocalDateTime statusLastUpdated;
 
 }

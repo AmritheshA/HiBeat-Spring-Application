@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,8 +55,7 @@ public class OrderController {
 
     @PostMapping("/orders")
     public ResponseEntity<String> checkOut(@RequestBody Order_DTO orderDetails
-                                            ,Principal principal) {
-
+            , Principal principal) {
 
 
         User user = userRepository.findByName(principal.getName());
@@ -63,12 +63,11 @@ public class OrderController {
         Orders orders = new Orders();
 
 //      mapping cartProduct into orderProduct --->
-        List<OrderProducts> orderProductList = productMapping(user.getId(),orders);
+        List<OrderProducts> orderProductList = productMapping(user.getId(), orders);
 
         double cartTotalAmount = cart.getTotalCartAmount();
 
 //        Setting and getting payment object  -->
-
 
 
 //        Setting values to the order entity....
@@ -79,8 +78,7 @@ public class OrderController {
         orders.setTotalAmount(cartTotalAmount);
 
 
-
-        Payments payment = payment(orderDetails.getPaymentMethod(),principal.getName(),orders);
+        Payments payment = payment(orderDetails.getPaymentMethod(), principal.getName(), orders);
         orders.setPayments(payment);
         paymentRepository.save(payment);
         orderRepository.save(orders);
@@ -106,20 +104,14 @@ public class OrderController {
                 .flatMap(orders -> orders.getOrderProducts().stream())
                 .toList();
 
-
-        model.addAttribute("orderProductss",allProducts);
+        if (allProducts !=null) {
+            model.addAttribute("orderProductss", allProducts);
+        } else {
+            model.addAttribute("orderProductss",new ArrayList<OrderProducts>());
+        }
 
         return "User/orders";
     }
-
-
-//    @GetMapping("/userOrderDetails")
-//    public String userOrderDetails(@RequestParam()){
-//
-//        return "User/orderDetails";
-//    }
-
-
 
 
     //    For generating Unique random orderId..
@@ -136,12 +128,12 @@ public class OrderController {
             stringBuilder.append(randomChar);
         }
 
-        uniqueId = "#"+ stringBuilder.toString() + currentOrder.getOrdersId();
+        uniqueId = "#" + stringBuilder.toString() + currentOrder.getOrdersId();
 
         return uniqueId;
     }
 
-    public LocalDate dateFinder (int numOfDates){
+    public LocalDate dateFinder(int numOfDates) {
         ZonedDateTime kolkataTime = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"));
 
         ZonedDateTime date = kolkataTime.plusDays(numOfDates);
@@ -149,7 +141,7 @@ public class OrderController {
         return date.toLocalDate();
     }
 
-    public List<OrderProducts> productMapping(Integer userId,Orders orders){
+    public List<OrderProducts> productMapping(Integer userId, Orders orders) {
 
 //        productMapping from CartProduct To OrderProducts;
         Cart cart = cartRepository.findByUserId(userId);
@@ -186,7 +178,7 @@ public class OrderController {
         }
     }
 
-    public Payments payment(String paymentMethod,String userName,Orders orders){
+    public Payments payment(String paymentMethod, String userName, Orders orders) {
 
         Payments payment = new Payments();
 

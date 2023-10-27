@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class Product_DTO {
 
     private String productName;
-    private String productDescription;
+    private String description;
     private MultipartFile[] image;
     private String price;
     private int stock;
