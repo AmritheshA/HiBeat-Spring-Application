@@ -3,11 +3,10 @@ package com.Hibeat.Hibeat.Controller.userController;
 import com.Hibeat.Hibeat.Model.*;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Order_DTO;
 import com.Hibeat.Hibeat.Repository.*;
+import com.paypal.base.rest.PayPalRESTException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -53,9 +52,34 @@ public class OrderController {
 
     }
 
+    @GetMapping("/checkout")
+    public String checkOut(Principal principal,
+                           Model model) {
+        try {
+
+            String userName = principal.getName();
+            User user = userRepository.findByName(userName);
+
+            Cart cart = cartRepository.findByUserId(user.getId());
+
+            List<CartProduct> cartProducts = cart.getCartProducts();
+
+            model.addAttribute("cartProducts", cartProducts);
+            model.addAttribute("addresses", user.getAddresses());
+            model.addAttribute("totalAmount", cart.getTotalCartAmount());
+        } catch (Exception e) {
+            System.out.println(e);
+            return "Exception/CartIsEmpty";
+        }
+
+
+        return "User/checkout";
+    }
+
+
     @PostMapping("/orders")
     public ResponseEntity<String> checkOut(@RequestBody Order_DTO orderDetails
-            , Principal principal) {
+            , Principal principal) throws PayPalRESTException {
 
 
         User user = userRepository.findByName(principal.getName());
@@ -77,14 +101,24 @@ public class OrderController {
         orders.setOrderDate(dateFinder(0));
         orders.setTotalAmount(cartTotalAmount);
 
+        if (orderDetails.getPaymentMethod().equals("PayPal") || orderDetails.getPaymentMethod().equals("RazorPay")) {
+            orders.setAmountStatus("Paid");
+        } else {
+            orders.setAmountStatus("Pending");
+        }
 
-        Payments payment = payment(orderDetails.getPaymentMethod(), principal.getName(), orders);
+
+        Payments payment = payment(orderDetails.getPaymentMethod(), principal.getName(), orderDetails.getPaymentId(), orders);
         orders.setPayments(payment);
         paymentRepository.save(payment);
         orderRepository.save(orders);
-//        Stock Reducing --->
+//        Stock Reducing ---->
         stockReducer(user.getId());
         orders.setOrderId(generateUniqueOrderId(orders));
+
+//        clearing cart after all process
+        cartRepository.deleteAll();
+
 
         return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Success");
 
@@ -104,10 +138,10 @@ public class OrderController {
                 .flatMap(orders -> orders.getOrderProducts().stream())
                 .toList();
 
-        if (allProducts !=null) {
+        if (allProducts != null) {
             model.addAttribute("orderProductss", allProducts);
         } else {
-            model.addAttribute("orderProductss",new ArrayList<OrderProducts>());
+            model.addAttribute("orderProductss", new ArrayList<OrderProducts>());
         }
 
         return "User/orders";
@@ -146,8 +180,7 @@ public class OrderController {
 //        productMapping from CartProduct To OrderProducts;
         Cart cart = cartRepository.findByUserId(userId);
 
-
-        return cart.getCartProducts().stream().map(cartProduct -> {
+        List<OrderProducts> orderProductsList = cart.getCartProducts().stream().map(cartProduct -> {
             OrderProducts orderProducts = new OrderProducts();
             orderProducts.setProduct(cartProduct.getProduct());
             orderProducts.setQuantity(cartProduct.getQuantity());
@@ -155,6 +188,8 @@ public class OrderController {
             return orderProducts;
         }).toList();
 
+
+        return orderProductsList;
 
     }
 
@@ -178,9 +213,10 @@ public class OrderController {
         }
     }
 
-    public Payments payment(String paymentMethod, String userName, Orders orders) {
+    public Payments payment(String paymentMethod, String userName, String paymentId, Orders orders) throws PayPalRESTException {
 
         Payments payment = new Payments();
+
 
         User user = userRepository.findByName(userName);
         Cart cart = cartRepository.findByUserId(user.getId());
@@ -188,16 +224,20 @@ public class OrderController {
         double cartTotalAmount = cart.getTotalCartAmount();
 
 
-        if (paymentMethod != null && !paymentMethod.equals("Razorpay")) {
+        if (paymentMethod != null) {
             payment.setPaymentMethod(paymentMethod);
             payment.setAmount(cartTotalAmount);
             payment.setOrders(orders);
+            payment.setPaymentsId(paymentId);
 
-        } else {
-//            RazorPay
+            if (paymentMethod.equals("PayPal") || paymentMethod.equals("RazorPay")) {
+
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+                payment.setPaymentTime(currentDateTime.format(formatter));
+            }
         }
-
         return payment;
     }
-
 }

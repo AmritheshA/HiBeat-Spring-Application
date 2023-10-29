@@ -15,5 +15,6 @@ public class Order_DTO {
 
     private int addressIndex;
     private String paymentMethod;
+    private String paymentId;
 
 }

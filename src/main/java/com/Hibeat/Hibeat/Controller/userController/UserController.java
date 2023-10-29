@@ -208,24 +208,7 @@ public class UserController {
         return "User/home";
     }
 
-    @GetMapping("/checkout")
-    public String checkOut(Principal principal,
-                           Model model) {
 
-        String userName = principal.getName();
-        User user = userRepository.findByName(userName);
-
-        Cart cart = cartRepository.findByUserId(user.getId());
-
-        List<CartProduct> cartProducts = cart.getCartProducts();
-
-        model.addAttribute("cartProducts", cartProducts);
-        model.addAttribute("addresses", user.getAddresses());
-        model.addAttribute("totalAmount", cart.getTotalCartAmount());
-
-
-        return "User/checkout";
-    }
 
     @GetMapping("/new-address")
     public String newAddress() {
@@ -408,8 +391,8 @@ public class UserController {
 
 
     @GetMapping("/sample")
-    public ResponseEntity<String> sample() {
-        return ResponseEntity.ok().body("Success");
+    public String sample() {
+        return "sample";
     }
 
 

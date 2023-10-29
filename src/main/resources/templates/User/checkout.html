@@ -4,6 +4,12 @@
     <title>Checkout</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
+    <!--    Paypal US bussines Acc-->
+    <script src="https://www.paypal.com/sdk/js?client-id=AXubxPZFHyZQUkedB3DfeJ-icQwA-FENjWGrL7TPzw3-9fECQljgJCoKR4I7FYhb211ai1MNndj4gGl0"></script>
+
+    <!-- Razorpay JavaScript library -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
@@ -14,9 +20,10 @@
         function placeOrders() {
 
             // Get the selected shipping address and payment method
-                var selectedAddressId = $('input[name="shippingAddress"]:checked').attr('id');
-                var addressIndex = selectedAddressId.split('_')[1];
-                var paymentMethod = $('input[name="payment"]:checked').val();
+            var selectedAddressId = $('input[name="shippingAddress"]:checked').attr('id');
+            var addressIndex = selectedAddressId.split('_')[1];
+            var paymentMethod = $('input[name="payment"]:checked').val();
+            var paymentId = 'Null';
 
             if (addressIndex === undefined || paymentMethod === undefined) {
                 return;
@@ -29,15 +36,89 @@
                 contentType: 'application/json', // Specify the content type
                 data: JSON.stringify({
                     addressIndex,
-                    paymentMethod
+                    paymentMethod,
+                    paymentId
                 }),
                 success: (response) => {
-                    console.log(response);
+
+                    alert("Cart Is Cleared..")
                 }
             })
+
         }
-   </script>
+
+        // Paypal Config..
+        paypal.Buttons({
+            createOrder: function (data, actions) {
+                var orderTotalAmount = document.getElementById("orderTotalPrice").value;
+                var sample = parseFloat(orderTotalAmount).toFixed(2);
+                orderTotalAmount = sample.toString();
+
+
+                // Convert the orderTotalAmount to USD
+                orderTotalAmount = (parseFloat(orderTotalAmount) / 73).toFixed(2);
+
+                return actions.order.create({
+                    purchase_units: [
+                        {
+                            amount: {
+                                value: orderTotalAmount
+                            }
+                        }
+                    ]
+                });
+            },
+
+            onApprove: function (data, actions) {
+                // Capture the funds from the transaction
+                return actions.order.capture().then(function (details) {
+
+                    var selectedAddressId = $('input[name="shippingAddress"]:checked').attr('id');
+                    var addressIndex = selectedAddressId.split('_')[1];
+                    var paymentMethod = "PayPal"
+                    let paymentId = details.id;
+
+                    $('#statusSuccessModal').modal('show');
+
+                    $.ajax({
+                        url: "/user/orders",
+                        method: 'POST',
+                        contentType: 'application/json', // Specify the content type
+                        data: JSON.stringify({
+                            addressIndex,
+                            paymentMethod,
+                            paymentId
+                        })
+                    });
+
+
+
+                });
+            }
+        }).render('#paypal-button-container');
+
+
+    </script>
+
     <style>
+
+        #payButton {
+            background-color: #003100; /* PayPal blue color */
+            color: #ffffff; /* White text */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            height: 50px;
+            margin-bottom: 15px;
+        }
+
+        #payButton:hover {
+            background-color: #6198ff; /* Darker shade of blue on hover */
+        }
+
 
         .modal#statusSuccessModal .modal-content,
         .modal#statusErrorsModal .modal-content {
@@ -171,7 +252,7 @@
                             <a th:href="'/user/update-address?index=' + ${index.index}" class="btn btn-outline-warning"
                                data-toggle="tooltip" data-placement="top"
                                title="Edit Address">Edit</a>
-                              <a th:href="'/user/remove-address?index=' + ${index.index}" class="btn btn-outline-danger"
+                            <a th:href="'/user/remove-address?index=' + ${index.index}" class="btn btn-outline-danger"
                                data-toggle="tooltip" data-placement="top"
                                title="Remove Address"><i class="fas fa-trash"></i> Remove</a>
                         </div>
@@ -203,6 +284,7 @@
                                 <div class="d-flex">
                                     <img th:src="@{'/uploads/' + ${product.product.images_path[0]}}" alt="Products"
                                          width="100" height="100" class="mr-3">
+                                    <input id="orderTotalPrice" type="hidden" th:value="${totalAmount}">
                                     <p th:text="${product.product.name}"></p>
                                 </div>
 
@@ -213,7 +295,6 @@
 
                             <td th:text="'₹'+${product.product.price * product.quantity}"></td>
                         </tr>
-
                         <tr>
                             <td><strong>Total</strong></td>
                             <td></td>
@@ -223,18 +304,20 @@
                         </tbody>
                     </table>
                     <!-- Payment Options -->
-                    <h5 class="card-title mt-3">Payment Options</h5>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="payment" id="paypal" value="Razorpay">
-                        <label class="form-check-label" for="paypal">Razorpay</label>
-                    </div>
+                    <h5 style="margin-bottom: 25px;" class="card-title mt-3">Payment Options</h5>
+
+                    <button id="payButton">RazorPay</button>
+
+                    <div id="paypal-button-container"></div>
+
+
                     <br>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="payment" id="cashOnDelivery"
                                value="cashOnDelivery">
                         <label class="form-check-label" for="cashOnDelivery">Cash on Delivery</label>
                     </div>
-                    <button class="btn btn-success mt-3" id="btn-confirm" >
+                    <button class="btn btn-success mt-3" id="btn-confirm">
                         <i class="fas fa-shopping-cart"></i> Place Order
                     </button>
 
@@ -259,7 +342,7 @@
                                 </svg>
                                 <h4 class="text-success mt-3">Order Placed</h4>
                                 <p class="mt-3">Thank You For Your Order,It Will Arrive Soon</p>
-                                <button type="button" class="btn btn-sm mt-3 btn-success" data-bs-dismiss="modal">Ok
+                                <button type="button" class="btn btn-sm mt-3 btn-success" data-bs-dismiss="modal"><a style="text-decoration: none;color: white;" href="/user/home">Back To Home</a>
                                 </button>
                             </div>
                         </div>
@@ -283,7 +366,8 @@
                     </div>
                     <div class="modal-footer d-flex" style="justify-content: center">
                         <!-- Styled buttons with different colors -->
-                        <button style="background: #0000FF" class="btn btn-success" id="modal-btn-si" data-bs-toggle="modal"
+                        <button style="background: #0000FF" class="btn btn-success" id="modal-btn-si"
+                                data-bs-toggle="modal"
                                 data-bs-target="#statusSuccessModal" onclick="placeOrders()">
                             Place Order
                         </button>
@@ -351,9 +435,47 @@
     });
 
     modalConfirm(function (confirm) {
-
-
     });
+
+    var options = {
+        key: 'rzp_test_3xKCszCL5PPq4j', // Your Razorpay public key
+        amount: document.getElementById("orderTotalPrice").value * 100,
+        currency: 'INR',
+        name: 'Amrithesh A',
+        description: 'Sample Product',
+        image: 'https://www.vedantu.com/seo/content-images/fd1ba11a-61d2-4455-a1ce-849b1e48bfa8.png', // URL of your company logo
+        handler: function (response) {
+
+            if (response.razorpay_payment_id) {
+                var selectedAddressId = $('input[name="shippingAddress"]:checked').attr('id');
+                var addressIndex = selectedAddressId.split('_')[1];
+                var paymentMethod = "RazorPay"
+                var paymentId = response.razorpay_payment_id;
+
+                $('#statusSuccessModal').modal('show');
+
+                $.ajax({
+                    url: "/user/orders",
+                    method: 'POST',
+                    contentType: 'application/json', // Specify the content type
+                    data: JSON.stringify({
+                        addressIndex,
+                        paymentMethod,
+                        paymentId
+                    })
+                });
+            } else {
+                alert("Payment failed");
+            }
+        },
+    };
+
+    var rzp = new Razorpay(options);
+
+    document.getElementById('payButton').onclick = function (e) {
+        rzp.open();
+        e.preventDefault();
+    };
 </script>
 </body>
 </html>

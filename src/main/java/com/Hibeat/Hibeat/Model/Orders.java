@@ -47,6 +47,9 @@ public class Orders {
     @Column(name = "status")
     private String status = "ordered";
 
+    @Column(name = "amountStatus")
+    private String amountStatus;
+
     @Column(name = "delivereDate")
     private LocalDate deliveredDate;
 

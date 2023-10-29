@@ -23,6 +23,9 @@ public class Payments {
     @OneToOne
     private Orders orders;
 
+    @Column(name = "paymentsId")
+    private String paymentsId;
+
     @Column(name = "status")
     private String status;
 
@@ -31,6 +34,8 @@ public class Payments {
 
     @Column(name = "amount")
     private double amount;
+
+
 
 
 }
