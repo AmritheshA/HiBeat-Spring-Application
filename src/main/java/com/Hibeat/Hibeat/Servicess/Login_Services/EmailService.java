@@ -2,10 +2,13 @@ package com.Hibeat.Hibeat.Servicess.Login_Services;
 
 import com.Hibeat.Hibeat.Model.Admin;
 import com.Hibeat.Hibeat.Model.User;
+import com.Hibeat.Hibeat.Model.Wallet;
+import com.Hibeat.Hibeat.Model.WalletHistory;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
 import com.Hibeat.Hibeat.Repository.AdminRepository;
 import com.Hibeat.Hibeat.Repository.UserRepository;
+import com.Hibeat.Hibeat.Repository.WalletRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -13,7 +16,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -28,19 +33,23 @@ public class EmailService {
 
     AdminRepository adminRepository;
 
+    WalletRepository walletRepository;
+
     @Autowired
     public EmailService(JavaMailSender javaMailSender,
                         HttpSession session,
                         UserRepository userRepository,
                         ModelMapperConverter modelMapperConverter,
                         PasswordEncoder passwordEncoder,
-                        AdminRepository adminRepository) {
+                        AdminRepository adminRepository,
+                        WalletRepository walletRepository) {
         this.javaMailSender = javaMailSender;
         this.session = session;
         this.userRepository = userRepository;
         this.modelMapperConverter = modelMapperConverter;
         this.passwordEncoder = passwordEncoder;
         this.adminRepository = adminRepository;
+        this.walletRepository = walletRepository;
     }
 
     public void sendEmails(String to){
@@ -56,6 +65,7 @@ public class EmailService {
 
         Random random = new Random();
         String otp = (String.valueOf(random.nextInt(9999 - 1000) + 1000));
+        System.out.println("OTP"+otp);
         session.setAttribute("otp",otp);
         session.setAttribute("otpCreatedTime", Instant.now().toEpochMilli());
 
@@ -91,7 +101,15 @@ public class EmailService {
             userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
             userInfo.setRole("user");
             userInfo.setCreate_date(getCurrentDate());
-            userRepository.save((userInfo));
+
+            // Create a new Wallet entity
+            Wallet wallet = new Wallet();
+            wallet.setWalletTotalAmount(0.0); // Set an initial balance for the wallet
+            wallet.setUser(userInfo); // Set the user for this wallet
+
+            // Save both User and Wallet entities
+            userRepository.save(userInfo);
+            walletRepository.save(wallet);
 
 
             return true;
@@ -100,6 +118,18 @@ public class EmailService {
     }
     public Date getCurrentDate() {
         return new Date(); // This returns the current date and time as a Date object
+    }
+
+    public Wallet creatingWallet(User user){
+
+        Wallet wallet = new Wallet();
+        List<WalletHistory> walletHistories = new ArrayList<>();
+
+        wallet.setWalletTotalAmount(0);
+        wallet.setWalletHistory(walletHistories);
+
+        return wallet;
+
     }
 
 }

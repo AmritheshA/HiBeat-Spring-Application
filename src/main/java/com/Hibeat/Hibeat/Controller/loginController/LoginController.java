@@ -1,17 +1,16 @@
 package com.Hibeat.Hibeat.Controller.loginController;
 
-import com.Hibeat.Hibeat.Model.User;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
 import com.Hibeat.Hibeat.Repository.UserRepository;
 import com.Hibeat.Hibeat.Servicess.Login_Services.EmailService;
 import com.Hibeat.Hibeat.Servicess.Login_Services.RestPasswordService;
-import com.Hibeat.Hibeat.Servicess.User_Service.Services;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -26,12 +25,16 @@ public class LoginController {
     private final EmailService emailService;
     private final RestPasswordService restPasswordService;
 
+    UserRepository userRepository;
+
 
     @Autowired
     public LoginController(EmailService emailService,
-                           RestPasswordService restPasswordService) {
+                           RestPasswordService restPasswordService,
+                           UserRepository userRepository) {
         this.emailService = emailService;
         this.restPasswordService = restPasswordService;
+        this.userRepository = userRepository;
     }
 
 
@@ -43,8 +46,6 @@ public class LoginController {
         if (authentication != null && authentication.isAuthenticated()) {
             if (authentication.getPrincipal() instanceof UserDetails) {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-                // Check if the user has the "user" role or "admin" role
                 if (userDetails.getAuthorities().stream()
                         .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("user")
                                 || grantedAuthority.getAuthority().equals("admin"))) {
@@ -58,6 +59,7 @@ public class LoginController {
         }
         return "LoginRegistration/Login";
     }
+
 
 
 //    @GetMapping("/login")

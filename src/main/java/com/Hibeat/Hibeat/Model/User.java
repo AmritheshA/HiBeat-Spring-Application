@@ -57,4 +57,7 @@ public class User {
     @Column(name = "statusUpdatedTime")
     private LocalDateTime statusLastUpdated;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Wallet wallet;
+
 }

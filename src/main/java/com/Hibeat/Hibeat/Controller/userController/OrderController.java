@@ -3,7 +3,7 @@ package com.Hibeat.Hibeat.Controller.userController;
 import com.Hibeat.Hibeat.Model.*;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Order_DTO;
 import com.Hibeat.Hibeat.Repository.*;
-import com.paypal.base.rest.PayPalRESTException;
+import com.Hibeat.Hibeat.Servicess.User_Service.TwilioService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,30 +31,52 @@ public class OrderController {
 
     UserRepository userRepository;
     CartRepository cartRepository;
+    CartProductRepository cartProductRepository;
     OrderRepository orderRepository;
     PaymentRepository paymentRepository;
     ProductRepository productRepository;
     OrderProductRepository orderProductRepository;
+    WalletRepository walletRepository;
+    WalletHistoryRepository walletHistoryRepository;
+    TwilioService twilioService;
 
     @Autowired
-    public OrderController(UserRepository userRepository,
-                           CartRepository cartRepository,
-                           OrderRepository orderRepository,
-                           PaymentRepository paymentRepository,
-                           ProductRepository productRepository,
-                           OrderProductRepository orderProductRepository) {
+    public OrderController(UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository, PaymentRepository paymentRepository, ProductRepository productRepository, OrderProductRepository orderProductRepository, CartProductRepository cartProductRepository, TwilioService twilioService, WalletRepository walletRepository, WalletHistoryRepository walletHistoryRepository) {
         this.userRepository = userRepository;
         this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
         this.paymentRepository = paymentRepository;
         this.productRepository = productRepository;
         this.orderProductRepository = orderProductRepository;
+        this.cartProductRepository = cartProductRepository;
+        this.twilioService = twilioService;
+        this.walletRepository = walletRepository;
+        this.walletHistoryRepository = walletHistoryRepository;
+
 
     }
 
+    //    For generating Unique random orderId..
+    public static String generateUniqueOrderId(Orders currentOrder) {
+        final String ALLOWED_CHARACTERS = "ABCDMZabcdestuvwxyz0724589-";
+
+        SecureRandom random = new SecureRandom();
+        String uniqueId;
+        StringBuilder stringBuilder = new StringBuilder(13);
+
+        for (int i = 0; i < 13; i++) {
+            int randomIndex = random.nextInt(ALLOWED_CHARACTERS.length());
+            char randomChar = ALLOWED_CHARACTERS.charAt(randomIndex);
+            stringBuilder.append(randomChar);
+        }
+
+        uniqueId = "#" + stringBuilder + currentOrder.getOrdersId();
+
+        return uniqueId;
+    }
+
     @GetMapping("/checkout")
-    public String checkOut(Principal principal,
-                           Model model) {
+    public String checkOut(Principal principal, Model model) {
         try {
 
             String userName = principal.getName();
@@ -64,9 +86,16 @@ public class OrderController {
 
             List<CartProduct> cartProducts = cart.getCartProducts();
 
+            if (cartProducts.isEmpty()) {
+
+                return "Exception/CartIsEmpty";
+            }
+
             model.addAttribute("cartProducts", cartProducts);
             model.addAttribute("addresses", user.getAddresses());
             model.addAttribute("totalAmount", cart.getTotalCartAmount());
+            model.addAttribute("walletAmount",user.getWallet().getWalletTotalAmount());
+
         } catch (Exception e) {
             System.out.println(e);
             return "Exception/CartIsEmpty";
@@ -76,11 +105,8 @@ public class OrderController {
         return "User/checkout";
     }
 
-
     @PostMapping("/orders")
-    public ResponseEntity<String> checkOut(@RequestBody Order_DTO orderDetails
-            , Principal principal) throws PayPalRESTException {
-
+    public ResponseEntity<String> checkOut(@RequestBody Order_DTO orderDetails, Principal principal) {
 
         User user = userRepository.findByName(principal.getName());
         Cart cart = cartRepository.findByUserId(user.getId());
@@ -91,9 +117,6 @@ public class OrderController {
 
         double cartTotalAmount = cart.getTotalCartAmount();
 
-//        Setting and getting payment object  -->
-
-
 //        Setting values to the order entity....
         orders.setUser(user);
         orders.setAddressIndex(orders.getAddressIndex());
@@ -101,10 +124,10 @@ public class OrderController {
         orders.setOrderDate(dateFinder(0));
         orders.setTotalAmount(cartTotalAmount);
 
-        if (orderDetails.getPaymentMethod().equals("PayPal") || orderDetails.getPaymentMethod().equals("RazorPay")) {
-            orders.setAmountStatus("Paid");
-        } else {
+        if (!(orderDetails.getPaymentMethod().equals("cashOnDelivery"))) {
             orders.setAmountStatus("Pending");
+        } else {
+            orders.setAmountStatus("Paid");
         }
 
 
@@ -113,11 +136,11 @@ public class OrderController {
         paymentRepository.save(payment);
         orderRepository.save(orders);
 //        Stock Reducing ---->
-        stockReducer(user.getId());
+        stockManager(user.getId(), 0);
         orders.setOrderId(generateUniqueOrderId(orders));
 
 //        clearing cart after all process
-        cartRepository.deleteAll();
+        cart.getCartProducts().clear();
 
 
         return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Success");
@@ -134,9 +157,7 @@ public class OrderController {
         List<Orders> order = user.getOrders();
 
 
-        List<OrderProducts> allProducts = order.stream()
-                .flatMap(orders -> orders.getOrderProducts().stream())
-                .toList();
+        List<OrderProducts> allProducts = order.stream().flatMap(orders -> orders.getOrderProducts().stream()).toList();
 
         if (allProducts != null) {
             model.addAttribute("orderProductss", allProducts);
@@ -147,24 +168,65 @@ public class OrderController {
         return "User/orders";
     }
 
+    @GetMapping("/cancelOrder")
+    public String cancelOrder(@RequestParam("orderId") String orderId, Principal principal) {
 
-    //    For generating Unique random orderId..
-    public static String generateUniqueOrderId(Orders currentOrder) {
-        final String ALLOWED_CHARACTERS = "ABCDMZabcdestuvwxyz0724589-";
+        try {
 
-        SecureRandom random = new SecureRandom();
-        String uniqueId;
-        StringBuilder stringBuilder = new StringBuilder(13);
 
-        for (int i = 0; i < 13; i++) {
-            int randomIndex = random.nextInt(ALLOWED_CHARACTERS.length());
-            char randomChar = ALLOWED_CHARACTERS.charAt(randomIndex);
-            stringBuilder.append(randomChar);
+            User user = userRepository.findByName(principal.getName());
+            Orders orders = orderRepository.findByOrderId(orderId);
+
+            if (orders.getPayments().getPaymentMethod().equals("cashOnDelivery") && !(orders.getStatus().equals("Delivered") || orders.getStatus().equals("Return"))) {
+                orders.setCancelled(true);
+                stockManager(user.getId(), 1);
+                orders.setStatus("Cancelled");
+            } else if (!(orders.getPayments().getPaymentMethod().equals("cashOnDelivery")) && !(orders.getStatus().equals("Delivered") || orders.getStatus().equals("Return"))) {
+
+                Wallet wallet = user.getWallet();
+                List<WalletHistory> walletHistories;
+
+                if (wallet == null) {
+                    wallet = new Wallet();
+                    walletHistories = new ArrayList<>();
+                } else {
+                    walletHistories = wallet.getWalletHistory();
+                }
+
+                WalletHistory walletHistory = new WalletHistory();
+                walletHistory.setAddedAmount(orders.getTotalAmount());
+                walletHistory.setDepositOrWithdraw("Deposit");
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                walletHistory.setAmountAddedTime(currentDateTime.format(formatter));
+                walletHistory.setWallet(wallet);
+
+                walletHistories.add(walletHistory);
+
+                double totalAmount = walletHistories.stream().mapToDouble(addedAmount -> addedAmount.getAddedAmount()).sum();
+
+                log.info("User TotalWalletAmount" + totalAmount); // Log the user's total wallet amount
+
+                wallet.setWalletTotalAmount(totalAmount);
+
+                stockManager(user.getId(), 1);
+                orders.setStatus("Cancelled");
+                orderRepository.save(orders);
+
+
+                wallet.setWalletHistory(walletHistories);
+                wallet.setUser(user);
+                walletRepository.save(wallet);
+
+
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            return "redirect:/error-page";
+
         }
 
-        uniqueId = "#" + stringBuilder.toString() + currentOrder.getOrdersId();
-
-        return uniqueId;
+        return "redirect:/user/my-orders";
     }
 
     public LocalDate dateFinder(int numOfDates) {
@@ -193,7 +255,7 @@ public class OrderController {
 
     }
 
-    public void stockReducer(Integer userId) {
+    public void stockManager(Integer userId, int increaseOrDecrease) {
         Cart cart = cartRepository.findByUserId(userId);
 
         if (cart != null) {
@@ -202,21 +264,34 @@ public class OrderController {
                 int quantity = cartProduct.getQuantity();
                 int currentStock = product.getStock();
 
-                if (currentStock >= quantity) {
-                    product.setStock(currentStock - quantity);
-                    productRepository.save(product); // Assuming you're using Spring Data JPA
-                } else {
-                    log.info("Product Is Out Of Stock And Users Are Try To Access Product ?? cant reduce the stock");
-                    return;
+                if (increaseOrDecrease == 0) {
+
+                    if (currentStock >= quantity) {
+                        product.setStock(currentStock - quantity);
+                        productRepository.save(product);
+
+                        if (currentStock < 25) {
+//                        sending a sms for the admin/seller to notify product reached the limit
+                            twilioService.twilioSMS(product.getName());
+                        }
+                    } else {
+                        log.info("Product Is Out Of Stock");
+                        return;
+                    }
+                } else if (increaseOrDecrease == 1) {
+
+                    product.setStock(currentStock + quantity);
+                    productRepository.save(product);
                 }
             }
         }
     }
 
-    public Payments payment(String paymentMethod, String userName, String paymentId, Orders orders) throws PayPalRESTException {
+    public Payments payment(String paymentMethod, String userName, String paymentId, Orders orders) {
 
         Payments payment = new Payments();
-
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
         User user = userRepository.findByName(userName);
         Cart cart = cartRepository.findByUserId(user.getId());
@@ -232,11 +307,29 @@ public class OrderController {
 
             if (paymentMethod.equals("PayPal") || paymentMethod.equals("RazorPay")) {
 
-                LocalDateTime currentDateTime = LocalDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
                 payment.setPaymentTime(currentDateTime.format(formatter));
+
+            } else if (paymentMethod.equals("wallet")) {
+                Wallet wallet = walletRepository.findByUser(user);
+                WalletHistory walletHistory = new WalletHistory();
+                List<WalletHistory> walletHistories = wallet.getWalletHistory();
+
+                if (wallet.getWalletTotalAmount() >= cartTotalAmount) {
+                    wallet.setWalletTotalAmount(wallet.getWalletTotalAmount() - cartTotalAmount);
+
+                    walletHistory.setWithdrawAmount(cartTotalAmount);
+                    walletHistory.setAmountWithdrawTime(currentDateTime.format(formatter));
+                    walletHistory.setDepositOrWithdraw("WithDraw");
+                    walletHistory.setWallet(wallet);
+                    walletHistories.add(walletHistory);
+                    wallet.setWalletHistory(walletHistories);
+
+                    walletRepository.save(wallet);
+
+                }
             }
+
+
         }
         return payment;
     }

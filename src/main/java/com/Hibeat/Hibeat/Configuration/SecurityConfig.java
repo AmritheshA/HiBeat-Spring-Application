@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeRequests((requests) -> requests
 //For testing Purpose i just make it commend
                         .requestMatchers("/admin/**").hasAuthority("super_admin")
-                        .requestMatchers("/user/home","user/shop","user/orders").permitAll()
+                        .requestMatchers("/user/home","user/shop").permitAll()
                         .requestMatchers("/user/**").hasAnyAuthority("user","super_admin")
                         .anyRequest().permitAll()
                 )

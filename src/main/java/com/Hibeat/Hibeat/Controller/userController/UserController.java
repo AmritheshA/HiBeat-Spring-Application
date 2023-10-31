@@ -1,16 +1,26 @@
 package com.Hibeat.Hibeat.Controller.userController;
 
+import com.Hibeat.Hibeat.Configuration.CustomUserDetailService;
+import com.Hibeat.Hibeat.Configuration.CustomUserDetails;
 import com.Hibeat.Hibeat.Model.*;
 import com.Hibeat.Hibeat.Repository.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,20 +31,22 @@ public class UserController {
 
     ProductRepository productRepository;
     UserRepository userRepository;
-
     CartRepository cartRepository;
     OrderRepository orderRepository;
     PasswordEncoder passwordEncoder;
-
     CartProductRepository cartProductRepository;
+    CustomUserDetailService customUserDetailService;
 
-    public UserController(ProductRepository productRepository, UserRepository userRepository, CartRepository cartRepository, CartProductRepository cartProductRepository, OrderRepository orderRepository,PasswordEncoder passwordEncoder) {
+    @Autowired
+    public UserController(ProductRepository productRepository, UserRepository userRepository, CartRepository cartRepository, CartProductRepository cartProductRepository, OrderRepository orderRepository, PasswordEncoder passwordEncoder,CustomUserDetailService customUserDetailService) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.cartRepository = cartRepository;
         this.cartProductRepository = cartProductRepository;
         this.orderRepository = orderRepository;
         this.passwordEncoder = passwordEncoder;
+        this.customUserDetailService = customUserDetailService;
+
     }
 
     @GetMapping("/shop")
@@ -165,8 +177,7 @@ public class UserController {
 
 
     @GetMapping("/remove-product/{productId}")
-    public String removeProductFromCart(@PathVariable("productId") int productId,
-                                        Principal principal) {
+    public String removeProductFromCart(@PathVariable("productId") int productId, Principal principal) {
 
         String userName = principal.getName();
         Integer userId = userRepository.findByName(userName).getId();
@@ -209,16 +220,14 @@ public class UserController {
     }
 
 
-
     @GetMapping("/new-address")
     public String newAddress() {
         return "User/NewAddress";
     }
 
+
     @GetMapping("/update-address")
-    public String updateAddress(@RequestParam("index") int index,
-                                Principal principal,
-                                Model model) {
+    public String updateAddress(@RequestParam("index") int index, Principal principal, Model model) {
 
         User user = userRepository.findByName(principal.getName());
 
@@ -230,12 +239,25 @@ public class UserController {
     }
 
     @PostMapping("/new-address")
-    public String newAddressss(@ModelAttribute Address addressDetails, Principal principal) {
+    public String newAddress(@RequestParam("name") String name,
+                             @RequestParam("mobile") String mobile,
+                             @RequestParam("address") String address,
+                             @RequestParam("locality") String locality,
+                             @RequestParam("city") String city,
+                             @RequestParam("pin") String pin,
+                             Principal principal) {
         User user = userRepository.findByName(principal.getName());
 
         // Set the user's mobile
-        user.setMobile(addressDetails.getMobile());
+        user.setMobile(mobile);
 
+        Address addressDetails = new Address();
+        addressDetails.setAddress(address);
+        addressDetails.setName(name);
+        addressDetails.setLocality(locality);
+        addressDetails.setCity(city);
+        addressDetails.setPin(pin);
+        addressDetails.setMobile(mobile);
         if (user.getAddresses() == null) {
             user.setAddresses(new ArrayList<>());
         }
@@ -249,16 +271,26 @@ public class UserController {
 
 
     @PostMapping("/update-address")
-    public String update_address(@ModelAttribute Address addressDetails,
+    public String update_address(@RequestParam("name") String name,
+                                 @RequestParam("mobile") String mobile,
+                                 @RequestParam("address") String address,
+                                 @RequestParam("locality") String locality,
+                                 @RequestParam("city") String city,
+                                 @RequestParam("pin") String pin,
                                  @RequestParam("index") int addressIndex,
                                  Principal principal) {
 
-
-        log.info("addressIndex " + addressIndex);
-
         User user = userRepository.findByName(principal.getName());
+        Address addressDetails = new Address();
 
-        user.setMobile(addressDetails.getMobile());
+        addressDetails.setAddress(address);
+        addressDetails.setName(name);
+        addressDetails.setLocality(locality);
+        addressDetails.setCity(city);
+        addressDetails.setPin(pin);
+        addressDetails.setMobile(mobile);
+
+        user.setMobile(mobile);
 
         user.getAddresses().set(addressIndex, addressDetails);
 
@@ -296,10 +328,10 @@ public class UserController {
     @GetMapping("/updateProfile")
     public String updateProfile(@RequestParam("name") String username,
                                 @RequestParam("email") String email,
-                                @RequestParam("mobile") String mobile,
-                                Principal principal){
+                                @RequestParam("mobile") String mobile, Principal principal) {
 
         User user = userRepository.findByName(principal.getName());
+
 
         user.setName(username);
         user.setEmail(email);
@@ -307,48 +339,46 @@ public class UserController {
 
         userRepository.save(user);
 
-
+//        I use principle.getName for fetching user Details,
+//        so i update the current security context principle with updated userDetails
+        UserDetails updatedUserDetails = customUserDetailService.loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, null, updatedUserDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
 
         return "redirect:/user/profile";
     }
 
     @GetMapping("/resetUserPassword")
-    public String resetUserPassword(@RequestParam("oldPassword") String oldPassword,
-                                    @RequestParam("newPassword") String newPassword,
-                                    Principal principal) {
+    public ResponseEntity<String> resetUserPassword(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword, Principal principal) {
         User user = userRepository.findByName(principal.getName());
+
 
         if (passwordEncoder.matches(oldPassword, user.getPassword())) {
 
-                user.setPassword(passwordEncoder.encode(newPassword));
-                // Save the updated password
-                userRepository.save(user);
-                return "redirect:/user/profile"; // Redirect to a success page
+            user.setPassword(passwordEncoder.encode(newPassword));
+            // Save the updated password
+            userRepository.save(user);
+
         } else {
-            return "redirect:/resetUserPassword?error=oldPasswordMismatch"; // Redirect with an error parameter
+            return ResponseEntity.ok().body("success");
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
     }
-
-
-
-    @GetMapping("/wallet")
-    public String wallet() {
-        return "User/wallet";
-    }
-
 
 
     @GetMapping("/my-address")
-    public String myAddress(Principal principal,Model model) {
+    public String myAddress(Principal principal, Model model) {
 
         User user = userRepository.findByName(principal.getName());
-        
+
         List<Address> addresses = user.getAddresses();
-        
-        model.addAttribute("addresses",addresses);
+
+        model.addAttribute("addresses", addresses);
 
         return "User/address";
     }
+
     @GetMapping("/remove-addressess")
     public String removeAddersses(@RequestParam("index") int index, Principal principal) {
 
@@ -362,36 +392,20 @@ public class UserController {
     }
 
 
-
     @GetMapping("/orderDetails")
-    public String orderDetails(@RequestParam("orderId") String orderId,Model model,Principal principal){
+    public String orderDetails(@RequestParam("orderId") String orderId, Model model, Principal principal) {
 
 
         Orders orders = orderRepository.findByOrderId(orderId);
         User user = userRepository.findByName(principal.getName());
-        model.addAttribute("orders" ,orders);
-        model.addAttribute("address",user.getAddresses().get(orders.getAddressIndex()));
-
-
+        model.addAttribute("orders", orders);
+        model.addAttribute("address", user.getAddresses().get(orders.getAddressIndex()));
         return "User/OrderDetails";
     }
 
-    @GetMapping("/cancelOrder")
-    public String cancelOrder(@RequestParam("orderId") String orderId){
-
-        Orders orders = orderRepository.findByOrderId(orderId);
-
-        orders.setCancelled(true);
-        orders.setStatus("Cancelled");
-        orderRepository.save(orders);
-
-        return  "redirect:/user/my-orders";
-    }
-
-
-
     @GetMapping("/sample")
-    public String sample() {
+    public String sample(){
+
         return "sample";
     }
 
