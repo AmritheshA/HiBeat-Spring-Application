@@ -39,7 +39,7 @@
                         <a class="nav-link active nvitems text-dark" aria-current="page" th:href="@{/user/home}"><b>HOME</b></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nvitems text-dark" th:href="@{/user/shop}"><b>SHOP</b></a>
+                        <a class="nav-link nvitems text-dark" th:href="@{/user/shop?searchKey}"><b>SHOP</b></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link nvitems text-dark" href="#"><b>ABOUT US</b></a>
@@ -62,16 +62,12 @@
                     </li>
                 </ul>
 
-                <form class="form-inline">
+                <form id="searchForm" action="/user/shop" class="form-inline">
                     <!-- Use ml-auto to align to the right -->
                     <div class="input-group">
-                        <input
-                                class="form-control"
-                                type="text"
-                                placeholder="Search"
-                        />
+                        <input id="searchInput" class="form-control" type="text" placeholder="Search" name="searchKey" />
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="submit">
+                            <button id="searchButton" class="btn btn-outline-secondary" type="button">
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
@@ -110,6 +106,16 @@
         </div>
     </nav>
 </header>
+
+
+<script>
+    document.getElementById("searchButton").addEventListener("click", function() {
+        const searchInputValue = document.getElementById("searchInput").value;
+        const searchForm = document.getElementById("searchForm");
+        searchForm.action = `/user/shop?searchKey=${encodeURIComponent(searchInputValue)}`;
+        searchForm.submit();
+    });
+</script>
 
 </body>
 </html>

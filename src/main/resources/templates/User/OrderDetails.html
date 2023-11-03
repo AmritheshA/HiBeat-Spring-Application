@@ -17,6 +17,7 @@
                 <div class="card-body">
                     <h5 class="card-title"></h5>
                     <p th:text="'Order ID:'+${orders.orderId}" ><strong></strong></p>
+                    <p th:text="'Order Price:'+${orders.totalAmount}" ><strong></strong></p>
                     <p th:text="'Order Date:'+${orders.orderDate}" ><strong></strong></p>
                     <p th:text="'Payment Method:'+${orders.payments.paymentMethod}" ><strong></strong></p>
                     <p th:text="'Status:'+${orders.status}" ><strong></strong></p>

@@ -1,7 +1,6 @@
 package com.Hibeat.Hibeat.Controller.userController;
 
 import com.Hibeat.Hibeat.Configuration.CustomUserDetailService;
-import com.Hibeat.Hibeat.Configuration.CustomUserDetails;
 import com.Hibeat.Hibeat.Model.*;
 import com.Hibeat.Hibeat.Repository.*;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +32,10 @@ public class UserController {
     PasswordEncoder passwordEncoder;
     CartProductRepository cartProductRepository;
     CustomUserDetailService customUserDetailService;
+    CouponRepository couponRepository;
 
     @Autowired
-    public UserController(ProductRepository productRepository, UserRepository userRepository, CartRepository cartRepository, CartProductRepository cartProductRepository, OrderRepository orderRepository, PasswordEncoder passwordEncoder,CustomUserDetailService customUserDetailService) {
+    public UserController(ProductRepository productRepository, UserRepository userRepository, CartRepository cartRepository, CartProductRepository cartProductRepository, OrderRepository orderRepository, PasswordEncoder passwordEncoder, CustomUserDetailService customUserDetailService, CouponRepository couponRepository) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.cartRepository = cartRepository;
@@ -46,42 +43,46 @@ public class UserController {
         this.orderRepository = orderRepository;
         this.passwordEncoder = passwordEncoder;
         this.customUserDetailService = customUserDetailService;
+        this.couponRepository = couponRepository;
 
     }
 
     @GetMapping("/shop")
-    public String shop(Model model) {
+    public String shop(@RequestParam("searchKey") String searchKey, Model model) {
 
-        System.out.printf("Not null ");
 
-        List<Products> products = productRepository.findAll();
+        if (searchKey.isEmpty()) {
 
-        System.out.printf("empty");
+            List<Products> products = productRepository.findAll();
+            model.addAttribute("products", products);
+        } else {
+            List<Products> productsList = searchProductByName(searchKey);
 
-        model.addAttribute("products", products);
-
+            if (!(productsList.isEmpty())) {
+                model.addAttribute("products", productsList);
+            }
+        }
         return "User/shop";
+    }
+
+    private List<Products> searchProductByName(String searchKey) {
+
+        return productRepository.findByNameContaining(searchKey);
+
     }
 
     @GetMapping("/addToCart")
     public String addToCart(@RequestParam("id") int productId, Principal principal) {
+
         String userName = principal.getName();
         User user = userRepository.findByName(userName);
         Products product = productRepository.findAllById(productId);
 
         Cart userCart = cartRepository.findByUser(user);
+        userCart.setUser(user);
 
-        if (userCart == null) {
-            userCart = new Cart();
-            userCart.setUser(user);
-            cartRepository.save(userCart);
-        }
 
         List<CartProduct> cartProducts = userCart.getCartProducts();
-
-        if (cartProducts == null) {
-            cartProducts = new ArrayList<>();
-        }
 
         if (cartProducts.stream().noneMatch(cp -> cp.getProduct().getId() == productId)) {
             CartProduct cartProduct = new CartProduct();
@@ -91,6 +92,20 @@ public class UserController {
             cartRepository.save(userCart);
         }
 
+        // Calculate the totalCartAmount
+        double totalCartAmount = 0.0;
+        for (CartProduct products : cartProducts) {
+            int quantity = products.getQuantity();
+            double price = products.getProduct().getPrice();
+            double productTotal = quantity * price;
+            totalCartAmount += productTotal;
+        }
+
+        // Set the totalCartAmount in the userCart
+        userCart.setTotalCartAmount(totalCartAmount);
+        cartRepository.save(userCart);
+        log.info("userCart is saved....");
+
         return "redirect:/user/cart";
     }
 
@@ -98,44 +113,32 @@ public class UserController {
     @GetMapping("/cart")
     public String cart(Model model, Principal principal) {
 
-        double total = 0.0;
-
-
         User user = userRepository.findByName(principal.getName());
         Cart cart = cartRepository.findByUserId(user.getId());
+        Coupons coupons = couponRepository.findByCouponCode(cart.getUsedCoupon());
 
-        if (cart == null) {
-            cart = new Cart();
-        }
+        log.info("coupon in cart" + cart.getUsedCoupon());
+
+
         List<CartProduct> cartProducts = cart.getCartProducts();
 
 
         if (cartProducts != null) {
 
-            for (CartProduct product : cartProducts) {
-
-                int quantity = product.getQuantity();
-                double price = product.getProduct().getPrice();
-
-                double productTotal = quantity * price;
-
-                total += productTotal;
-
-            }
             model.addAttribute("cardProducts", cartProducts);
             model.addAttribute("cartIsEmpty", false);
 
+            if (!(cartProducts.isEmpty()) && coupons != null && cart.getTotalCartAmount() > coupons.getDiscountAmount()) {
+                model.addAttribute("couponsDiscount", coupons.getDiscountAmount());
+                model.addAttribute("couponMinAmount", coupons.getMinimumAmount());
+            } else {
+                model.addAttribute("couponsDiscount", 0);
+            }
         } else {
-
             model.addAttribute("cartIsEmpty", true);
         }
+        model.addAttribute("currentTotal", cart.getTotalCartAmount());
 
-
-        model.addAttribute("currentTotal", total);
-        cart.setTotalCartAmount(total);
-
-//        Total amount in the cart..
-        cartRepository.save(cart);
 
         return "User/cart";
     }
@@ -144,6 +147,7 @@ public class UserController {
     public ResponseEntity<String> sample(@RequestParam("counter") int counter, @RequestParam("id") int productId, Principal principal, Model model) {
 
         int targetProductId = productId;
+        double totalCartAmount = 0.0;
 
         User user = userRepository.findByName(principal.getName());
         Cart cart = cartRepository.findByUserId(user.getId());
@@ -162,6 +166,15 @@ public class UserController {
 
                     product.setQuantity(currentQuantity - 1);
                 }
+
+
+                int quantity = product.getQuantity();
+                double price = product.getProduct().getPrice();
+                double productTotal = quantity * price;
+                totalCartAmount += productTotal;
+
+                log.info("cart total" + totalCartAmount);
+                cart.setTotalCartAmount(totalCartAmount);
                 cartRepository.save(cart);
 
 
@@ -182,10 +195,12 @@ public class UserController {
         String userName = principal.getName();
         Integer userId = userRepository.findByName(userName).getId();
         Cart cart = cartRepository.findByUserId(userId);
+        Products products = productRepository.findById(productId).get();
 
         cart.getCartProducts().removeIf(cartProduct -> cartProduct.getProduct().getId() == productId);
 
-        log.info("Product is removed...");
+
+        cart.setTotalCartAmount(cart.getTotalCartAmount() - products.getPrice());
 
         cartRepository.save(cart);
 
@@ -319,7 +334,7 @@ public class UserController {
         if (user != null) {
             model.addAttribute("user", user);
         } else {
-            System.out.println("sample........");
+            log.info("User Is Null");
         }
 
         return "User/profile";
@@ -404,9 +419,9 @@ public class UserController {
     }
 
     @GetMapping("/sample")
-    public String sample(){
+    public String sample() {
 
-        return "sample";
+        return "sam";
     }
 
 

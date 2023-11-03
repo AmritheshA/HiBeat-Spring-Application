@@ -1,69 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        .button-container {
-            display: flex;
-            align-items: center;
-        }
 
-        .count-button {
-            width: 30px;
-            height: 30px;
-            border: none;
-            background-color: #fff;
-            color: #000;
-            font-size: 20px;
-            text-align: center;
-            cursor: pointer;
-        }
 
-        .count {
-            margin: 0 10px;
-            font-size: 18px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </head>
 <body>
-<div class="button-container">
-    <button class="count-button" id="decreaseButton">-</button>
-    <span class="count" id="count">1</span>
-    <button class="count-button" id="increaseButton">+</button>
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to proceed with this action?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmAction">Confirm</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div id="multiplier">2</div>
 
-<div id="result"></div>
 
 <script>
-    var count = 1;
-    var countElement = document.getElementById("count");
-    var increaseButton = document.getElementById("increaseButton");
-    var decreaseButton = document.getElementById("decreaseButton");
-    var multiplierElement = document.getElementById("multiplier");
-    var resultElement = document.getElementById("result");
 
-    increaseButton.addEventListener("click", function() {
-        count++;
-        countElement.textContent = count;
-        updateResult();
+    document.getElementById("openConfirmation").addEventListener("click", function () {
+        $('#confirmationModal').modal('show');
     });
-
-    decreaseButton.addEventListener("click", function() {
-        if (count > 1) {
-            count--;
-            countElement.textContent = count;
-            updateResult();
-        }
-    });
-
-    function updateResult() {
-        var multiplier = parseInt(multiplierElement.textContent);
-        var result = count * multiplier;
-        resultElement.textContent = "Result: " + result;
-    }
-
-    updateResult();
 </script>
+
 </body>
 </html>

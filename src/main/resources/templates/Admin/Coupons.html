@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link th:href="@{/css/Admin/products.css}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <title>Coupons</title>
+</head>
+<body>
+
+
+
+<header th:replace="fragment :: admin-header">
+
+</header>
+
+
+<div class="row" style="flex-wrap: nowrap;">
+    <!-- Sidebar -->
+    <nav th:replace="fragment :: admin-navbar">
+
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <main>
+            <div class="content-header">
+                <h1>Coupons</h1>
+                <a  th:href="@{/admin/coupon/add-coupon}" class="new-product">Add New Coupon</a>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Coupon name</th>
+                    <th>Coupon code</th>
+                    <th>Coupon expiry date </th>
+                    <th>Status</th>
+                    <th>Minimum amount</th>
+                    <th>Discount percent</th>
+                    <th>Single/multiple</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Use Thymeleaf to loop through your product data and display it in the table -->
+                <tr th:each="coupon : ${couponsList}" th:style="${coupon.status == 'EXPIRED' ? 'background-color: #ffaaaa;' : 'background-color: #d4d4d4'}">
+                    <td th:text="${coupon.couponName}"></td>
+                    <th th:text="${coupon.couponCode}"></th>
+                    <th th:text="${coupon.expireTime}"></th>
+                    <td th:text="${coupon.status}" th:style="${coupon.status == 'EXPIRED' ? 'color: red;' : 'white'}"></td>
+                    <td th:text="${coupon.minimumAmount}"></td>
+                    <td th:text="${coupon.discountAmount}"></td>
+                    <td th:text="${coupon.singleOrMultiple}"></td>
+                    <td class="d-flex justify-content-between">
+                        <!-- Style the action links as buttons -->
+                        <a th:href="@{/admin/coupon/edit-coupons/{id}(id=${coupon.id})}" style="color:#ffffff;text-decoration: none;" class="action-link">Edit</a>
+                        <a th:href="@{/admin/coupon/remove-coupon/{id}(id=${coupon.id})}" style="color:#ffffff;text-decoration: none;background: red;" class="action-link">Remove</a>
+
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <!-- Pagination controls -->
+            <!--    <div class="pagination">-->
+            <!--        <ul>-->
+            <!--            <li th:if="${currentPage > 1}">-->
+            <!--                <a th:href="@{/products(page=1)}">First</a>-->
+            <!--            </li>-->
+            <!--            <li th:if="${currentPage > 1}">-->
+            <!--                <a th:href="@{/products(page=${currentPage - 1})}">Previous</a>-->
+            <!--            </li>-->
+            <!--            <li th:if="${currentPage < totalPages}">-->
+            <!--                <a th:href="@{/products(page=${currentPage + 1})}">Next</a>-->
+            <!--            </li>-->
+            <!--            <li th:if="${currentPage < totalPages}">-->
+            <!--                <a th:href="@{/products(page=${totalPages})}">Last</a>-->
+            <!--            </li>-->
+            <!--        </ul>-->
+            <!--    </div>-->
+
+        </main>
+
+
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+</script>
+</body>
+</html>

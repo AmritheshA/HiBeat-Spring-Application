@@ -15,7 +15,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 
 
-
     <title>Orders</title>
 </head>
 <body>
@@ -46,33 +45,33 @@
                 <h1>Orders</h1>
                 <a th:href="@{/admin/add-product}" class="new-product">Download</a>
             </div>
-<!--            <form th:action="@{/admin/product/search-product}" method="get">-->
-<!--                <div class="search-box">-->
-<!--                    <input type="text" placeholder="Search..." name="value">-->
-<!--                    <button type="submit" class="action-link">Search</button>-->
-<!--                </div>-->
-<!--            </form>-->
+            <!--            <form th:action="@{/admin/product/search-product}" method="get">-->
+            <!--                <div class="search-box">-->
+            <!--                    <input type="text" placeholder="Search..." name="value">-->
+            <!--                    <button type="submit" class="action-link">Search</button>-->
+            <!--                </div>-->
+            <!--            </form>-->
 
-<!--            <div class="time-filter">-->
-<!--                <div class="toggle-switch">-->
-<!--                    <div class="toggle-option active">-->
-<!--                        <input type="radio" id="all-time" name="time-filter" class="toggle-radio">-->
-<!--                        <label for="all-time" class="toggle-label">All Time</label>-->
-<!--                    </div>-->
-<!--                    <div class="toggle-option">-->
-<!--                        <input type="radio" id="1-month" name="time-filter" class="toggle-radio">-->
-<!--                        <label for="1-month" class="toggle-label">1 Month</label>-->
-<!--                    </div>-->
-<!--                    <div class="toggle-option">-->
-<!--                        <input type="radio" id="7-days" name="time-filter" class="toggle-radio">-->
-<!--                        <label for="7-days" class="toggle-label">7 Days</label>-->
-<!--                    </div>-->
-<!--                    <div class="toggle-option">-->
-<!--                        <input type="radio" id="24-hr" name="time-filter" class="toggle-radio">-->
-<!--                        <label for="24-hr" class="toggle-label">24 Hours</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+            <!--            <div class="time-filter">-->
+            <!--                <div class="toggle-switch">-->
+            <!--                    <div class="toggle-option active">-->
+            <!--                        <input type="radio" id="all-time" name="time-filter" class="toggle-radio">-->
+            <!--                        <label for="all-time" class="toggle-label">All Time</label>-->
+            <!--                    </div>-->
+            <!--                    <div class="toggle-option">-->
+            <!--                        <input type="radio" id="1-month" name="time-filter" class="toggle-radio">-->
+            <!--                        <label for="1-month" class="toggle-label">1 Month</label>-->
+            <!--                    </div>-->
+            <!--                    <div class="toggle-option">-->
+            <!--                        <input type="radio" id="7-days" name="time-filter" class="toggle-radio">-->
+            <!--                        <label for="7-days" class="toggle-label">7 Days</label>-->
+            <!--                    </div>-->
+            <!--                    <div class="toggle-option">-->
+            <!--                        <input type="radio" id="24-hr" name="time-filter" class="toggle-radio">-->
+            <!--                        <label for="24-hr" class="toggle-label">24 Hours</label>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
 
             <table>
                 <thead>
@@ -89,7 +88,8 @@
                 </thead>
                 <tbody>
                 <tr th:each="orderProduct, index : ${orders}">
-                    <td><a style="text-decoration: none;color: #140e0e;" th:text="${orderProduct.orders.orderId}"  th:href="@{/admin/singleOrderDetails(orderId=${orderProduct.orders.orderId})}"></a></td>
+                    <td><a style="text-decoration: none;color: #140e0e;" th:text="${orderProduct.orders.orderId}"
+                           th:href="@{/admin/singleOrderDetails(orderId=${orderProduct.orders.orderId})}"></a></td>
 
                     <td>
                         <img th:src="@{'/uploads/' + ${orderProduct.product.images_path[0]}}" alt="Product A Image"
@@ -103,13 +103,13 @@
                     <td th:id="${orderProduct.orders.orderId}" th:text="${orderProduct.orders.status}"></td>
 
                     <td>
-                        <select id="orderStatus" name="orderStatus" th:data-name="${orderProduct.orders.orderId}"
+                        <select id="orderStatusSelect" name="orderStatus" th:data-name="${orderProduct.orders.orderId}"
                                 th:onchange="updateOrderStatus(this)">
-                            <option value="Processing">Processing</option>
-                            <option active value="Shipped" >Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Return">Return</option>
-                            <option value="Cancelled">Cancelled</option>
+                            <option value="Processing-1">Processing</option>
+                            <option active value="Shipped-2">Shipped</option>
+                            <option value="Delivered-3">Delivered</option>
+                            <option value="Return-4">Return</option>
+                            <option value="Cancelled-5">Cancelled</option>
                         </select>
                     </td>
                 </tr>
@@ -120,7 +120,41 @@
 
     </div>
 </div>
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Status Changed</h5>
 
+            </div>
+            <div class="modal-body" id="statusText">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="removeConformation" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeConformationModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="text">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="conformToRemove">Confirm
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css'>
@@ -147,24 +181,28 @@
             $('#sidebar').toggleClass('active');
         });
     });
+    let previousSelection = null;
 
     function updateOrderStatus(element) {
 
+        var orderStatusSelect = document.getElementById("orderStatusSelect");
+        var selectedValue = orderStatusSelect.value;
         var orderId = element.getAttribute('data-name');
         var values = element.value;
-        console.log(orderId);
-        console.log(values);
-
+        var value = values.split("-");
         var orderStatusTd = document.getElementById(orderId);
+        var modalText = document.getElementById("statusText");
 
-        orderStatusTd.textContent = values;
+        orderStatusTd.textContent = value[0];
+        $('#modal').modal('show');
+        modalText.innerText = "Product is " + value[0] + "...";
 
 
         // Perform the AJAX request
         $.ajax({
             method: 'POST',
             url: "/admin/updateOrderStatus",
-            data: "orderId=" + orderId + "&selecteds=" + values,
+            data: "orderId=" + orderId + "&selecteds=" + value[0],
             contentType: "application/x-www-form-urlencoded",
             success: function (response) {
                 $("#responseMessage").text(response);
@@ -177,7 +215,6 @@
     }
 
 </script>
-
 
 </body>
 </html>

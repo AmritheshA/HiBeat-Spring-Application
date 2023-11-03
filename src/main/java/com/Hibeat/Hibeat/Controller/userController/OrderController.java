@@ -38,10 +38,11 @@ public class OrderController {
     OrderProductRepository orderProductRepository;
     WalletRepository walletRepository;
     WalletHistoryRepository walletHistoryRepository;
+    CouponRepository couponRepository;
     TwilioService twilioService;
 
     @Autowired
-    public OrderController(UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository, PaymentRepository paymentRepository, ProductRepository productRepository, OrderProductRepository orderProductRepository, CartProductRepository cartProductRepository, TwilioService twilioService, WalletRepository walletRepository, WalletHistoryRepository walletHistoryRepository) {
+    public OrderController(UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository, PaymentRepository paymentRepository, ProductRepository productRepository, OrderProductRepository orderProductRepository, CartProductRepository cartProductRepository, TwilioService twilioService, WalletRepository walletRepository, WalletHistoryRepository walletHistoryRepository, CouponRepository couponRepository) {
         this.userRepository = userRepository;
         this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
@@ -52,6 +53,7 @@ public class OrderController {
         this.twilioService = twilioService;
         this.walletRepository = walletRepository;
         this.walletHistoryRepository = walletHistoryRepository;
+        this.couponRepository = couponRepository;
 
 
     }
@@ -81,26 +83,42 @@ public class OrderController {
 
             String userName = principal.getName();
             User user = userRepository.findByName(userName);
-
             Cart cart = cartRepository.findByUserId(user.getId());
+            Coupons coupons = couponRepository.findByCouponCode(cart.getUsedCoupon());
 
+            if (coupons == null) {
+                double discountAmount = 0.0;
+            } else {
+                double discountAmount = coupons.getDiscountAmount();
+            }
             List<CartProduct> cartProducts = cart.getCartProducts();
 
             if (cartProducts.isEmpty()) {
-
                 return "Exception/CartIsEmpty";
             }
 
             model.addAttribute("cartProducts", cartProducts);
             model.addAttribute("addresses", user.getAddresses());
             model.addAttribute("totalAmount", cart.getTotalCartAmount());
-            model.addAttribute("walletAmount",user.getWallet().getWalletTotalAmount());
+            model.addAttribute("walletAmount", user.getWallet().getWalletTotalAmount());
+
+            if (coupons != null) {
+                if (coupons.getStatus().equals("ACTIVE") && coupons.getSingleOrMultiple().equals("multiple") ||
+                        coupons.getSingleOrMultiple().equals("single") && coupons.getUserid().isEmpty()) {
+
+                    model.addAttribute("discountAmount", coupons.getDiscountAmount());
+
+                } else {
+                    model.addAttribute("discountAmount", 0.0);
+                }
+            }else{
+                model.addAttribute("discountAmount", 0.0);
+            }
 
         } catch (Exception e) {
             System.out.println(e);
             return "Exception/CartIsEmpty";
         }
-
 
         return "User/checkout";
     }
@@ -140,6 +158,7 @@ public class OrderController {
         orders.setOrderId(generateUniqueOrderId(orders));
 
 //        clearing cart after all process
+        cart.setTotalCartAmount(0.0);
         cart.getCartProducts().clear();
 
 
@@ -151,7 +170,6 @@ public class OrderController {
     public String myOrders(Principal principal, Model model) {
 
         String userName = principal.getName();
-
         User user = userRepository.findByName(userName);
 
         List<Orders> order = user.getOrders();
@@ -161,6 +179,7 @@ public class OrderController {
 
         if (allProducts != null) {
             model.addAttribute("orderProductss", allProducts);
+
         } else {
             model.addAttribute("orderProductss", new ArrayList<OrderProducts>());
         }

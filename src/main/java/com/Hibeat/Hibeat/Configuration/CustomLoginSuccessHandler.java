@@ -61,6 +61,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
             String username = oauth2User.getAttribute("given_name");
             String email = oauth2User.getAttribute("email");
             String password = (String.valueOf(random.nextInt(99999999 - 10000000) + 10000000));
+            System.out.println("Random Generated Password"+password);
             Date date = new Date();
             String role = "user";
 
@@ -83,7 +84,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 //        Saving the information to the database
             userRepository.save(userInfo);
 
-            response.sendRedirect("/user/shop");
+            response.sendRedirect("/user/home");
 
         }
         if (savedRequest != null) {

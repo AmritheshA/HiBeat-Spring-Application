@@ -50,7 +50,7 @@
         // Paypal Config..
         paypal.Buttons({
             createOrder: function (data, actions) {
-                var orderTotalAmount = document.getElementById("orderTotalPrice").value;
+                var orderTotalAmount = document.getElementById("totalAmountId").innerText;
                 var sample = parseFloat(orderTotalAmount).toFixed(2);
                 orderTotalAmount = sample.toString();
 
@@ -297,13 +297,25 @@
                             <td th:text="'₹'+${product.product.price * product.quantity}"></td>
                         </tr>
                         <tr>
+                            <td><strong>Coupon Discount</strong></td>
+                            <td></td>
+                            <td>
+                                <sub th:if="${discountAmount == 0.0}">Coupon Is Expired</sub>
+                            </td>
+                            <td id="discountAmount" th:text="${discountAmount}"><strong></strong></td>
+                        </tr>
+                        <tr>
                             <td><strong>Total</strong></td>
                             <td></td>
                             <td></td>
-                            <td th:text="${totalAmount}"><strong></strong></td>
+                            <td id="totalAmountId" th:text="${totalAmount != null && discountAmount != null ? (totalAmount - discountAmount) : ''}"><strong></strong>
+                            </td>
                         </tr>
+
+
                         </tbody>
                     </table>
+
                     <!-- Payment Options -->
                     <h5 style="margin-bottom: 25px;" class="card-title mt-3">Payment Options</h5>
 
@@ -313,10 +325,11 @@
 
                     <br>
                     <div class="form-check">
-                        <!-- Check if walletamount is greater than 0, and only show the payment option if true -->
+                        <!-- Check if wallet amount is greater than 0, and only show the payment option if true -->
                         <th:block th:if="${walletAmount > totalAmount}">
                             <input class="form-check-input" type="radio" name="payment" id="wallet" value="wallet">
-                            <label style="margin-bottom: 20px;" class="form-check-label" for="wallet">Pay Using Wallet</label>
+                            <label style="margin-bottom: 20px;" class="form-check-label" for="wallet">Pay Using
+                                Wallet</label>
                         </th:block>
 
                         <br>
@@ -448,7 +461,7 @@
 
     var options = {
         key: 'rzp_test_3xKCszCL5PPq4j', // Your Razorpay public key
-        amount: document.getElementById("orderTotalPrice").value * 100,
+        amount: document.getElementById("totalAmountId").innerText * 100,
         currency: 'INR',
         name: 'Amrithesh A',
         description: 'Sample Product',
@@ -485,6 +498,9 @@
         rzp.open();
         e.preventDefault();
     };
+
+
+
 </script>
 
 </body>

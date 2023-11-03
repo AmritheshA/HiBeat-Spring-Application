@@ -1,12 +1,10 @@
 package com.Hibeat.Hibeat.Servicess.Login_Services;
 
-import com.Hibeat.Hibeat.Model.Admin;
-import com.Hibeat.Hibeat.Model.User;
-import com.Hibeat.Hibeat.Model.Wallet;
-import com.Hibeat.Hibeat.Model.WalletHistory;
+import com.Hibeat.Hibeat.Model.*;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
 import com.Hibeat.Hibeat.Repository.AdminRepository;
+import com.Hibeat.Hibeat.Repository.CartRepository;
 import com.Hibeat.Hibeat.Repository.UserRepository;
 import com.Hibeat.Hibeat.Repository.WalletRepository;
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +32,7 @@ public class EmailService {
     AdminRepository adminRepository;
 
     WalletRepository walletRepository;
+    CartRepository cartRepository;
 
     @Autowired
     public EmailService(JavaMailSender javaMailSender,
@@ -42,7 +41,8 @@ public class EmailService {
                         ModelMapperConverter modelMapperConverter,
                         PasswordEncoder passwordEncoder,
                         AdminRepository adminRepository,
-                        WalletRepository walletRepository) {
+                        WalletRepository walletRepository,
+                        CartRepository cartRepository) {
         this.javaMailSender = javaMailSender;
         this.session = session;
         this.userRepository = userRepository;
@@ -50,6 +50,7 @@ public class EmailService {
         this.passwordEncoder = passwordEncoder;
         this.adminRepository = adminRepository;
         this.walletRepository = walletRepository;
+        this.cartRepository = cartRepository;
     }
 
     public void sendEmails(String to){
@@ -107,10 +108,16 @@ public class EmailService {
             wallet.setWalletTotalAmount(0.0); // Set an initial balance for the wallet
             wallet.setUser(userInfo); // Set the user for this wallet
 
+            Cart cart = new Cart();
+            List<CartProduct> cartProducts = new ArrayList<>();
+            cart.setUser(userInfo);
+            cart.setCartProducts(cartProducts);
+            cart.setTotalCartAmount(0.0);
+
             // Save both User and Wallet entities
             userRepository.save(userInfo);
+            cartRepository.save(cart);
             walletRepository.save(wallet);
-
 
             return true;
         }

@@ -1,15 +1,19 @@
 package com.Hibeat.Hibeat.Model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import lombok.Data;
-import lombok.extern.slf4j.XSlf4j;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Table(name = "cart")
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cart {
 
     @Id
@@ -29,5 +33,8 @@ public class Cart {
 
     @Column(name = "totalCartAmount")
     private double totalCartAmount = 0.0;
+
+    @Column(name = "usedCoupon")
+    private String usedCoupon;
 
 }

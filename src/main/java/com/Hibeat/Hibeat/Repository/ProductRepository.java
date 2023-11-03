@@ -19,5 +19,7 @@ public interface ProductRepository extends JpaRepository<Products,Integer> {
 
     List<Products> findAllByIdIn(List<Integer> productIds);
 
+
+
 }
 

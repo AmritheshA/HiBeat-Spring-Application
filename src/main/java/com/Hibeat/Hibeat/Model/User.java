@@ -1,12 +1,10 @@
 package com.Hibeat.Hibeat.Model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 
-import java.math.BigInteger;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;

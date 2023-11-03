@@ -1,15 +1,10 @@
 package com.Hibeat.Hibeat.Controller.userController;
 
 
-import com.Hibeat.Hibeat.Model.Products;
-import com.Hibeat.Hibeat.Model.User;
-import com.Hibeat.Hibeat.Model.Wishlist;
-import com.Hibeat.Hibeat.Model.WishlistItem;
-import com.Hibeat.Hibeat.Repository.ProductRepository;
-import com.Hibeat.Hibeat.Repository.UserRepository;
-import com.Hibeat.Hibeat.Repository.WishlistItemRepository;
-import com.Hibeat.Hibeat.Repository.WishlistRepository;
+import com.Hibeat.Hibeat.Model.*;
+import com.Hibeat.Hibeat.Repository.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,12 +28,14 @@ public class WishlistController {
     WishlistRepository wishlistRepository;
     ProductRepository productRepository;
     WishlistItemRepository wishlistItemRepository;
+    CartRepository cartRepository;
 
-    public WishlistController(UserRepository userRepository, WishlistRepository wishlistRepository, ProductRepository productRepository, WishlistItemRepository wishlistItemRepository) {
+    public WishlistController(UserRepository userRepository, WishlistRepository wishlistRepository, ProductRepository productRepository, WishlistItemRepository wishlistItemRepository,CartRepository cartRepository) {
         this.userRepository = userRepository;
         this.wishlistRepository = wishlistRepository;
         this.productRepository = productRepository;
         this.wishlistItemRepository = wishlistItemRepository;
+        this.cartRepository = cartRepository;
     }
 
     @GetMapping("/add-to-wishlist")

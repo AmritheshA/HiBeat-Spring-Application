@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link th:href="@{/css/Admin/products.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/Admin/addCoupons.css}" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <title>Edit Coupons</title>
+</head>
+<body>
+
+
+<header th:replace="fragment :: admin-header">
+
+</header>
+
+
+<div class="row" style="flex-wrap: nowrap;">
+    <!-- Sidebar -->
+    <nav th:replace="fragment :: admin-navbar">
+
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <main>
+            <form th:action="@{/admin/coupon/edit-coupon(id=${coupon.id})}" method="post">
+
+                <div class="content-header">
+                    <h1>Edit Coupons</h1>
+                    <button class="new-product" type="submit">edit new coupon</button>
+                </div>
+
+                <div class="product-box">
+                    <label for="couponName">Coupon Name:</label>
+                    <input type="text" id="couponName" name="couponName" th:value="${coupon.couponName}" placeholder="Enter coupon code">
+
+                    <label for="couponCode">Coupon Code:</label>
+                    <input type="text" id="couponCode" name="couponCode" th:value="${coupon.couponCode}" placeholder="Enter coupon code">
+
+                    <label for="minimumAmount">Minimum Amount:</label>
+                    <input type="number" min="1" id="minimumAmount" name="minimumAmount" th:value="${coupon.minimumAmount}"
+                           placeholder="Enter the minimum amount">
+
+                    <label for="discountAmount">Discount Amount:</label>
+                    <input type="text" id="discountAmount" name="discountAmount" th:value="${coupon.discountAmount}"
+                           placeholder="Enter the percentage of discount">
+
+                    <label for="expiryTime">Expiry Date</label>
+                    <input type="date" id="expiryTime" name="expireTime" th:value="${coupon.expireTime}"
+                           placeholder="Enter the time to invalidate the coupon">
+
+                    <label for="singleOrMultiple">Choose:</label>
+                    <select id="singleOrMultiple" name="singleOrMultiple"  th:value="${coupon.singleOrMultiple}">
+                        <option value="single">Single Use</option>
+                        <option value="multiple">Multiple Use</option>
+
+                    </select>
+                </div>
+            </form>
+        </main>
+    </div>
+
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    const today = `${year}-${month}-${day}`;
+
+    // Set the 'min' attribute of the date input to the current date
+    document.getElementById('expiryTime').min = today;
+
+</script>
+</body>
+</html>
