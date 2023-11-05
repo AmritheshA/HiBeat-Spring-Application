@@ -160,6 +160,7 @@ public class OrderController {
 //        clearing cart after all process
         cart.setTotalCartAmount(0.0);
         cart.getCartProducts().clear();
+        cart.setUsedCoupon(null);
 
 
         return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Success");
@@ -332,9 +333,10 @@ public class OrderController {
                 Wallet wallet = walletRepository.findByUser(user);
                 WalletHistory walletHistory = new WalletHistory();
                 List<WalletHistory> walletHistories = wallet.getWalletHistory();
+                double walletTotalAmount = wallet.getWalletTotalAmount();
 
                 if (wallet.getWalletTotalAmount() >= cartTotalAmount) {
-                    wallet.setWalletTotalAmount(wallet.getWalletTotalAmount() - cartTotalAmount);
+                    wallet.setWalletTotalAmount(walletTotalAmount - cartTotalAmount);
 
                     walletHistory.setWithdrawAmount(cartTotalAmount);
                     walletHistory.setAmountWithdrawTime(currentDateTime.format(formatter));

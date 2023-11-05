@@ -1,8 +1,10 @@
 package com.Hibeat.Hibeat.Repository;
 
+import com.Hibeat.Hibeat.Model.Categories;
 import com.Hibeat.Hibeat.Model.Products;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +21,8 @@ public interface ProductRepository extends JpaRepository<Products,Integer> {
 
     List<Products> findAllByIdIn(List<Integer> productIds);
 
-
+    @Query("SELECT p FROM Products p WHERE p.name LIKE %:keyword%")
+    List<Products> findProductsByNameContaining(@Param("keyword") String keyword);
 
 }
 

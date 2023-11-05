@@ -48,11 +48,8 @@ public class UserController {
     }
 
     @GetMapping("/shop")
-    public String shop(@RequestParam("searchKey") String searchKey, Model model) {
-
-
-        if (searchKey.isEmpty()) {
-
+    public String shop(@RequestParam(value = "searchKey",required = false) String searchKey, Model model) {
+        if (searchKey == null) {
             List<Products> products = productRepository.findAll();
             model.addAttribute("products", products);
         } else {
@@ -65,83 +62,22 @@ public class UserController {
         return "User/shop";
     }
 
+    @ModelAttribute("userName")
+    public String getUserName(Principal principal) {
+        if (principal != null) {
+            return principal.getName();
+        }
+        return "Login";
+    }
+
     private List<Products> searchProductByName(String searchKey) {
 
-        return productRepository.findByNameContaining(searchKey);
+        return productRepository.findProductsByNameContaining(searchKey);
 
     }
 
-    @GetMapping("/addToCart")
-    public String addToCart(@RequestParam("id") int productId, Principal principal) {
-
-        String userName = principal.getName();
-        User user = userRepository.findByName(userName);
-        Products product = productRepository.findAllById(productId);
-
-        Cart userCart = cartRepository.findByUser(user);
-        userCart.setUser(user);
 
 
-        List<CartProduct> cartProducts = userCart.getCartProducts();
-
-        if (cartProducts.stream().noneMatch(cp -> cp.getProduct().getId() == productId)) {
-            CartProduct cartProduct = new CartProduct();
-            cartProduct.setProduct(product);
-            cartProduct.setCart(userCart);
-            cartProducts.add(cartProduct);
-            cartRepository.save(userCart);
-        }
-
-        // Calculate the totalCartAmount
-        double totalCartAmount = 0.0;
-        for (CartProduct products : cartProducts) {
-            int quantity = products.getQuantity();
-            double price = products.getProduct().getPrice();
-            double productTotal = quantity * price;
-            totalCartAmount += productTotal;
-        }
-
-        // Set the totalCartAmount in the userCart
-        userCart.setTotalCartAmount(totalCartAmount);
-        cartRepository.save(userCart);
-        log.info("userCart is saved....");
-
-        return "redirect:/user/cart";
-    }
-
-
-    @GetMapping("/cart")
-    public String cart(Model model, Principal principal) {
-
-        User user = userRepository.findByName(principal.getName());
-        Cart cart = cartRepository.findByUserId(user.getId());
-        Coupons coupons = couponRepository.findByCouponCode(cart.getUsedCoupon());
-
-        log.info("coupon in cart" + cart.getUsedCoupon());
-
-
-        List<CartProduct> cartProducts = cart.getCartProducts();
-
-
-        if (cartProducts != null) {
-
-            model.addAttribute("cardProducts", cartProducts);
-            model.addAttribute("cartIsEmpty", false);
-
-            if (!(cartProducts.isEmpty()) && coupons != null && cart.getTotalCartAmount() > coupons.getDiscountAmount()) {
-                model.addAttribute("couponsDiscount", coupons.getDiscountAmount());
-                model.addAttribute("couponMinAmount", coupons.getMinimumAmount());
-            } else {
-                model.addAttribute("couponsDiscount", 0);
-            }
-        } else {
-            model.addAttribute("cartIsEmpty", true);
-        }
-        model.addAttribute("currentTotal", cart.getTotalCartAmount());
-
-
-        return "User/cart";
-    }
 
     @GetMapping("/quantity-counter")
     public ResponseEntity<String> sample(@RequestParam("counter") int counter, @RequestParam("id") int productId, Principal principal, Model model) {
@@ -229,7 +165,7 @@ public class UserController {
     }
 
     @GetMapping("/home")
-    public String home() {
+    public String home(Model model,Principal principal) {
 
         return "User/home";
     }

@@ -86,7 +86,7 @@
                 <div class="btn-group">
                     <button class="btn btn-outline-secondary dropdown-toggle border-0" type="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-user" style="color: #000000;"></i>
+                        <i class="fa fa-user" style="color: #000000;"></i><span th:text="${userName}">Login</span>
                     </button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" th:href="@{/user/profile}">Profile</a>

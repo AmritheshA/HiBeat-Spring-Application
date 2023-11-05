@@ -130,9 +130,9 @@ public class AdminController {
     }
 
     @PostMapping("/edit-product/{id}")
-    public String edit_product(@RequestParam("image1") MultipartFile image1,
-                               @RequestParam("image2") MultipartFile image2,
-                               @RequestParam("image3") MultipartFile image3,
+    public String edit_product(@RequestParam(value = "image1",required = false) MultipartFile image1,
+                               @RequestParam(value = "image2",required = false) MultipartFile image2,
+                               @RequestParam(value = "image3",required = false) MultipartFile image3,
                                @ModelAttribute Product_DTO productDetails,
                                @PathVariable("id") int product_id) throws IOException {
 
@@ -141,15 +141,20 @@ public class AdminController {
         String[] images = products.getImages_path();
         String file = "D:\\Brocamp_Task\\week_11\\Project\\Hibeat\\src\\main\\resources\\static\\uploads\\";
 
+        if(image1 != null) {
+            images[0] = image1.getOriginalFilename();
+            image1.transferTo(new File(file + image1.getOriginalFilename()));
+        }
 
-        images[0] = image1.getOriginalFilename();
-        image1.transferTo(new File(file + image1.getOriginalFilename()));
+        if(image2 != null) {
+            images[1] = image2.getOriginalFilename();
+            image2.transferTo(new File(file + image2.getOriginalFilename()));
+        }
 
-        images[1] = image2.getOriginalFilename();
-        image2.transferTo(new File(file + image2.getOriginalFilename()));
-
-        images[2] = image3.getOriginalFilename();
-        image3.transferTo(new File(file + image3.getOriginalFilename()));
+        if(image2 != null) {
+            images[2] = image3.getOriginalFilename();
+            image3.transferTo(new File(file + image3.getOriginalFilename()));
+        }
 
         products.setImages_path(images);
         products.setName(productDetails.getProductName());

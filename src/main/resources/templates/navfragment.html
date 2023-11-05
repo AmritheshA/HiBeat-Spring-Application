@@ -39,7 +39,7 @@
                         <a class="nav-link active nvitems text-dark" aria-current="page" th:href="@{/user/home}"><b>HOME</b></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nvitems text-dark" th:href="@{/user/shop?searchKey}"><b>SHOP</b></a>
+                        <a class="nav-link nvitems text-dark" th:href="@{/user/shop}"><b>SHOP</b></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link nvitems text-dark" href="#"><b>ABOUT US</b></a>
@@ -90,7 +90,7 @@
                 <div class="btn-group">
                     <button class="btn btn-outline-secondary dropdown-toggle border-0" type="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-user" style="color: #000000;"></i> Amrithesh
+                        <i class="fa fa-user" style="color: #000000;" th:text="${userName}" ></i>
                     </button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" th:href="@{/user/profile}">Profile</a>

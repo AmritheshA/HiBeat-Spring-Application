@@ -64,7 +64,7 @@
         </button>
 
         <div class=" content">
-            <main class="col-lg-9 col-md-8 col-sm-12 content">
+                <main class="col-lg-9 col-md-8 col-sm-12 content">
                 <form th:action="@{/admin/edit-product/{id}(id=${id})}" method="post" enctype="multipart/form-data">
                     <div class="content-header">
                         <h1>Add Products</h1>
@@ -76,7 +76,8 @@
 
                     <div class="product-box">
                         <label for="productName">Product Name:</label>
-                        <input type="text" id="productName" name="productName" placeholder="Enter product name" th:value="${products.name}">
+                        <input type="text" id="productName" name="productName" placeholder="Enter product name"
+                               th:value="${products.name}">
 
                         <label for="productDescription">Product Description:</label>
                         <div class="textarea-container">
@@ -90,22 +91,26 @@
                         <div class="text">Media</div>
                         <div class="body">
                             <div class="with-label-media">
-
                                 <div class="media-upload">
                                     <div class="img-list">
                                         <div class="group" style="display: flex; justify-content: space-between;">
                                             <div>
-                                                <img class="media" id="image1" style="width: 150px; height: 150px;" th:src="@{'/uploads/' + ${images[0]}}" alt="Image 1" />
-                                                <input type="file" id="imageInput1" name="image1" />
+                                                <img class="media" id="image1" style="width: 150px; height: 150px;"
+                                                     th:src="@{'/uploads/' + ${images[0]}}" alt="Image 1"/>
+                                                <button type="button" id="changeImage1">Change Image</button>
+                                                <input type="file" id="imageInput1" name="image1" disabled>
                                             </div>
                                             <div>
-                                                <img class="media" id="image2" style="width: 150px; height: 150px;" th:src="@{'/uploads/' + ${images[1]}}" alt="Image 2" />
-                                                <input type="file" id="imageInput2" name="image2" />
-                                            </div>
+                                                <img class="media" id="image2" style="width: 150px; height: 150px;"
+                                                     th:src="@{'/uploads/' + ${images[1]}}" alt="Image 2"/>
+                                                <button type="button" id="changeImage2">Change Image</button>
+                                                <input type="file" id="imageInput2" name="image2" disabled>                                            </div>
                                             <div>
-                                                <img class "media" id="image3" style="width: 150px; height: 150px;" th:src="@{'/uploads/' + ${images[2]}}" alt="Image 3" />
-                                                <input type="file" id="imageInput3" name="image3" />
-                                            </div>
+                                                <img class="media" id="image3" style="width: 150px; height: 150px;"
+                                                     th:src="@{'/uploads/' + ${images[2]}}" alt="Image 3"/>
+                                                <button type="button" id="changeImage3">Change Image</button>
+                                                <input type="file" id="imageInput3" name="image3" disabled>                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -116,19 +121,22 @@
 
                     <div class="additional-details">
                         <label for="basePrice">Base Price:</label>
-                        <input type="number" id="basePrice" name="price" placeholder="Enter base price" th:value="${products.price}">
+                        <input type="number" id="basePrice" name="price" placeholder="Enter base price"
+                               th:value="${products.price}">
                     </div>
 
                     <div class="additional-details">
                         <div class="input-group">
                             <div class="input-field">
                                 <label for="quantity">Quantity:</label>
-                                <input type="number" id="quantity" name="stock" placeholder="Enter quantity" th:value="${products.stock}">
+                                <input type="number" id="quantity" name="stock" placeholder="Enter quantity"
+                                       th:value="${products.stock}">
                             </div>
                             <div class="input-field">
                                 <label for="categories">Categories:</label>
                                 <select id="categories" name="category">
-                                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.categoryName}"></option>
+                                    <option th:each="category : ${categories}" th:value="${category.id}"
+                                            th:text="${category.categoryName}"></option>
                                 </select>
                             </div>
                         </div>
@@ -165,11 +173,22 @@
         });
     });
 
+    document.getElementById('changeImage1').addEventListener('click', function() {
+        document.getElementById('imageInput1').removeAttribute('disabled');
+    });
+    document.getElementById('changeImage2').addEventListener('click', function() {
+        document.getElementById('imageInput2').removeAttribute('disabled');
+    });
+    document.getElementById('changeImage3').addEventListener('click', function() {
+        document.getElementById('imageInput3').removeAttribute('disabled');
+    });
+
+
     const container = document.querySelector('.img-list');
     container.addEventListener('change', function (event) {
         if (event.target.type === 'file') {
             const file = event.target.files[0];
-            const imageElement = event.target.previousElementSibling; // Get the previous sibling (the image)
+            const imageElement = event.target.previousElementSibling;
 
             if (file && imageElement) {
                 const reader = new FileReader();
