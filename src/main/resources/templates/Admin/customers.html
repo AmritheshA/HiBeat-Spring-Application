@@ -68,7 +68,7 @@
                     <td th:text="${user.status}" th:style="${user.status == 'BLOCKED' ? 'color: red;' : 'white'}"></td>
                     <td>
                         <!-- Style the action links as buttons -->
-                        <a th:href="@{/admin/blockuser/{id}(id=${user.id})}" class="action-link">[[${user.status == 'BLOCKED' ? 'UN-BLOCK' : 'BLOCK'}]]</a>
+                        <a th:href="@{/admin/customers/block-user/{id}(id=${user.id})}" class="action-link">[[${user.status == 'BLOCKED' ? 'UN-BLOCK' : 'BLOCK'}]]</a>
                     </td>
                 </tr>
 

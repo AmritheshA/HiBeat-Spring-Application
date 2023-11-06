@@ -4,6 +4,7 @@ import com.Hibeat.Hibeat.Model.User;
 import com.Hibeat.Hibeat.Model.Wallet;
 import com.Hibeat.Hibeat.Repository.UserRepository;
 import com.Hibeat.Hibeat.Repository.WalletRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,8 @@ public class WalletController {
     UserRepository userRepository;
     WalletRepository walletRepository;
 
-    public WalletController(UserRepository userRepository,
-                            WalletRepository walletRepository) {
+    @Autowired
+    public WalletController(UserRepository userRepository,WalletRepository walletRepository) {
         this.userRepository = userRepository;
         this.walletRepository = walletRepository;
     }

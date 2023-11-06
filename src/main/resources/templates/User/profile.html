@@ -6,6 +6,8 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.3.0/crypto-js.js"></script>
+
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -87,7 +89,7 @@
                                 </svg>
                                 <h6 class="mb-0 ml-3">
 
-                                    <a style="color: #140e0e;text-decoration: none;" th:href="@{/user/my-address}">My
+                                    <a style="color: #140e0e;text-decoration: none;" th:href="@{/user/profile/my-address}">My
                                         Address</a>
 
                                 </h6>
@@ -109,7 +111,7 @@
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-body">
-                        <form action="/user/updateProfile" method="get"> <!-- Change 'get' to 'post' if needed -->
+                        <form action="/user/profile/updateProfile" method="get"> <!-- Change 'get' to 'post' if needed -->
                             <div class="row mb-3">
                                 <div class="col-sm-3">
                                     <h6 class="mb-0">Full Name</h6>
@@ -148,7 +150,7 @@
                         <div class="card mt-3">
                             <div class="card-body">
                                 <h5 class="card-title">Password Reset</h5>
-                                <form action="/resetUserPassword" method="get">
+                                <form action="/user/profile/resetUserPassword" method="post">
                                     <div class="form-group">
                                         <label for="oldPassword">Old Password</label>
                                         <input type="password" class="form-control" name="oldPassword" id="oldPassword"
@@ -180,11 +182,14 @@
 </div>
 
 <script>
+
     function validatePassword() {
         const oldPassword = document.getElementById("oldPassword").value;
         const newPassword = document.getElementById("newPassword").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
         const passwordMatchError = document.getElementById("passwordMatchError");
+
+
 
         if (newPassword !== confirmPassword) {
             document.getElementById("passwordMatchError").textContent = "New password and confirm password do not match.";
@@ -193,18 +198,24 @@
         } else {
 
             $.ajax({
-                type: "GET",
-                url: `/user/resetUserPassword?oldPassword=${oldPassword}&newPassword=${newPassword}`,
+                type: "POST",
+                url: `/user/profile/resetUserPassword`,
+                data: JSON.stringify({
+                    oldPassword,
+                    newPassword
+                }),
+                contentType: "application/json", // Set the content type to JSON
                 success: function (response) {
-
-                    alert("Password Is Reset");
-                    window.location.reload()
+                    if (response === "success") {
+                        alert("Password Is Reset");
+                        window.location.reload();
+                    } else {
+                        alert("Password resetting failed");
+                    }
                 },
-                error: function (error) {
-
-                    alert("Password reset failed.");
-                }
             });
+
+
         }
     }
 

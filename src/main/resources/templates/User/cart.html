@@ -14,7 +14,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
-
     <style>
 
         .button-container {
@@ -264,18 +263,18 @@
     let newTotal;
 
 
-    function conformedToReduce(){
+    function conformedToReduce() {
 
-            $('#reducingModal').modal('hide');
-            couponDiscount.innerText = "0.0";
-            $.ajax({
-                url: '/user/cart/removeCoupon',
-                method: "GET",
-                success: function (response) {
-                    console.log("Response from removeCoupon" + response);
-                }
-            });
-            location.reload();
+        $('#reducingModal').modal('hide');
+        couponDiscount.innerText = "0.0";
+        $.ajax({
+            url: '/user/cart/removeCoupon',
+            method: "GET",
+            success: function (response) {
+                console.log("Response from removeCoupon" + response);
+            }
+        });
+        location.reload();
     }
 
     // Function to update product quantity
@@ -298,9 +297,9 @@
 
         newTotal = oldTotal;
 
-        console.log("total amount"+subResultElement.innerText);
-        console.log("product"+multiplierValue);
-        console.log("couponMin"+couponMinAmounts.value);
+        console.log("total amount" + subResultElement.innerText);
+        console.log("product" + multiplierValue);
+        console.log("couponMin" + couponMinAmounts.value);
         const subResultContent = parseFloat(subResultElement.innerText.replace(/[^0-9.]/g, '')); // Convert content to a number
 
         console.log((subResultContent - multiplierValue));
@@ -339,13 +338,11 @@
         }
 
 
-
-
         subResultElement.textContent = "₹ " + newTotal;
         resultElement.textContent = " ₹ " + newTotal;
 
         $.ajax({
-            url: `/user/quantity-counter?counter=${counter}&id=${productId}`,
+            url: `/user/cart/quantity-counter?counter=${counter}&id=${productId}`,
             method: "GET",
             success: function (response) {
                 if (parseInt(response) === count) {
@@ -400,10 +397,14 @@
         resultElement.textContent = " ₹ " + newTotal;
 
         $.ajax({
-            url: `/user/remove-product/${productId}`,
+            url: `/user/cart/remove-product/${productId}`,
             method: "GET",
             success: function (response) {
-                card.innerHTML = null;
+                if (response === "success") {
+                    card.innerHTML = null;
+                }else if (response === "failed"){
+                    alert("Failed To Remove Product From Cart");
+                }
             }
         });
     }

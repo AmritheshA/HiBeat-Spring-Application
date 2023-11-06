@@ -88,7 +88,7 @@
     <div class="address-listing" >
         <div class="address-card" th:each="address ,index : ${addresses}">
             <div class="button-container">
-                <a class="remove-button" th:href="'/user/remove-addressess?index=' + ${index.index}">Remove</a>
+                <a class="remove-button" th:href="'/user/profile/removeAddress?index=' + ${index.index}">Remove</a>
             </div>
             <p th:text="${address.name}"></p>
             <p th:text="${address.address}"></p>

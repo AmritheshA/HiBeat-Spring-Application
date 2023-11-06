@@ -22,11 +22,9 @@ public class Cart {
     @Column(name = "cartId")
     private Integer id;
 
-
     @OneToOne
     @JoinColumn(name = "cart_user_id" )
     private User user;
-
 
     @OneToMany(mappedBy = "cart", cascade = {CascadeType.ALL},orphanRemoval = true)
     private List<CartProduct> cartProducts;

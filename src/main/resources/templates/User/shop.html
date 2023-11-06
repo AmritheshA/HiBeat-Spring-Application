@@ -67,7 +67,7 @@
                                    th:text="${product.description}">Product description</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h6 class="card-text" th:text="${'Price: $' + product.price}">Product price</h6>
-                                    <a class="btn btn-primary" th:href="@{/user/addToCart(id=${product.id})}">Add to
+                                    <a class="btn btn-primary" onclick="addToCart(this)" th:data-prdoucts-id="${product.id}">Add to
                                         Cart</a>
                                 </div>
                             </div>
@@ -93,6 +93,24 @@
                     alert("Added To Wishlist");
                 }else if(response === "sameProduct"){
                     alert("Product Already Exist In Wishlist")
+                }
+                else {
+                    location.href = "/login"
+                }
+            }
+        });
+    }
+    function addToCart(element) {
+        let productId = element.getAttribute('data-prdoucts-id');
+        $.ajax({
+            url: '/user/cart/add-to-cart?id=' + productId,
+            method: "GET",
+            success: function (response) {
+
+                if (response === "success") {
+                    alert("Added To Cart");
+                }else if(response === "sameProduct"){
+                    alert("Product Already Exist In Cart")
                 }
                 else {
                     location.href = "/login"

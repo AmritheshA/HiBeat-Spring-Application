@@ -4,13 +4,11 @@ import com.Hibeat.Hibeat.Model.Admin;
 import com.Hibeat.Hibeat.Model.Categories;
 import com.Hibeat.Hibeat.Model.Orders;
 import com.Hibeat.Hibeat.Model.Products;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 
-@Service
 public interface Services {
     Admin save_admin(Admin userInfo);
 

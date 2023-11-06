@@ -80,7 +80,7 @@
                         <td>
                             <!-- Style the action links as buttons -->
                             <a th:href="@{/admin/edit-product/{id}(id=${product.id})}" class="action-link">Edit</a>
-                            <a th:href="@{/admin/disableproduct/{id}(id=${product.id})}" class="action-link">
+                            <a th:href="@{/admin/disable-product/{id}(id=${product.id})}" class="action-link">
                                 [[${product.status == 'ACTIVE' ? 'Disable' : 'Enable'}]]
                             </a>
                         </td>

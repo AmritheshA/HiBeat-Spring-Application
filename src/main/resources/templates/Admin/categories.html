@@ -36,15 +36,14 @@
         <main>
             <div class="content-header">
                 <h1>Categories</h1>
-                <a th:href="@{/admin/add-categories}" class="new-product">New Category</a>
+                <a onclick="openNewModal()" class="new-product">New Category</a>
             </div>
-            <form th:action="@{/admin/product/search-product}" method="get">
+            <form th:action="@{/admin/categories}">
                 <div class="search-box">
-                    <input type="text" placeholder="Search..." name="value">
+                    <input type="text" placeholder="Search..." name="searchKey">
                     <button type="submit" class="action-link">Search</button>
                 </div>
             </form>
-
 
             <table>
                 <thead>
@@ -63,9 +62,9 @@
                     <td th:text="${category.status}"></td>
                     <td>
                         <!-- Style the action links as buttons -->
-    
                         <a th:onclick="'openEditModal(\'' + ${category.id} + '\');'" class="action-link">Edit</a>
-                        <a th:onclick="'openConfirmationModal(\'' + ${category.id} + '\');'" class="action-link">Disable</a>
+                        <a th:onclick="'openConfirmationModal(\'' + ${category.id} + '\');'"
+                           class="action-link">Disable</a>
 
                     </td>
                 </tr>
@@ -80,7 +79,7 @@
     </div>
 
     <!--    Modal-->
-<!--Edit Category-->
+    <!--Edit Category-->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -102,15 +101,38 @@
         </div>
     </div>
 
+    <!--    New categories-->
+    <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newModalLabel">New Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="newInput" class="form-control" placeholder="Enter new category name">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="newConfirmButton" type="button" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!--Confirm To edit-->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+
+    <!--Confirm To edit-->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true">x</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -118,7 +140,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button id="confirmButton" type="button" class="btn btn-secondary" >Conform</button>
+                    <button id="confirmButton" type="button" class="btn btn-secondary">Conform</button>
 
                 </div>
             </div>
@@ -133,41 +155,51 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
-
-
-<script th:inline="javascript" >
+<script th:inline="javascript">
     $(document).ready(function () {
         $('#sidebarCollapse').on('click', function () {
             $('#sidebar').toggleClass('active');
         });
     });
 
-    function openEditModal(id) {
+    function openNewModal() {
         // Open the modal
-        $('#editModal').modal('show');
+        $('#newModal').modal('show');
 
-        console.log("sample");
 
         // When the user clicks the Save Changes button
-        $('#editConfirmButton').click(function () {
-            var newCategoryName = $('#editInput').val(); // Get the updated category name
-            var targetUrl = '/admin/edit-categories?id=' + id + '&newName=' + newCategoryName; // Construct the URL
+        $('#newConfirmButton').click(function () {
+            let newCategoryName = $('#newInput').val(); // Get the updated category name
+            let targetUrl = '/admin/categories/new-categories?newCategory=' + newCategoryName; // Construct the URL
             window.location.href = targetUrl; // Navigate to the updated URL
         });
     }
 
-    var cat_id ;
+    function openEditModal(id) {
+        // Open the modal
+        $('#editModal').modal('show');
+
+        // When the user clicks the Save Changes button
+        $('#editConfirmButton').click(function () {
+            let newCategoryName = $('#editInput').val(); // Get the updated category name
+            let targetUrl = '/admin/categories/edit-categories?id=' + id + '&newName=' + newCategoryName; // Construct the URL
+            window.location.href = targetUrl; // Navigate to the updated URL
+        });
+    }
+
+    let cat_id;
+
     function openConfirmationModal(categoryId) {
         // Set the category ID in the modal's Confirm button data attribute for later use
         cat_id = categoryId;
         $('#confirmationModal').modal('show');
     }
 
-    document.getElementById("confirmButton").addEventListener("click", function() {
+    document.getElementById("confirmButton").addEventListener("click", function () {
         // Get the category ID from the Confirm button data attribute
-    console.log("on confirm ")
+        console.log("on confirm ")
         // Redirect to the admin/disableCategory with the category ID
-        window.location.href = '/admin/disableCategory/' + cat_id;
+        window.location.href = '/admin/categories/disable-category/' + cat_id;
     });
 
 </script>
