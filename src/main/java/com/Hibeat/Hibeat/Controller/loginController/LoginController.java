@@ -3,6 +3,7 @@ package com.Hibeat.Hibeat.Controller.loginController;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
 import com.Hibeat.Hibeat.Repository.UserRepository;
 import com.Hibeat.Hibeat.Servicess.Login_Services.EmailService;
+import com.Hibeat.Hibeat.Servicess.Login_Services.LoginService;
 import com.Hibeat.Hibeat.Servicess.Login_Services.RestPasswordService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,14 +11,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @Controller
 public class LoginController {
@@ -27,55 +25,25 @@ public class LoginController {
 
     UserRepository userRepository;
 
+    private final LoginService loginService;
+
 
     @Autowired
     public LoginController(EmailService emailService,
                            RestPasswordService restPasswordService,
-                           UserRepository userRepository) {
+                           UserRepository userRepository, LoginService loginService) {
         this.emailService = emailService;
         this.restPasswordService = restPasswordService;
         this.userRepository = userRepository;
+        this.loginService = loginService;
     }
 
 
 
     @GetMapping("/login")
     public String login() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            if (authentication.getPrincipal() instanceof UserDetails) {
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                if (userDetails.getAuthorities().stream()
-                        .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("user")
-                                || grantedAuthority.getAuthority().equals("admin"))) {
-                    if (userDetails.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("user"))) {
-                        return "redirect:/user/home";
-                    } else if (userDetails.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("super_admin"))) {
-                        return "redirect:/admin/dashboard";
-                    }
-                }
-            }
-        }
-        return "LoginRegistration/Login";
+       return loginService.login();
     }
-
-
-
-//    @GetMapping("/login")
-//    public String login() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication != null && authentication.isAuthenticated()) {
-//
-//            if (authentication.getPrincipal() instanceof UserDetails) {
-//                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//                if (userDetails.getAuthorities().contains("user")) {
-//                    return "redirect:/user/home";
-//                }
-//            }
-//        }
-//        return "LoginRegistration/Login";
-//    }
 
     @GetMapping("/signUp")
     public String signups() {
@@ -84,29 +52,12 @@ public class LoginController {
 
     @PostMapping("/signUp")
     public String signup(@ModelAttribute DTO userInfo, HttpSession session) {
-//    Assigning Userinfo to session
-        session.setAttribute("userInfo", userInfo);
-
-//    OTP Generation and Setting the to Mail
-        emailService.otpGenerator();
-        emailService.sendEmails(userInfo.getEmail());
-
-        return "LoginRegistration/VerifyEmail";
+        return loginService.signUp(userInfo,session);
     }
 
     @PostMapping("/verify-email")
     public String verifyEmail(@RequestParam String otp, Model model) {
-
-        if (emailService.isOTPVerified(otp)) {
-            if (emailService.isOTPExpired()) {
-                return "redirect:/user/home";
-            } else {
-                model.addAttribute("error", "OTP is valid but has not expired yet.");
-            }
-        } else {
-            model.addAttribute("error", "OTP is wrong. Please try again.");
-        }
-        return "LoginRegistration/VerifyEmail";
+      return loginService.verifyEmail(otp,model);
     }
 
     @GetMapping("/forgot")
@@ -129,18 +80,11 @@ public class LoginController {
 
     @PostMapping("/verify-otp")
     public String verifyOtp(@RequestParam String otp, Model model) {
-
-        if (emailService.isEmailVerified(otp)) {
-            return "LoginRegistration/RestPassword-Continue";
-        } else {
-            model.addAttribute("error", "OTP is wrong. Please try again.");
-        }
-        return "redirect:/forgot";
+       return loginService.verifyOtp(otp,model);
     }
 
     @PostMapping("/resetOrContinue")
     public String handleFormSubmission(@RequestParam("action") String action) {
-
         restPasswordService.initialPasswordRest();
         return "LoginRegistration/Login";
 
@@ -161,15 +105,6 @@ public class LoginController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
-        return "redirect:/login?logout";
-    }
-
-    @GetMapping("/error-page")
-    public String error() {
-        return "LoginRegistration/404";
+        return loginService.logout(request,response);
     }
 }
