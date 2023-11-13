@@ -132,8 +132,8 @@
                 <img class="d-block  w-100" th:src="@{/image/sli.jpg}" alt="First slide">
             </div>
 
-            <div class="carousel-item ">
-                <img class="d-block  w-100" style="filter: brightness(0.8);" th:src="@{/image/slider3.jpg}"
+            <div class="carousel-item" th:each="slider : ${sliders}" >
+                <img class="d-block  w-100" style="filter: brightness(0.8);height: 100%;object-fit: cover;" th:src="@{'/uploads/' + ${slider.image}}"
                      alt="First slide">
             </div>
         </div>

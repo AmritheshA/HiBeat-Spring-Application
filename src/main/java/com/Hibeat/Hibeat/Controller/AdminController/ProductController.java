@@ -1,11 +1,11 @@
 package com.Hibeat.Hibeat.Controller.AdminController;
 
-import com.Hibeat.Hibeat.Model.Categories;
+import com.Hibeat.Hibeat.Model.Admin.Categories;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Product_DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
-import com.Hibeat.Hibeat.Repository.CategoryRepository;
-import com.Hibeat.Hibeat.Repository.ProductRepository;
-import com.Hibeat.Hibeat.Repository.UserRepository;
+import com.Hibeat.Hibeat.Repository.Admin.CategoryRepository;
+import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
+import com.Hibeat.Hibeat.Repository.User.UserRepository;
 import com.Hibeat.Hibeat.Servicess.Admin_Service.AdminProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

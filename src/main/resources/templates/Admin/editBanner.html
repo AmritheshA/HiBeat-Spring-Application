@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link th:href="@{/css/Admin/products.css}" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="/js/admin.js"></script>
+
+    <title>Products</title>
+
+</head>
+<body>
+
+<header th:replace="fragment :: admin-header">
+
+</header>
+
+
+<div class="row">
+    <!-- Sidebar -->
+    <nav th:replace="fragment :: admin-navbar">
+
+    </nav>
+
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <h1 class="mt-5">Edit Banner</h1>
+        <form th:action="'/admin/edit-banner?id='+${banner.bannerId}" method="post" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label>Banner Title:</label>
+                <input type="text" class="form-control" name="title" th:value="${banner.bannerTitle}" required>
+            </div>
+
+            <label>Status:</label>
+            <select style="height: 47px;" name="status" class="form-control" id="couponStatus" required>
+                <option value="true">Active</option>
+                <option value="false">Disable</option>
+
+            </select>
+            <button type="button" id="changeButton" onclick="editImage()"></button>
+            <div class="form-group">
+                <label id="imageLabel" style="display: none" for="bannerImage">Banner Image (Upload):</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="image" id="bannerImage" required
+                           onchange="previewImageClicked(this)" disabled>
+                    <label id="imageLabel1" style="display: none" class="custom-file-label" for="bannerImage">Choose file</label>
+                </div>
+            </div>
+
+            <!-- Image Preview -->
+            <div class="form-group">
+                <img id="imageBannerPreview" th:src="'/uploads/' +${banner.image}" class="img-thumbnail" alt="">
+                <img id="imageBannerPreview1" src=" " class="img-thumbnail" alt="">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Banner</button>
+        </form>
+
+    </div>
+    <br><br>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>

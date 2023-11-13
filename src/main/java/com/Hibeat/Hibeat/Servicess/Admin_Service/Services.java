@@ -1,9 +1,9 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
-import com.Hibeat.Hibeat.Model.Admin;
-import com.Hibeat.Hibeat.Model.Categories;
-import com.Hibeat.Hibeat.Model.Orders;
-import com.Hibeat.Hibeat.Model.Products;
+import com.Hibeat.Hibeat.Model.Admin.Admin;
+import com.Hibeat.Hibeat.Model.Admin.Categories;
+import com.Hibeat.Hibeat.Model.User.Orders;
+import com.Hibeat.Hibeat.Model.Admin.Products;
 
 import java.util.List;
 import java.util.Optional;

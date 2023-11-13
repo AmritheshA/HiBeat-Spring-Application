@@ -1,8 +1,8 @@
 package com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper;
 
-import com.Hibeat.Hibeat.Model.Admin;
-import com.Hibeat.Hibeat.Model.Products;
-import com.Hibeat.Hibeat.Model.User;
+import com.Hibeat.Hibeat.Model.Admin.Admin;
+import com.Hibeat.Hibeat.Model.Admin.Products;
+import com.Hibeat.Hibeat.Model.User.User;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Product_DTO;
 import org.modelmapper.ModelMapper;

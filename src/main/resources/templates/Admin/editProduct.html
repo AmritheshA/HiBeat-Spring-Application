@@ -98,19 +98,18 @@
                                                 <img class="media" id="image1" style="width: 150px; height: 150px;"
                                                      th:src="@{'/uploads/' + ${images[0]}}" alt="Image 1"/>
                                                 <button type="button" id="changeImage1">Change Image</button>
-                                                <input type="file" id="imageInput1" name="image1" disabled>
+                                                <input style="display:none;" type="file" id="imageInput1" name="image1" disabled>
                                             </div>
                                             <div>
                                                 <img class="media" id="image2" style="width: 150px; height: 150px;"
                                                      th:src="@{'/uploads/' + ${images[1]}}" alt="Image 2"/>
                                                 <button type="button" id="changeImage2">Change Image</button>
-                                                <input type="file" id="imageInput2" name="image2" disabled>                                            </div>
+                                                <input style="display:none;" type="file" id="imageInput2" name="image2" disabled>                                            </div>
                                             <div>
                                                 <img class="media" id="image3" style="width: 150px; height: 150px;"
                                                      th:src="@{'/uploads/' + ${images[2]}}" alt="Image 3"/>
                                                 <button type="button" id="changeImage3">Change Image</button>
-                                                <input type="file" id="imageInput3" name="image3" disabled>                                            </div>
-
+                                                <input style="display:none;" type="file" id="imageInput3" name="image3" disabled>                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -174,12 +173,18 @@
     });
 
     document.getElementById('changeImage1').addEventListener('click', function() {
+        document.getElementById("imageInput1").style.display = "block";
+        document.getElementById("changeImage1").style.display = "none";
         document.getElementById('imageInput1').removeAttribute('disabled');
     });
     document.getElementById('changeImage2').addEventListener('click', function() {
+        document.getElementById("imageInput2").style.display = "block";
+        document.getElementById("changeImage2").style.display = "none";
         document.getElementById('imageInput2').removeAttribute('disabled');
     });
     document.getElementById('changeImage3').addEventListener('click', function() {
+        document.getElementById("imageInput3").style.display = "block";
+        document.getElementById("changeImage3").style.display = "none";
         document.getElementById('imageInput3').removeAttribute('disabled');
     });
 

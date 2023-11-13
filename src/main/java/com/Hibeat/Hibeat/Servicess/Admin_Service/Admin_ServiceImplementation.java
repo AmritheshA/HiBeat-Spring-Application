@@ -1,14 +1,14 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
-import com.Hibeat.Hibeat.Model.Admin;
-import com.Hibeat.Hibeat.Model.Categories;
-import com.Hibeat.Hibeat.Model.Orders;
-import com.Hibeat.Hibeat.Model.Products;
+import com.Hibeat.Hibeat.Model.Admin.Admin;
+import com.Hibeat.Hibeat.Model.Admin.Categories;
+import com.Hibeat.Hibeat.Model.User.Orders;
+import com.Hibeat.Hibeat.Model.Admin.Products;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
-import com.Hibeat.Hibeat.Repository.AdminRepository;
-import com.Hibeat.Hibeat.Repository.CategoryRepository;
-import com.Hibeat.Hibeat.Repository.OrderRepository;
-import com.Hibeat.Hibeat.Repository.ProductRepository;
+import com.Hibeat.Hibeat.Repository.Admin.AdminRepository;
+import com.Hibeat.Hibeat.Repository.Admin.CategoryRepository;
+import com.Hibeat.Hibeat.Repository.User.OrderRepository;
+import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

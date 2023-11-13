@@ -105,6 +105,8 @@
                                             </button>
                                             <input type="hidden" th:id="'stock-'+${productDetails.product.id}"
                                                    th:value="${productDetails.product.stock}">
+                                            <input type="hidden" th:id="'quantity-'+${productDetails.product.id}"
+                                                   th:value="${productDetails.quantity}">
 
                                         </div>
                                     </div>
@@ -365,6 +367,7 @@
         const card = document.getElementById("card-" + productId);
 
         const multiplierElement = document.getElementById("multiplier-" + productId);
+
         const multiplierContent = multiplierElement.textContent.trim();
         const multiplierValue = parseFloat(multiplierContent.replace(/[^0-9.]/g, ''));
         const oldTotal = parseFloat(subResultElement.textContent.replace(/[^0-9.]/g, ''));
@@ -392,7 +395,13 @@
 
     // Function to help remove products
     function removeHelper(productId, card, oldTotal, multiplierValue) {
-        newTotal = oldTotal - multiplierValue;
+
+        const quantity = document.getElementById("product-" + productId).value;
+        console.log(productId);
+        console.log(quantity);
+        console.log(multiplierValue * quantity);
+
+        newTotal = oldTotal - (multiplierValue * quantity);
         subResultElement.textContent = "₹ " + newTotal;
         resultElement.textContent = " ₹ " + newTotal;
 
@@ -461,173 +470,6 @@
 
 </script>
 
-
-<!--<script th:inline="javascript">-->
-<!--    const subResultElement = document.getElementById("subTotal");-->
-<!--    const resultElement = document.getElementById("totalAmountIds");-->
-<!--    const couponDiscount = document.getElementById("CouponDiscount");-->
-
-
-<!--    let newTotal-->
-
-<!--    function quantity(counter, element) {-->
-<!--        const productId = element.getAttribute('data-product-id');-->
-<!--        const countElement = document.getElementById("product-" + productId);-->
-<!--        const error = document.getElementById("error-" + productId);-->
-<!--        const stockElement = document.getElementById("stock-" + productId);-->
-
-<!--        let count = +countElement.value;-->
-<!--        let stock = +stockElement.value;-->
-
-<!--        // Calculate the old total value-->
-<!--        const oldTotal = parseFloat(subResultElement.textContent.replace(/[^0-9.]/g, ''));-->
-
-<!--        // Calculate the multiplier value for the product-->
-<!--        const multiplierElement = document.getElementById("multiplier-" + productId);-->
-<!--        const multiplierContent = multiplierElement.textContent.trim();-->
-<!--        const multiplierValue = parseFloat(multiplierContent.replace(/[^0-9.]/g, ''));-->
-
-<!--        newTotal = oldTotal;-->
-
-<!--        console.log(stock);-->
-
-
-<!--        if (count <= 1 && counter <= 0) {-->
-<!--            return;-->
-<!--        }-->
-
-<!--        if (count >= stock && counter >= 0) {-->
-<!--            return;-->
-<!--        }-->
-
-<!--        if (counter === -1 && count > 1) {-->
-<!--            // If decreasing quantity, update the total-->
-<!--            newTotal = oldTotal - multiplierValue;-->
-<!--        } else if (counter === 1) {-->
-<!--            // If increasing quantity, update the total-->
-<!--            newTotal = oldTotal + multiplierValue;-->
-<!--        }-->
-
-<!--        // Display the new total-->
-<!--        subResultElement.textContent = "₹ " + newTotal;-->
-<!--        resultElement.textContent = " ₹ " + newTotal;-->
-
-
-<!--        $.ajax({-->
-<!--            url: `/user/quantity-counter?counter=${counter}&id=${productId}`,-->
-<!--            method: "GET",-->
-<!--            success: function (response) {-->
-<!--                if (parseInt(response) === count) {-->
-<!--                    error.innerHTML = "You have reached the stock quantity"; // Update the error message-->
-<!--                    error.style.display = "block";-->
-<!--                } else {-->
-<!--                    error.style.display = "none";-->
-<!--                }-->
-
-<!--                console.log(response);-->
-<!--            }-->
-<!--        });-->
-
-<!--        count += counter;-->
-
-<!--        countElement.value = count;-->
-
-<!--    }-->
-
-
-<!--    function removeProducts(element) {-->
-<!--        const button = document.getElementById("conformToRemove");-->
-<!--        const productId = element.getAttribute('data-product-id');-->
-<!--        let card = document.getElementById("card-" + productId);-->
-
-
-<!--        const multiplierElement = document.getElementById("multiplier-" + productId);-->
-<!--        const multiplierContent = multiplierElement.textContent.trim();-->
-<!--        const multiplierValue = parseFloat(multiplierContent.replace(/[^0-9.]/g, ''));-->
-<!--        const oldTotal = parseFloat(subResultElement.textContent.replace(/[^0-9.]/g, ''));-->
-<!--        newTotal = oldTotal;-->
-
-
-<!--        if (isReached(String(multiplierValue))) {-->
-<!--            $('#removeConformation').modal('show');-->
-
-<!--        } else {-->
-
-<!--            removeHelper(newTotal, subResultElement, resultElement, productId, card, oldTotal, multiplierValue)-->
-<!--        }-->
-
-<!--        button.addEventListener("click", function () {-->
-<!--            removeHelper(newTotal, subResultElement, resultElement, productId, card, oldTotal, multiplierValue)-->
-<!--            $('#removeConformation').modal('hide');-->
-<!--            couponDiscount.innerText = "0.0"-->
-<!--            $.ajax({-->
-<!--                url:'/user/cart/removeCoupon',-->
-<!--                method:"GET",-->
-<!--                success:function (response){-->
-
-<!--                    console.log("Response from removeCoupon"+response);-->
-<!--                }-->
-<!--            })-->
-<!--        });-->
-<!--    }-->
-
-<!--    function removeHelper(newTotal, subResultElement, resultElement, productId, card, oldTotal, multiplierValue) {-->
-
-<!--        newTotal = oldTotal - multiplierValue;-->
-<!--        subResultElement.textContent = "₹ " + newTotal;-->
-<!--        resultElement.textContent = " ₹ " + newTotal;-->
-
-<!--        $.ajax({-->
-<!--            url: `/user/remove-product/${productId}`,-->
-<!--            method: "GET",-->
-<!--            success: function (response) {-->
-<!--                card.innerHTML = null;-->
-<!--            }-->
-<!--        });-->
-<!--    }-->
-<!--    function isReached(productAmount) {-->
-<!--        const totalAmount = String(document.getElementById("currentTotalAmount").value);-->
-<!--        const couponMinAmount = document.getElementById("couponMinAmount");-->
-
-<!--        console.log(couponMinAmount.value);-->
-
-<!--        return (totalAmount - productAmount) < couponMinAmount.value;-->
-
-
-<!--    }-->
-
-<!--    function couponVerification() {-->
-
-<!--        let couponCode = document.getElementById("coupon");-->
-
-<!--        $.ajax({-->
-<!--            url: `/user/cart/coupon-validate/${couponCode.value}`,-->
-<!--            method: "GET",-->
-<!--            success: function (response) {-->
-
-<!--                if (response[0] === -1.0) {-->
-<!--                    alert("Unfortunately,coupon is in-valid");-->
-
-<!--                } else if (response[1] === 0.0) {-->
-<!--                    alert("Coupon is already in use..");-->
-<!--                    console.log(response[1]);-->
-<!--                    couponDiscount.innerText = response[0];-->
-<!--                } else if (response[0] === 1.0) {-->
-<!--                    alert("Hurry,Coupon applied successfully")-->
-<!--                    console.log(response[1]);-->
-<!--                    couponDiscount.innerText = response[1];-->
-<!--                } else if (response[0] === 0.0) {-->
-
-<!--                    // Trigger the confirmation modal-->
-<!--                    $('#confirmationModal').modal('show');-->
-<!--                }-->
-
-<!--            }-->
-<!--        })-->
-
-<!--    }-->
-
-<!--</script>-->
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

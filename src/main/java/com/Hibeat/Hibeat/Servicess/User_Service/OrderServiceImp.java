@@ -1,8 +1,15 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
-import com.Hibeat.Hibeat.Model.*;
+import com.Hibeat.Hibeat.Model.Admin.Coupons;
+import com.Hibeat.Hibeat.Model.Admin.Payments;
+import com.Hibeat.Hibeat.Model.Admin.Products;
+import com.Hibeat.Hibeat.Model.User.*;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Order_DTO;
-import com.Hibeat.Hibeat.Repository.*;
+import com.Hibeat.Hibeat.Repository.Admin.PaymentRepository;
+import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
+import com.Hibeat.Hibeat.Repository.User.OrderProductRepository;
+import com.Hibeat.Hibeat.Repository.User.OrderRepository;
+import com.Hibeat.Hibeat.Repository.User.WalletRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -240,7 +247,6 @@ public class OrderServiceImp implements OrderService {
             orders.setPayments(payment);
             paymentRepository.save(payment);
             orderRepository.save(orders);
-//        Stock Reducing ---->
             stockManager(user.getId(), 0);
             orders.setOrderId(generateUniqueOrderId(orders));
 
@@ -314,10 +320,10 @@ public class OrderServiceImp implements OrderService {
                         product.setStock(currentStock - quantity);
                         productRepository.save(product);
 
-                        if (currentStock < 25) {
-//                        sending a sms for the admin/seller to notify product reached the limit
-                            twilioService.twilioSMS(product.getName());
-                        }
+//                        if (currentStock < 25) {
+////                        sending a sms for the admin/seller to notify product reached the limit
+//                            twilioService.twilioSMS(product.getName());
+//                        }
                     } else {
                         log.info("Product Is Out Of Stock");
                         return;
@@ -340,6 +346,7 @@ public class OrderServiceImp implements OrderService {
         User user = userServices.findByName(userName);
         Cart cart = cartService.findByUserId(user.getId());
 
+
         double cartTotalAmount = cart.getTotalCartAmount();
 
 
@@ -350,7 +357,8 @@ public class OrderServiceImp implements OrderService {
             payment.setPaymentsId(paymentId);
 
             if (paymentMethod.equals("PayPal") || paymentMethod.equals("RazorPay")) {
-
+                payment.setStatus("Paid");
+                orders.setAmountStatus("Paid");
                 payment.setPaymentTime(currentDateTime.format(formatter));
 
             } else if (paymentMethod.equals("wallet")) {
@@ -358,6 +366,9 @@ public class OrderServiceImp implements OrderService {
                 WalletHistory walletHistory = new WalletHistory();
                 List<WalletHistory> walletHistories = wallet.getWalletHistory();
                 double walletTotalAmount = wallet.getWalletTotalAmount();
+                payment.setStatus("Paid");
+                orders.setAmountStatus("Paid");
+                payment.setPaymentTime(currentDateTime.format(formatter));
 
                 if (wallet.getWalletTotalAmount() >= cartTotalAmount) {
                     wallet.setWalletTotalAmount(walletTotalAmount - cartTotalAmount);

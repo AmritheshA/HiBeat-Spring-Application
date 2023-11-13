@@ -1,10 +1,10 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
-import com.Hibeat.Hibeat.Model.Products;
-import com.Hibeat.Hibeat.Model.User;
-import com.Hibeat.Hibeat.Model.Wishlist;
-import com.Hibeat.Hibeat.Model.WishlistItem;
-import com.Hibeat.Hibeat.Repository.WishlistRepository;
+import com.Hibeat.Hibeat.Model.Admin.Products;
+import com.Hibeat.Hibeat.Model.User.User;
+import com.Hibeat.Hibeat.Model.User.Wishlist;
+import com.Hibeat.Hibeat.Model.User.WishlistItem;
+import com.Hibeat.Hibeat.Repository.User.WishlistRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

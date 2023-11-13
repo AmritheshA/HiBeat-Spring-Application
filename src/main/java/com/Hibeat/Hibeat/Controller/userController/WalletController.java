@@ -1,9 +1,9 @@
 package com.Hibeat.Hibeat.Controller.userController;
 
-import com.Hibeat.Hibeat.Model.User;
-import com.Hibeat.Hibeat.Model.Wallet;
-import com.Hibeat.Hibeat.Repository.UserRepository;
-import com.Hibeat.Hibeat.Repository.WalletRepository;
+import com.Hibeat.Hibeat.Model.User.User;
+import com.Hibeat.Hibeat.Model.User.Wallet;
+import com.Hibeat.Hibeat.Repository.User.UserRepository;
+import com.Hibeat.Hibeat.Repository.User.WalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

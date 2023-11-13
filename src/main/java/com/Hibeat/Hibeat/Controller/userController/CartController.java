@@ -28,8 +28,12 @@ public class CartController {
     }
 
     @GetMapping("/add-to-cart")
-    public ResponseEntity<String> addToCart(@RequestParam("id") int productId) {
+    public String addToCart(@RequestParam("id") int productId) throws Exception {
        return cartService.addToCart(productId);
+    }
+    @GetMapping("/add-to-cart-fromShop")
+    public ResponseEntity<String> addToCartFromShop(@RequestParam("id") int productId) throws Exception {
+        return cartService.addToCartFromShop(productId);
     }
 
     @GetMapping("/quantity-counter")

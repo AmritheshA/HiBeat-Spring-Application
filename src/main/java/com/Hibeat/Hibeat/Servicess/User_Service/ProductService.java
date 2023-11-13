@@ -1,6 +1,6 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
-import com.Hibeat.Hibeat.Model.Products;
+import com.Hibeat.Hibeat.Model.Admin.Products;
 
 import java.util.List;
 import java.util.Optional;

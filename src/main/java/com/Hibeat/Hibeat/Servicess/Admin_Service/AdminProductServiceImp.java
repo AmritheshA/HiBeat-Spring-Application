@@ -1,10 +1,10 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
-import com.Hibeat.Hibeat.Model.Categories;
-import com.Hibeat.Hibeat.Model.Products;
+import com.Hibeat.Hibeat.Model.Admin.Categories;
+import com.Hibeat.Hibeat.Model.Admin.Products;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Product_DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
-import com.Hibeat.Hibeat.Repository.ProductRepository;
+import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -76,6 +76,7 @@ public class AdminProductServiceImp implements AdminProductService {
             }
             productInfo.setImages_path(images);
 
+
             save(productInfo);
 
             return "redirect:/admin/add-product";
@@ -116,6 +117,8 @@ public class AdminProductServiceImp implements AdminProductService {
         try {
             Products products = productRepository.findAllById(productId);
 
+            log.info("Category"+productDetails.getCategory());
+
             String[] images = products.getImages_path();
             String file = "D:\\Brocamp_Task\\week_11\\Project\\Hibeat\\src\\main\\resources\\static\\uploads\\";
 
@@ -136,6 +139,7 @@ public class AdminProductServiceImp implements AdminProductService {
             products.setName(productDetails.getProductName());
             products.setPrice(Double.parseDouble(productDetails.getPrice()));
             products.setStock(productDetails.getStock());
+            products.setCategories(productDetails.getCategory());
             products.setDescription(productDetails.getDescription());
             productRepository.save(products);
 

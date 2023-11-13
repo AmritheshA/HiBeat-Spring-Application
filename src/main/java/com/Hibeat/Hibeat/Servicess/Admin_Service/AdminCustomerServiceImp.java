@@ -1,6 +1,6 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
-import com.Hibeat.Hibeat.Model.User;
+import com.Hibeat.Hibeat.Model.User.User;
 import com.Hibeat.Hibeat.Servicess.User_Service.UserServices;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

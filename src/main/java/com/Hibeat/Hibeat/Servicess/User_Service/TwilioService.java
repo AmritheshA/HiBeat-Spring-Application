@@ -14,17 +14,18 @@ public class TwilioService {
 
     public void twilioSMS(String productName) {
 
-        try {
-            Twilio.init("ACe6ff540bd858b7b939b7a21a0375da53", "8231950341f0fbd172d6a3a5615914e1");
-            Message message = Message.creator(
-                            new com.twilio.type.PhoneNumber("+919961811304"),
-                            new com.twilio.type.PhoneNumber("+12563443253"),
-                            productName+" Have Reached The Maximum Stock Limit.....")
-                    .create();
-        }catch (Exception e){
 
-            log.info("Some error occurred when trying to send SMS ");
-            throw new TwiMLException("Error at TwilioService");
-        }
+//        try {
+//            Twilio.init("ACe6ff540bd858b7b939b7a21a0375da53", "8231950341f0fbd172d6a3a5615914e1");
+//            Message message = Message.creator(
+//                            new com.twilio.type.PhoneNumber("+919961811304"),
+//                            new com.twilio.type.PhoneNumber("+12563443253"),
+//                            productName+" Have Reached The Maximum Stock Limit.....")
+//                    .create();
+//        }catch (Exception e){
+//
+//            log.info("Some error occurred when trying to send SMS ");
+//            throw new TwiMLException("Error at TwilioService");
+//        }
     }
 }

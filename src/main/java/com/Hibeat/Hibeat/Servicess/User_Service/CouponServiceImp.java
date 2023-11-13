@@ -1,10 +1,10 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
-import com.Hibeat.Hibeat.Model.Cart;
-import com.Hibeat.Hibeat.Model.Coupons;
-import com.Hibeat.Hibeat.Model.User;
-import com.Hibeat.Hibeat.Repository.CartRepository;
-import com.Hibeat.Hibeat.Repository.CouponRepository;
+import com.Hibeat.Hibeat.Model.User.Cart;
+import com.Hibeat.Hibeat.Model.Admin.Coupons;
+import com.Hibeat.Hibeat.Model.User.User;
+import com.Hibeat.Hibeat.Repository.User.CartRepository;
+import com.Hibeat.Hibeat.Repository.Admin.CouponRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

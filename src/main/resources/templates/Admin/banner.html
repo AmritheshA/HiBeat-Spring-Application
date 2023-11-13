@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link th:href="@{/css/Admin/products.css}" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="/js/admin.js"></script>
+
+    <title>Products</title>
+
+</head>
+<body>
+
+<header th:replace="fragment :: admin-header">
+
+</header>
+
+
+<div class="row">
+    <!-- Sidebar -->
+    <nav th:replace="fragment :: admin-navbar">
+
+    </nav>
+
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <h1 class="mt-5">Add Banner</h1>
+        <form action="/admin/add-banner" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Banner Title:</label>
+                <input type="text" class="form-control" name="title" required>
+            </div>
+
+            <label>Status:</label>
+            <select style="height: 47px;" name="status" class="form-control" id="couponStatus" required>
+
+                <option value="true">Active</option>
+                <option value="false">Disable</option>
+            </select>
+
+
+            <div class="form-group">
+                <label for="bannerImage">Banner Image (Upload):</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="image"
+                           id="bannerImage" required>
+                    <label class="custom-file-label" for="bannerImage">Choose file</label>
+                </div>
+            </div>
+
+            <!-- Image Preview -->
+            <div class="form-group">
+                <img id="imageBannerPreview" src="" class="img-thumbnail" alt="">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Banner</button>
+        </form>
+
+
+        <h1 class="mt-5">Current Banners</h1>
+        <!-- Display current banners here (retrieve from your data source) -->
+        <div class="row" th:each="banner : ${banners}">
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${banner.bannerTitle}"></h5>
+                    </div>
+
+                    <img th:src="'/uploads/'+${banner.image}" class="card-img-top" alt="Banner 1">
+
+                    <div class="card-footer d-flex justify-content-end">
+                        <a class="btn btn-primary btn-sm m-2" th:href="'/admin/edit-banner?id='+${banner.bannerId}">Edit
+                            Banner</a>
+                        <a class="btn btn-primary btn-sm m-2" th:href="'/admin/remove-banner?id='+${banner.bannerId}">Clear
+                            Banner</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('bannerImage').addEventListener('change', function (e) {
+
+                var fileUpload = e.target;
+                var reader = new FileReader();
+
+//Read the contents of Image File.
+                reader.readAsDataURL(fileUpload.files[0]);
+                reader.onload = function (e) {
+
+                    //Initiate the JavaScript Image object.
+                    var image = new Image();
+
+                    //Set the Base64 string return from FileReader as source.
+                    image.src = e.target.result;
+
+                    //Validate the File Height and Width.
+                    image.onload = function () {
+                        var height = this.height;
+                        var width = this.width;
+                        console.log(height)
+                        console.log(width)
+
+
+                        if (height >= 800 || width >= 1803) {
+                            alert("Uploaded image has valid Height and Width.");
+                            return false;
+                        }
+                        alert("Height and Width must be 800 x 1803");
+                        fileUpload.value = '';
+                        return true;
+                    };
+                };
+            });
+        });
+</script>
+
+</body>
+</html>

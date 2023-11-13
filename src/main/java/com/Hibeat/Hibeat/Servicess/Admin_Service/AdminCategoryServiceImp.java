@@ -1,7 +1,7 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
-import com.Hibeat.Hibeat.Model.Categories;
-import com.Hibeat.Hibeat.Repository.CategoryRepository;
+import com.Hibeat.Hibeat.Model.Admin.Categories;
+import com.Hibeat.Hibeat.Repository.Admin.CategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;

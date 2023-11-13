@@ -1,6 +1,9 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
-import com.Hibeat.Hibeat.Model.*;
+import com.Hibeat.Hibeat.Model.Admin.Banner;
+import com.Hibeat.Hibeat.Model.User.Cart;
+import com.Hibeat.Hibeat.Model.User.Orders;
+import com.Hibeat.Hibeat.Model.User.User;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -40,5 +43,9 @@ public interface UserServices {
     String productDetails(int id, Model model);
 
     List<User> findAll(Sort sort);
+
+    User currentUser();
+
+    List<Banner> allBanners();
 
 }

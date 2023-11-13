@@ -1,7 +1,7 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
-import com.Hibeat.Hibeat.Model.OrderProducts;
-import com.Hibeat.Hibeat.Model.Orders;
+import com.Hibeat.Hibeat.Model.User.OrderProducts;
+import com.Hibeat.Hibeat.Model.User.Orders;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Order_DTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

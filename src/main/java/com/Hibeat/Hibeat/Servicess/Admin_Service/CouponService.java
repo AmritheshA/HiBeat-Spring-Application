@@ -1,6 +1,6 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
-import com.Hibeat.Hibeat.Model.Coupons;
+import com.Hibeat.Hibeat.Model.Admin.Coupons;
 import org.springframework.ui.Model;
 
 import java.util.List;

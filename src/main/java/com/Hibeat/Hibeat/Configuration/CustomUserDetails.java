@@ -1,6 +1,5 @@
 package com.Hibeat.Hibeat.Configuration;
 
-import com.Hibeat.Hibeat.Model.User;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,11 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 public class CustomUserDetails implements UserDetails {
 
-    @Autowired
-    private DTO user;
+
+    private final DTO user;
 
     public CustomUserDetails(DTO user){
         this.user = user;

@@ -32,7 +32,7 @@
             <h1 class="text-center">Shop</h1>
             <div class="filter-button">
                 <a href="#">Filter<img style="width:30px;height:30px;padding-left:10px;"
-                                               th:src="@{/image/Filter.svg}"></a>
+                                       th:src="@{/image/Filter.svg}"></a>
             </div>
         </div>
     </div>
@@ -52,22 +52,29 @@
                                  data-mdb-ripple-color="light">
                                 <img th:src="@{'/uploads/' + ${product.getImages_path[0]}}" class="card-img-top"
                                      alt="Product Image">
-                                <a onclick="addToWishlist(this)" th:data-product-id="${product.id}" style="position: absolute; top: 10px; right: 10px; cursor: pointer"
+                                <a onclick="addToWishlist(this)" th:data-product-id="${product.id}"
+                                   style="position: absolute; top: 10px; right: 10px; cursor: pointer"
                                    onmouseover="this.getElementsByTagName('img')[0].style.filter = 'invert(50%)';"
                                    onmouseout="this.getElementsByTagName('img')[0].style.filter = 'none';">
-                                    <img style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}" alt="Add to Favorites">
+                                    <img style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
+                                         alt="Add to Favorites">
                                 </a>
-
+                                <span th:if="${product.productOffers != null && product.productOffers.offerPercentage > 0}"
+                                      class="badge bg-warning text-dark"
+                                      style="position: absolute; top: 10px; left: 10px;"
+                                      th:text="${product.productOffers.offerPercentage} + '%Offer'">
+        </span>
                             </div>
                             <div class="card-body">
-                                    <h5  class="card-title text-primary" th:text="${product.name}">Product name</h5>
+                                <h5 class="card-title text-primary" th:text="${product.name}">Product name</h5>
 
                                 <p class="card-text"
                                    style="font-family: 'Poppins'; font-size: 12px; margin-top: -5px; max-height: 40px; overflow: hidden; text-overflow: ellipsis;"
                                    th:text="${product.description}">Product description</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h6 class="card-text" th:text="${'Price: $' + product.price}">Product price</h6>
-                                    <a class="btn btn-primary" onclick="addToCart(this)" th:data-prdoucts-id="${product.id}">Add to
+                                    <a class="btn btn-primary" onclick="addToCart(this)"
+                                       th:data-prdoucts-id="${product.id}">Add to
                                         Cart</a>
                                 </div>
                             </div>
@@ -91,28 +98,26 @@
 
                 if (response === "success") {
                     alert("Added To Wishlist");
-                }else if(response === "sameProduct"){
+                } else if (response === "sameProduct") {
                     alert("Product Already Exist In Wishlist")
-                }
-                else {
+                } else {
                     location.href = "/login"
                 }
             }
         });
     }
+
     function addToCart(element) {
         let productId = element.getAttribute('data-prdoucts-id');
         $.ajax({
-            url: '/user/cart/add-to-cart?id=' + productId,
+            url: '/user/cart/add-to-cart-fromShop?id=' + productId,
             method: "GET",
             success: function (response) {
-
                 if (response === "success") {
                     alert("Added To Cart");
-                }else if(response === "sameProduct"){
+                } else if (response === "sameProduct") {
                     alert("Product Already Exist In Cart")
-                }
-                else {
+                } else {
                     location.href = "/login"
                 }
             }

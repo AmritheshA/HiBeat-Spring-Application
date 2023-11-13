@@ -20,7 +20,8 @@ public class UserController {
     }
 
     @GetMapping("/home")
-    public String home() {
+    public String home(Model model) {
+        model.addAttribute("sliders",userServices.allBanners());
         return "User/home";
     }
 
@@ -41,6 +42,8 @@ public class UserController {
     public String productDetails(@PathVariable("id") int id, Model model) {
        return userServices.productDetails(id,model);
     }
+
+
 
     @GetMapping("/sample")
     public String sample() {

@@ -7,14 +7,19 @@
 
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
-
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
 
+
     <link th:href="@{/css/User/productDetails.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/User/review.css}" rel="stylesheet" type="text/css">
+    <script src="/js/user.js"></script>
 
 
 </head>
@@ -23,8 +28,6 @@
 <header th:replace="navfragment :: header">
 
 </header>
-
-
 <!--Content-->
 <div class="container">
 
@@ -65,57 +68,436 @@
                 </p>
                 <p style="font-family:'Montserrat';font-size:25px;font-weight:bold;" th:text="${'₹'+product.price}"></p>
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary" id="add-to-cart"><a th:href="@{/user/addToCart(id=${product.id})}">Add to Cart</a></button>
+                    <button class="btn btn-primary" id="add-to-cart"><a
+                            th:href="@{/user/cart/add-to-cart(id=${product.id})}">Add
+                        to Cart</a></button>
                 </div>
             </div>
         </div>
     </div>
 
 
-    <!--    Descriptions-->
+    <div class="row mt-7">
+        <div class="col-md-12 text-center ">
+            <hr style="border-top: 1px solid #000;">
+            <h1 class="mt-2">Reviews</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Rating breakdown</h4>
+            <div class="pull-left">
+                <div class="pull-left" style="line-height:1;display: flex;align-items: center;padding-left: 5px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <div class="pull-left" style="width:180px;margin-left: 10px;">
+                        <div class="progress" style="height:9px; margin:8px 0;">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="5"
+                                 aria-valuemin="0" aria-valuemax="5" th:style="'width: ' + (${fivePer} ?: '0%')">
+                                <span class="sr-only">80% Complete (danger)</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="pull-right" style="margin-left:10px;" th:text="${starFive} ?: 0"></div>
+                </div>
+                <div class="pull-left" style="line-height:1;display: flex;align-items: center;padding-left: 5px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <div class="pull-left" style="width:180px;margin-left: 27px;">
+                        <div class="progress" style="height:9px; margin:8px 0;">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="5"
+                                 aria-valuemin="0" aria-valuemax="5" th:style="'width: ' + (${fourPer} ?: '0%')">
+                                <span class="sr-only">80% Complete (danger)</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="pull-right" style="margin-left:10px;" th:text="${starFour} ?: 0"></div>
+                </div>
+                <div class="pull-left" style="line-height:1;display: flex;align-items: center;padding-left: 5px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <div class="pull-left" style="width:180px;margin-left:45px;">
+                        <div class="progress" style="height:9px; margin:8px 0;">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="5"
+                                 aria-valuemin="0" aria-valuemax="5" th:style="'width: ' + (${threePer} ?: '0%')">
+                                <span class="sr-only">80% Complete (danger)</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="pull-right" style="margin-left:10px;" th:text="${starThree} ?: 0"></div>
+                </div>
+                <div class="pull-left" style="line-height:1;display: flex;align-items: center;padding-left: 5px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <div class="pull-left" style="width:180px;margin-left: 63px;">
+                        <div class="progress" style="height:9px; margin:8px 0;">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="5"
+                                 aria-valuemin="0" aria-valuemax="5" th:style="'width: ' + (${twoPer} ?: '0%')">
+                                <span class="sr-only">80% Complete (danger)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pull-right" style="margin-left:10px;" th:text="${starTwo} ?: 0"></div>
+                </div>
+                <div class="pull-left" style="line-height:1;display: flex;align-items: center;padding-left: 5px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <style>svg {
+                            fill: #66ff00
+                        }</style>
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                    </svg>
+                    <div class="pull-left" style="width:180px;margin-left: 80px;">
+                        <div class="progress" style="height:9px; margin:8px 0;">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="5"
+                                 aria-valuemin="0" aria-valuemax="5" th:style="'width: ' + (${onePer} ?: '0%')">
+                                <span class="sr-only">80% Complete (danger)</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="pull-right" style="margin-left:10px;" th:text="${starOne} ?: 0">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="rating-block">
+                <h4>Average user rating</h4>
+                <h2 class="bold padding-bottom-7" th:text="${averageRating}"></h2>
+                <h6>Total Reviewers</h6>
+                <h2 class="bold padding-bottom-7"><small th:text="${totalReviews}"></small></h2>
+
+                <button type="button" class="btn btn-warning btn-sm" style="float: right;" aria-label="Left Align"
+                        data-toggle="modal" data-target="#formModal">
+                    Write A Review
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <hr/>
+                <div class="review-block">
+                    <div  class="row" th:each="review : ${reviews}">
+                        <div class="col-sm-3">
+                            <img style="max-height:50%;max-width:50%" th:src="@{'/uploads/' + ${review.image}}"
+                                 onclick="openModalForImage(this)" class="img-rounded">
+                            <div class="review-block-name"><a href="#" th:text="${review.user.name}"></a></div>
+                            <div class="review-block-date" th:text="${review.reviewTime}"></div>
+                        </div>
+                        <div class="col-sm-9">
+
+                            <div class="review-block-title" th:text="${review.reviewTitle}"></div>
+                            <div class="review-block-description" th:text="${review.review}"></div>
+                            <div class="review-block-rate" style="display: flex;align-items: baseline;">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                                    <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                    <style>svg {
+                                        fill: #66ff00
+                                    }</style>
+                                    <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                                </svg>
+                                <p th:text="${review.rating}"></p>
+                            </div>
+
+                            <div th:if="${review.user.id == userId}">
+                                <a style="cursor: pointer" th:onclick="'openModalForEditing(' + ${review.id} + ')'"><svg style="float: right; fill: #063a93;"  xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                    <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32-32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"/>
+                                </svg></a>
+                            </div>
+                            <!--                            <div>-->
+                            <!--                                <a th:href="'/user/getReview?id='+${review.id}" style="float: right;font-size: 15px;cursor: pointer" data-toggle="modal" data-target="#reviewModal" >Replays(6)</a>-->
+                            <!--                                <input id="reviewId" type="hidden" th:value="${review.id}">-->
+                            <!--                            </div>-->
+                        </div>
+                    </div>
+                    <hr/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--  Image Modal-->
+    <div class="modal" id="imageModal">
+        <img class="modal-content" id="modalImage">
+    </div>
+    <!--Form Modal-->
+    <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formModalLabel">Form Modal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="myForm" action="/user/write-review" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Review Title</label>
+                            <input type="text" name="reviewTitle" class="form-control" id="exampleFormControlInput1"
+                                   placeholder="This is a good product.." required>
+                            <input type="hidden" name="productId" th:value="${product.id}">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Review</label>
+                            <textarea name="review" class="form-control" id="exampleFormControlTextarea1"
+                                      rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="imageInput">Image</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="image" id="imageInput" lang="en"
+                                       onchange="previewImage()" required>
+                                <label class="custom-file-label" for="imageInput">Choose file</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Rating</label>
+                                <input type="number" name="rating" class="form-control" id="exampleFormControlInput3"
+                                       placeholder="Out of 5" max="5" min="1" required>
+                            </div>
+                            <div class="image-preview">
+                                <img id="preview" alt="Image Preview">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Post Review</button>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editReviewModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formModalLabel1">Form Modal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="myForm1" action="/user/edit-review" method="post">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Review Title</label>
+                            <input type="text" name="reviewTitle" class="form-control" id="reviewTitle"
+                                   placeholder="This is a good product.." required>
+                            <input type="hidden" name="productId" th:value="${product.id}">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Review</label>
+                            <textarea name="review" class="form-control" id="exampleFormControlTextarea2"
+                                      rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+<!--                            <label style="display: none;" id="imageLabel" for="imageInput">Image</label>-->
+<!--                            <div style="display: none;" id="imageDiv" class="custom-file">-->
+<!--                                <input  type="file" class="custom-file-input" name="image" id="imageInput1" lang="en" required disabled>-->
+<!--                                <label class="custom-file-label" for="imageInput1">Choose file</label>-->
+<!--                            </div>-->
+<!--                            <button id="changeButton" onclick="changeImage()">Change Image</button>-->
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Rating</label>
+                                <input type="number" name="rating" class="form-control" id="exampleFormControlInput4"
+                                       placeholder="Out of 5" max="5" min="1" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Post Review</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--    Review Modal-->
+    <!--    <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel"-->
+    <!--         aria-hidden="true">-->
+    <!--        <div class="modal-dialog" role="document">-->
+    <!--            <div class="modal-content">-->
+    <!--                <div class="modal-header">-->
+    <!--                    <h5 class="modal-title" id="reviewModalLabel">Product Reviews</h5>-->
+    <!--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+    <!--                        <span aria-hidden="true">&times;</span>-->
+    <!--                    </button>-->
+    <!--                </div>-->
+    <!--                <div class="modal-body">-->
+    <!--                    &lt;!&ndash; Place your review content here &ndash;&gt;-->
+    <!--                    <div class="comments-container"  id="sample"  th:each="comment : ${reviews}">-->
+    <!--                        <div class="comment">-->
+    <!--                            <span  class="comment-author"th:text="${comment.user.name}" ></span>-->
+    <!--                            <span id="samples" class="comment-text" th:if="${#lists.size(comment.replays) > 0}" th:text="${comment.replays[0]}"></span>-->
+    <!--                        </div>-->
+
+    <!--                    </div>-->
+
+    <!--                    &lt;!&ndash; Form for posting replies &ndash;&gt;-->
+    <!--                    <form id="replyForm">-->
+    <!--                        <div class="form-group">-->
+    <!--                            <label for="replyInput">Post a Reply:</label>-->
+    <!--                            <input type="text" class="form-control" id="replyInput" placeholder="Your reply..." required>-->
+    <!--                        </div>-->
+    <!--                        <button type="button" class="btn btn-primary" onclick="postReply()">Post Reply</button>-->
+    <!--                    </form>-->
+    <!--                </div>-->
+    <!--                <div class="modal-footer">-->
+    <!--                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
     <div class="row mt-4">
         <div class="col-md-12 text-center ">
             <hr style="border-top: 1px solid #000;">
             <h1 class="mt-2">Related Products</h1>
         </div>
     </div>
-
     <!-- Related Products -->
     <div class="row" style="margin-top: 20px;">
+        <div class="col-lg-3 col-md-4 col-sm-12 mb-4" th:each="product, productIndex : ${relatedProduct}">
+            <!-- Check if product.status is active -->
+            <div th:if="${product.status == 'ACTIVE'}">
+                <a th:href="@{'/user/product-details/' + ${product.id}}">
+                    <div class="card"
+                         style="border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
+                         href="/home">
+                        <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
+                             data-mdb-ripple-color="light">
+                            <img th:src="@{'/uploads/' + ${product.getImages_path[0]}}"
+                                 style="height: 200px;width: 200px;margin-left: 15px;margin-top: 10px;"
+                                 class="card-img-top"
+                                 alt="Product Image">
+                            <a onclick="addToWishlist(this)" th:data-product-id="${product.id}"
+                               style="position: absolute; top: 10px; right: 10px; cursor: pointer"
+                               onmouseover="this.getElementsByTagName('img')[0].style.filter = 'invert(50%)';"
+                               onmouseout="this.getElementsByTagName('img')[0].style.filter = 'none';">
+                                <img style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
+                                     alt="Add to Favorites">
+                            </a>
 
-        <div class="col-lg-3 col-md-4 col-sm-6" th:each="product, productIndex : ${relatedProduct}">
-            <!-- Related Product Card 1 -->
-            <div class="card "
-                 style="border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;">
-                <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                     data-mdb-ripple-color="light">
-                    <img th:src="@{'/uploads/' + ${product.getImages_path[0]}}" style="width: 250px; height: 200px;"
-                         class="card-img-top" alt="Product Image"/>
-                    <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                            style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                            alt="Add to Favorites"></a>
-                </div>
-                <div class="card-body">
-                    <a href="#" class="text-reset">
-                        <h5 class="card-title" th:text="${product.name}"></h5>
-                    </a>
-                    <p class="card-text"
-                       style="font-family: 'Poppins'; font-size: 12px; margin-top: -5px; max-height: 40px; overflow: hidden; text-overflow: ellipsis;"
-                       th:text="${product.description}">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-primary" th:text="${product.name}">Product name</h5>
 
-                    </p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="card-text" th:text="'$'+${product.price}"></h6>
-                        <button class="btn btn-primary">Add to Cart</button>
+                            <p class="card-text"
+                               style="font-family: 'Poppins'; font-size: 12px; margin-top: -5px; max-height: 40px; overflow: hidden; text-overflow: ellipsis;"
+                               th:text="${product.description}">Product description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="card-text" th:text="${'Price: $' + product.price}">Product price</h6>
+                                <a class="btn btn-primary" onclick="addToCart(this)"
+                                   th:data-prdoucts-id="${product.id}">Add to
+                                    Cart</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
-
 </div>
-
-
 <!-- Footer -->
 <footer class=" text-center text-lg-start bg-dark text-muted">
 
@@ -206,7 +588,7 @@
 
     <!-- Copyright -->
 </footer>
-
+<!-- Add this line before your script -->
 
 <script>
     const options = {
@@ -233,10 +615,5 @@
     });
 </script>
 
-
-<!-- Include Bootstrap and any other necessary scripts -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

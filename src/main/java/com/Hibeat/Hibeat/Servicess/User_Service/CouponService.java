@@ -1,6 +1,6 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
-import com.Hibeat.Hibeat.Model.Coupons;
+import com.Hibeat.Hibeat.Model.Admin.Coupons;
 import org.springframework.http.ResponseEntity;
 
 public interface CouponService {

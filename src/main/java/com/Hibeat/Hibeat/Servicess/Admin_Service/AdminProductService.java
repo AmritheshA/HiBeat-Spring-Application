@@ -1,6 +1,6 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
-import com.Hibeat.Hibeat.Model.Products;
+import com.Hibeat.Hibeat.Model.Admin.Products;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Product_DTO;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,10 +1,10 @@
 package com.Hibeat.Hibeat.Configuration;
 
-import com.Hibeat.Hibeat.Model.Admin;
-import com.Hibeat.Hibeat.Model.User;
+import com.Hibeat.Hibeat.Model.Admin.Admin;
+import com.Hibeat.Hibeat.Model.User.User;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
-import com.Hibeat.Hibeat.Repository.AdminRepository;
-import com.Hibeat.Hibeat.Repository.UserRepository;
+import com.Hibeat.Hibeat.Repository.Admin.AdminRepository;
+import com.Hibeat.Hibeat.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

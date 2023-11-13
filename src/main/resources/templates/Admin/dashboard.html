@@ -6,11 +6,14 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!--    <script src="/js/admin.js"></script>-->
+
 
     <style>
         svg {
             margin: 10px;
         }
+
         .navbar {
             padding: 15px 10px;
             background: #fff;
@@ -83,7 +86,7 @@
             background: #6a4040;
         }
 
-        #sidebar ul li.active>a,
+        #sidebar ul li.active > a,
         a[aria-expanded="true"] {
             color: #fff;
             background: #6d7fcc;
@@ -168,12 +171,25 @@
             fill: #ffffff;
             margin: 15px;
         }
+
+        button {
+            padding: 5px 10px;
+            background-color: #04609d;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            margin: 5px;
+        }
+
+        /* Hover effect */
+        button:hover {
+            background-color: #2980b9; /* Change the background color on hover */
+        }
     </style>
 
 
 </head>
 <body>
-
 
 
 <header th:replace="fragment :: admin-header">
@@ -196,8 +212,8 @@
                 <div class="box white-box shadow-box">
                     <i class="fas fa-chart-bar fa-2x"></i>
                     <h3>Total Sales</h3>
-                    <p><strong>
-                        $1,000,000
+                    <p th:text="'₹'+${totalSales}"><strong>
+
                     </strong></p>
                 </div>
             </div>
@@ -205,20 +221,25 @@
                 <div class="box white-box shadow-box">
                     <i class="fas fa-cube fa-2x"></i>
                     <h3>Sold Products</h3>
-                    <p><strong>1,000 </strong></p>
+                    <p th:text="${soldProducts}"><strong></strong></p>
                 </div>
             </div>
             <div class="col-md-4 mt-5">
                 <div class="box white-box shadow-box">
                     <i class="fas fa-users fa-2x"></i>
                     <h3>Active Customers</h3>
-                    <p><strong>12,000</strong></p>
+                    <p th:text="${activeCustomers}"><strong>12,000</strong></p>
                 </div>
             </div>
             <!-- Card -->
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
+                        <button id="dailyBtn">Daily</button>
+                        <button id="weeklyBtn">Weekly</button>
+                        <button id="monthlyBtn">Monthly</button>
+                        <button id="yearlyBtn">Yearly</button>
+
                         <canvas id="combinedChart" width="400" height="100"></canvas>
                     </div>
                 </div>
@@ -228,82 +249,21 @@
                         <thead>
                         <tr>
                             <th>Products</th>
-                            <th>Sales</th>
                             <th>Stock</th>
                             <th>Price</th>
                             <th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Product 1</td>
-                            <td>1,200 units</td>
-                            <td>139</td>
-                            <td>$19.99</td>
-                            <td><span class="badge badge-success">In Stock</span></td>
-                        </tr>
-                        <tr>
-                            <td>Product 2</td>
-                            <td>1,200 units</td>
-                            <td>139</td>
-                            <td>$19.99</td>
-                            <td><span class="badge badge-success">In Stock</span></td>
-                        </tr>
-                        <tr>
-                            <td>Product 3</td>
-                            <td>1,200 units</td>
-                            <td>139</td>
-                            <td>$19.99</td>
-                            <td><span class="badge badge-success">In Stock</span></td>
-                        </tr>
-                        <tr>
-                            <td>Product 4</td>
-                            <td>950 units</td>
-                            <td>203</td>
-                            <td>$24.99</td>
-                            <td><span class="badge badge-success">In Stock</span></td>
-                        </tr>
-                        <tr>
-                            <td>Product 5</td>
-                            <td>800 units</td>
-                            <td>250</td>
-                            <td>$29.99</td>
-                            <td><span class="badge badge-warning">Low Stock</span></td>
-                        </tr>
-                        <tr>
-                            <td>Product 6</td>
-                            <td>1,200 units</td>
-                            <td>139</td>
-                            <td>$19.99</td>
-                            <td><span class="badge badge-success">In Stock</span></td>
-                        </tr>
-                        <tr>
-                            <td>Product 7</td>
-                            <td>950 units</td>
-                            <td>203</td>
-                            <td>$24.99</td>
-                            <td><span class="badge badge-success">In Stock</span></td>
-                        </tr>
-                        <tr>
-                            <td>Product 8</td>
-                            <td>1,200 units</td>
-                            <td>139</td>
-                            <td>$19.99</td>
-                            <td><span class="badge badge-success">In Stock</span></td>
-                        </tr>
-                        <tr>
-                            <td>Product 9</td>
-                            <td>950 units</td>
-                            <td>203</td>
-                            <td>$24.99</td>
-                            <td><span class="badge badge-success">In Stock</span></td>
-                        </tr>
-                        <tr>
-                            <td>Product 10</td>
-                            <td>950 units</td>
-                            <td>203</td>
-                            <td>$24.99</td>
-                            <td><span class="badge badge-success">In Stock</span></td>
+                        <tr th:each="product : ${topSellingProducts}">
+                            <td th:text="${product.name}" ></td>
+                            <td th:text="${product.stock}"></td>
+                            <td th:text="'₹'+${product.price}"></td>
+                            <td>
+                                <span th:if="${product.stock > 25}" class="badge badge-success">In Stock</span>
+                                <span th:unless="${product.stock > 25}" class="badge badge-warning">Low Stock</span>
+                            </td>
+
                         </tr>
                         </tbody>
                     </table>
@@ -319,49 +279,190 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.getElementById('weeklyBtn').addEventListener('click', () => {
+
+            let jsonWeekObj = /*[[${weekly}]]*/ {};
+            let jsonWeekCountObj = /*[[${weeklyCount}]]*/ {};
+
+            let week = JSON.parse(jsonWeekObj);
+            let weekCount = JSON.parse(jsonWeekCountObj);
+
+            let weekValue = Object.values(week);
+            let weekCountValue = Object.values(weekCount);
 
 
-    // Sample data
-    var data = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Nov', 'Dec'],
+            let data = {
+                labels: ['week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: weekValue.reverse(),
+                    fill: true,
+                    borderColor: '#ff6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    lineTension: 0.2
+                }, {
+                    label: 'SalesCount',
+                    data: weekCountValue.reverse(),
+                    fill: true,
+                    borderColor: '#ff0000',
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                    borderWidth: 2,
+                    lineTension: 0.2
+                }]
+            };
+
+            combinedChart.data = data;
+            combinedChart.update();
+        });
+        document.getElementById('dailyBtn').addEventListener('click', () => {
+
+            let jsonDailyObj = /*[[${daily}]]*/ {};
+            let jsonDailyCountObj = /*[[${dailyCount}]]*/ {};
+
+            let daily = JSON.parse(jsonDailyObj);
+            let dailyCount = JSON.parse(jsonDailyCountObj);
+            let dates = Object.keys(days);
+            let dailyValue = Object.values(daily);
+            let dailyCountValue = Object.values(dailyCount);
+
+
+            let data = {
+                labels: dates.reverse(),
+                datasets: [{
+                    label: 'Revenue',
+                    data: dailyValue.reverse(),
+                    fill: true,
+                    borderColor: '#ff6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    lineTension: 0.2
+                }, {
+                    label: 'SalesCount',
+                    data: dailyCountValue.reverse(),
+                    fill: true,
+                    borderColor: '#ec0808',
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                    borderWidth: 2,
+                    lineTension: 0.2
+                }]
+            };
+
+            combinedChart.data = data;
+            combinedChart.update();
+        });
+
+        document.getElementById('monthlyBtn').addEventListener('click', () => {
+            let jsonMonthObj = /*[[${monthly}]]*/ {};
+            let jsonMonthCountObj = /*[[${monthlyCount}]]*/ {};
+            let month = JSON.parse(jsonMonthObj);
+            let monthCount = JSON.parse(jsonMonthCountObj);
+            let monthlySales = Object.values(month);
+            let monthlySalesCount = Object.values(monthCount)
+
+
+            let data = {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: monthlySales,
+                    fill: true,
+                    borderColor: '#ff6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    lineTension: 0.2
+                }, {
+                    label: 'SalesCount',
+                    data: monthlySalesCount,
+                    fill: true,
+                    borderColor: '#ff003c',
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                    borderWidth: 2,
+                    lineTension: 0.2
+                }]
+            };
+
+            combinedChart.data = data;
+            combinedChart.update();
+        });
+
+        document.getElementById('yearlyBtn').addEventListener('click', () => {
+            let jsonYearObj = /*[[${yearly}]]*/ {};
+            let jsonYearCountObj = /*[[${yearlyCount}]]*/ {};
+            let years = JSON.parse(jsonYearObj);
+            let yearsCount = JSON.parse(jsonYearCountObj);
+            let yearlySales = Object.values(years);
+            let yearlySalesCount = Object.values(yearsCount);
+
+            let data = {
+                labels: ['2019', '2020', '2021', '2022', '2023'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: yearlySales,
+                    fill: true,
+                    borderColor: '#ff6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    lineTension: 0.2
+                },{
+                    label: 'SalesCount',
+                    data: yearlySalesCount,
+                    fill: true,
+                    borderColor: '#ff6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    lineTension: 0.2
+                }]
+            };
+
+            combinedChart.data = data;
+            combinedChart.update();
+        });
+    });
+
+    let jsonDailyObj = /*[[${daily}]]*/ {};
+    let jsonDailyCountObj = /*[[${dailyCount}]]*/ {};
+    let days = JSON.parse(jsonDailyObj);
+    let daysCount = JSON.parse(jsonDailyCountObj);
+
+    let dates = Object.keys(days);
+    let transformedKeys = Object.values(days);
+    let daysCounts = Object.values(daysCount);
+    console.log(transformedKeys);
+
+
+    let data = {
+        labels: dates.reverse(),
         datasets: [{
             label: 'Revenue',
-            data: [1500, 200000, 250000, 3000, 350000, 400000, 6000, 5000, 20840, 100000, 13800, 73800],
+            data: transformedKeys.reverse(),
             fill: true,
             borderColor: '#ff6384',
-            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Custom revenue area color
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
             borderWidth: 2,
             lineTension: 0.2
-        }, {
-            label: 'Sales',
-            data: [1000, 15000, 20000, 250000, 3000, 3500, 100000, 13800, 73800, 400000, 6000, 20840],
+        },{
+            label: 'SalesCount',
+            data: daysCounts.reverse(),
             fill: true,
-            borderColor: '#36a2eb', // Custom sales line color
-            backgroundColor: 'rgba(54, 162, 235, 0.2)', // Custom sales area color
+            borderColor: '#ff6384',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
             borderWidth: 2,
-            borderCapStyle: 'round',
             lineTension: 0.2
         }]
     };
 
+
+
     // Create combined line chart
-    var combinedChart = new Chart(document.getElementById('combinedChart').getContext('2d'), {
+    let combinedChart = new Chart(document.getElementById('combinedChart').getContext('2d'), {
         type: 'line',
         data: data,
         options: {
-            scales: {
-                x: {
-                    grid: {
-                        display: false,
-                    }
-                },
-                y: {
-                    grid: {
-                        display: false,
-                    }
-                }
-            },
             plugins: {
                 legend: {
                     labels: {
@@ -374,6 +475,10 @@
             }
         }
     });
+
+
 </script>
+
+
 </body>
 </html>

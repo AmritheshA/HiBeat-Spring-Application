@@ -1,8 +1,8 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
-import com.Hibeat.Hibeat.Model.OrderProducts;
-import com.Hibeat.Hibeat.Model.Orders;
-import com.Hibeat.Hibeat.Model.User;
+import com.Hibeat.Hibeat.Model.User.OrderProducts;
+import com.Hibeat.Hibeat.Model.User.Orders;
+import com.Hibeat.Hibeat.Model.User.User;
 import com.Hibeat.Hibeat.Servicess.User_Service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +58,8 @@ public class AdminOrderServiceImp implements AdminOrderService {
             if (status.equals("Delivered")) {
                 order.setDeliveredDate(dateFinder(0));
                 order.setReturnExpiryDate(dateFinder(7));
+                order.getPayments().setStatus("Paid");
+                order.getPayments().setPaymentTime(dateFinder(0).toString());
             } else if (status.equals("Cancelled")) {
                 order.setCancelled(true);
             }

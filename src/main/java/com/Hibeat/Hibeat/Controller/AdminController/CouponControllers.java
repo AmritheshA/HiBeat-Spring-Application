@@ -1,6 +1,6 @@
 package com.Hibeat.Hibeat.Controller.AdminController;
 
-import com.Hibeat.Hibeat.Model.Coupons;
+import com.Hibeat.Hibeat.Model.Admin.Coupons;
 import com.Hibeat.Hibeat.Servicess.Admin_Service.CouponService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

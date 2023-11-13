@@ -1,8 +1,8 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
 import com.Hibeat.Hibeat.Configuration.CustomUserDetailService;
-import com.Hibeat.Hibeat.Model.Address;
-import com.Hibeat.Hibeat.Model.User;
+import com.Hibeat.Hibeat.Model.Admin.Address;
+import com.Hibeat.Hibeat.Model.User.User;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.AddressDTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.RestPasswordDTO;
 import lombok.extern.slf4j.Slf4j;

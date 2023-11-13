@@ -1,7 +1,7 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
-import com.Hibeat.Hibeat.Model.Products;
-import com.Hibeat.Hibeat.Repository.ProductRepository;
+import com.Hibeat.Hibeat.Model.Admin.Products;
+import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

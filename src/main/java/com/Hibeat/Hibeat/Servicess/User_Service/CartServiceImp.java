@@ -1,7 +1,11 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
-import com.Hibeat.Hibeat.Model.*;
-import com.Hibeat.Hibeat.Repository.CartRepository;
+import com.Hibeat.Hibeat.Model.Admin.Coupons;
+import com.Hibeat.Hibeat.Model.Admin.Products;
+import com.Hibeat.Hibeat.Model.User.Cart;
+import com.Hibeat.Hibeat.Model.User.CartProduct;
+import com.Hibeat.Hibeat.Model.User.User;
+import com.Hibeat.Hibeat.Repository.User.CartRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -46,7 +50,7 @@ public class CartServiceImp implements CartService {
 
             if (cartProducts != null) {
 
-                model.addAttribute("cardProducts", cartProducts);
+                model.addAttribute("cardProducts", cartProducts.stream().filter(cartProduct -> cartProduct.getProduct().getStatus().equals("ACTIVE")));
                 model.addAttribute("cartIsEmpty", false);
 
                 if (!(cartProducts.isEmpty()) && coupons != null && cart.getTotalCartAmount() > coupons.getDiscountAmount()) {
@@ -58,6 +62,7 @@ public class CartServiceImp implements CartService {
             } else {
                 model.addAttribute("cartIsEmpty", true);
             }
+
             model.addAttribute("currentTotal", cart.getTotalCartAmount());
 
         } catch (Exception e) {
@@ -67,9 +72,29 @@ public class CartServiceImp implements CartService {
 
     }
 
-    @Override
-    public ResponseEntity<String> addToCart(int productId) {
+    public ResponseEntity<String> addToCartFromShop(int productId) {
+        try {
+            addToCartHelper(productId);
+            return ResponseEntity.ok().body("success");
+        } catch (Exception e) {
+            log.info("addToCart ," + e.getMessage());
+            return ResponseEntity.ok().body("failed");
+        }
+    }
 
+    @Override
+    public String addToCart(int productId){
+        try {
+            addToCartHelper(productId);
+            return "redirect:/user/cart";
+        } catch (Exception e) {
+            log.info("addToCart ," + e.getMessage());
+            return "redirect:/user/cart?error";
+        }
+    }
+
+
+    public void addToCartHelper(int productId) throws Exception {
         try {
             String userName = userServices.currentUserName();
             User user = userServices.findByName(userName);
@@ -100,9 +125,9 @@ public class CartServiceImp implements CartService {
             // Set the totalCartAmount in the userCart
             userCart.setTotalCartAmount(totalCartAmount);
             cartRepository.save(userCart);
-            return ResponseEntity.ok().body("success");
         } catch (Exception e) {
-            return ResponseEntity.ok().body("failed");
+            log.info("addToCartHelper, " + e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -159,15 +184,21 @@ public class CartServiceImp implements CartService {
             Cart cart = cartRepository.findByUserId(userId);
             Products products = productService.findById(productId).get();
 
+            int quantity = cart.getCartProducts()
+                    .stream()
+                    .filter(cartProduct -> cartProduct.getProduct().getId() == productId)
+                    .mapToInt(CartProduct::getQuantity)
+                    .sum();
+
             cart.getCartProducts().removeIf(cartProduct -> cartProduct.getProduct().getId() == productId);
 
-            cart.setTotalCartAmount(cart.getTotalCartAmount() - products.getPrice());
+            cart.setTotalCartAmount(cart.getTotalCartAmount() - (products.getPrice() *quantity));
 
             cartRepository.save(cart);
             return ResponseEntity.ok().body("success");
         } catch (Exception e) {
 
-            log.info("removeProductFromCart"+e.getMessage());
+            log.info("removeProductFromCart" + e.getMessage());
             return ResponseEntity.ok().body("failed");
         }
     }

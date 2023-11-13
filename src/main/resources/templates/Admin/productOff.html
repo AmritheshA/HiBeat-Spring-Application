@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link th:href="@{/css/Admin/products.css}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="/js/admin.js"></script>
+
+    <title>Offers</title>
+</head>
+<body>
+
+
+<header th:replace="fragment :: admin-header">
+
+</header>
+
+
+<div class="row" style="flex-wrap: nowrap;">
+    <!-- Sidebar -->
+    <nav th:replace="fragment :: admin-navbar">
+
+    </nav>
+
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <main>
+            <div class="content-header">
+                <h1>Product Offers</h1>
+                <button onclick="newOfferModal()" class="btn new-product">New Offer</button>
+
+            </div>
+            <form th:action="@{/admin/user/search-user}" method="get">
+                <div class="search-box">
+                    <input type="text" placeholder="Search..." name="value">
+                    <button type="submit" class="action-link">Search</button>
+                </div>
+            </form>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Percentage(%)</th>
+                    <th>Discount Amount</th>
+                    <th>Product Price</th>
+                    <th>Expiry Date</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="offer : ${productOffers}">
+                    <td th:text="${offer.products.name}"></td>
+                    <td th:text="${offer.offerPercentage}"></td>
+                    <td th:text="${offer.discountAmount}"></td>
+                    <td th:text="${offer.products.price}"></td>
+                    <td th:text="${offer.expiryDate}"></td>
+                    <td>
+                        <button th:attr="onclick='editOffer(\'' + ${offer.offerId} + '\',\'' + ${offer.products.id} + '\')'" class="action-link">Edit</button>
+                        <a th:href="@{'/admin/remove-offer?id='+${offer.offerId}}" class="action-link">DELETE</a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+
+            <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form action="/admin/add-productOff" method="post" id="newCategoryForm">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="newModalLabel">New Category</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">x</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="form-group">
+                                    <label for="discountPercentage">Product Id</label>
+                                    <input type="number" id="discountPercentages" name="productId"
+                                           class="form-control" placeholder="Enter discount percentage">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="discountPercentage">Discount Percentage</label>
+                                    <input type="number" id="discountPercentage" name="offerPercentage"
+                                           class="form-control" placeholder="Enter discount percentage">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="enterDate">Expiry Date</label>
+                                    <input type="date" id="enterDate" name="expiryDate" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form action="/admin/edit-productOff" method="post" id="newCategoryForm1">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="newModalLabel1">New Category</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">x</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="form-group">
+                                    <label for="discountPercentage">Discount Percentage</label>
+                                    <input type="number" id="discountPercentage1" name="offerPercentage"
+                                           class="form-control" placeholder="Enter discount percentage">
+                                    <input type="hidden" id="offerId" name="offerId">
+                                    <input type="hidden" id="productId" name="productId">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="enterDate">Expiry Date</label>
+                                    <input type="date" id="enterDate1" name="expiryDate" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Pagination controls -->
+            <!--    <div class="pagination">-->
+            <!--        <ul>-->
+            <!--            <li th:if="${currentPage > 1}">-->
+            <!--                <a th:href="@{/products(page=1)}">First</a>-->
+            <!--            </li>-->
+            <!--            <li th:if="${currentPage > 1}">-->
+            <!--                <a th:href="@{/products(page=${currentPage - 1})}">Previous</a>-->
+            <!--            </li>-->
+            <!--            <li th:if="${currentPage < totalPages}">-->
+            <!--                <a th:href="@{/products(page=${currentPage + 1})}">Next</a>-->
+            <!--            </li>-->
+            <!--            <li th:if="${currentPage < totalPages}">-->
+            <!--                <a th:href="@{/products(page=${totalPages})}">Last</a>-->
+            <!--            </li>-->
+            <!--        </ul>-->
+            <!--    </div>-->
+
+        </main>
+
+
+    </div>
+</div>
+
+
+<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>-->
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    const today = `${year}-${month}-${day}`;
+
+    // Set the 'min' attribute of the date input to the current date
+    document.getElementById('enterDate').min = today;
+
+</script>
+</body>
+</html>

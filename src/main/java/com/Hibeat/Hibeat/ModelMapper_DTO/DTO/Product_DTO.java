@@ -11,7 +11,7 @@ public class Product_DTO {
     private MultipartFile[] image;
     private String price;
     private int stock;
-    private int categories;
+    private int category;
     private String color;
     private String type;
 

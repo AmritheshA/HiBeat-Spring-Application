@@ -1,7 +1,7 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
-import com.Hibeat.Hibeat.Model.Coupons;
-import com.Hibeat.Hibeat.Repository.CouponRepository;
+import com.Hibeat.Hibeat.Model.Admin.Coupons;
+import com.Hibeat.Hibeat.Repository.Admin.CouponRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

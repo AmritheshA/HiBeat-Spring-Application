@@ -1,7 +1,6 @@
 package com.Hibeat.Hibeat.Controller.loginController;
 
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
-import com.Hibeat.Hibeat.Repository.UserRepository;
 import com.Hibeat.Hibeat.Servicess.Login_Services.EmailService;
 import com.Hibeat.Hibeat.Servicess.Login_Services.LoginService;
 import com.Hibeat.Hibeat.Servicess.Login_Services.RestPasswordService;
@@ -9,32 +8,27 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
 
     private final EmailService emailService;
     private final RestPasswordService restPasswordService;
-
-    UserRepository userRepository;
-
     private final LoginService loginService;
 
 
     @Autowired
     public LoginController(EmailService emailService,
                            RestPasswordService restPasswordService,
-                           UserRepository userRepository, LoginService loginService) {
+                           LoginService loginService) {
         this.emailService = emailService;
         this.restPasswordService = restPasswordService;
-        this.userRepository = userRepository;
         this.loginService = loginService;
     }
 

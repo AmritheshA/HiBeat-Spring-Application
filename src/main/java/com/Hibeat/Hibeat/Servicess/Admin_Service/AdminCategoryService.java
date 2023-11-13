@@ -1,6 +1,6 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
-import com.Hibeat.Hibeat.Model.Categories;
+import com.Hibeat.Hibeat.Model.Admin.Categories;
 import org.springframework.data.domain.Sort;
 import org.springframework.ui.Model;
 

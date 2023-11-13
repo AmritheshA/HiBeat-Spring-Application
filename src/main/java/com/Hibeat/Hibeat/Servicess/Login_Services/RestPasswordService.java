@@ -1,7 +1,7 @@
 package com.Hibeat.Hibeat.Servicess.Login_Services;
 
-import com.Hibeat.Hibeat.Model.User;
-import com.Hibeat.Hibeat.Repository.UserRepository;
+import com.Hibeat.Hibeat.Model.User.User;
+import com.Hibeat.Hibeat.Repository.User.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
