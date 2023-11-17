@@ -4,13 +4,16 @@ package com.Hibeat.Hibeat.Model.Admin;
 import com.Hibeat.Hibeat.Model.User.Review;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "products")
-@Data
+@Setter
+@Getter
 public class Products {
 
     @Id
@@ -22,8 +25,8 @@ public class Products {
     @Column(name = "price")
     private double price;
 
-    @Column(name = "selling_price")
-    private String sellingPrice;
+//    @Column(name = "selling_price")
+//    private String sellingPrice;
 
     @Column(name = "name")
     private String name;
@@ -40,18 +43,24 @@ public class Products {
     @Column(name = "stock")
     private int stock;
 
-    @Column(name = "add_By")
-    private String addBy;
+    @Column(name = "colour")
+    private String colour;
+
+//    @Column(name = "add_By")
+//    private String addBy;
 
 //    For soft Delete also
     @Column(name = "status")
     private String status = "ACTIVE";
 
     @Column(name = "category_id")
-    private int categories;
+    private Integer categories;
 
-    @Column(name = "sold_date")
-    private Date date;
+    @Column(name = "brand")
+    private Integer brand;
+
+//    @Column(name = "sold_date")
+//    private Date date;
 
     @Column(name = "Type")
     private String type;
@@ -59,7 +68,7 @@ public class Products {
     @OneToMany(mappedBy = "products",cascade = CascadeType.ALL)
     private List<Review> review;
 
-    @OneToOne(mappedBy = "products", cascade = CascadeType.DETACH)
+    @OneToOne(mappedBy = "products", cascade = CascadeType.REMOVE)
     private ProductOffers productOffers;
 
 }

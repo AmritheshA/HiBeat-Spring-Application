@@ -5,27 +5,27 @@ import com.Hibeat.Hibeat.Model.Admin.Products;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.ProductOfferDTO;
 import com.Hibeat.Hibeat.Repository.Admin.ProductOfferRepository;
 import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
+import com.Hibeat.Hibeat.Servicess.User_Service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
 public class ProductOfferServiceImp implements ProductOfferService{
 
     private final ProductOfferRepository productOfferRepository;
-    private final ProductRepository productRepository;
+
+    private final ProductService productService;
 
     @Autowired
-    public ProductOfferServiceImp(ProductOfferRepository productOfferRepository, ProductRepository productRepository) {
+    public ProductOfferServiceImp(ProductOfferRepository productOfferRepository, ProductService productService) {
         this.productOfferRepository = productOfferRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
     }
 
 
@@ -40,25 +40,29 @@ public class ProductOfferServiceImp implements ProductOfferService{
 
     @Override
     public String addProductOffer(ProductOfferDTO productOffer) {
+        try {
+            Products product = productService.findAllById(productOffer.getProductId());
 
-        try{
-            ProductOffers productOffers = new ProductOffers();
-            Products products = productRepository.findAllById(productOffer.getProductId());
-            double price = (productOffers.getOfferPercentage() / products.getPrice()) * 100;
+            ProductOffers productOfferEntity = new ProductOffers();
+            productOfferEntity.setProducts(product);
+            productOfferEntity.setOfferPercentage(productOffer.getOfferPercentage());
+            productOfferEntity.setExpiryDate(productOffer.getExpiryDate());
 
-            productOffers.setProducts(products);
-            productOffers.setOfferPercentage(productOffer.getOfferPercentage());
-            productOffers.setDiscountAmount(price);
-            productOffers.setExpiryDate(productOffer.getExpiryDate());
+            double priceReduction = (productOfferEntity.getOfferPercentage() / 100.0) * product.getPrice();
+            productOfferEntity.setDiscountAmount(priceReduction);
 
-            saveOffer(productOffers);
+            saveOffer(productOfferEntity);
+
+            product.setPrice(product.getPrice() - priceReduction);
+            productService.save(product);
+
             return "redirect:/admin/product-off";
-
-        }catch (Exception e){
-            log.info("addProductOffer "+e.getMessage());
+        } catch (Exception e) {
+            log.error("addProductOffer " + e.getMessage(), e);
             return "Exception/404";
         }
     }
+
 
     @Override
     public ProductOffers saveOffer(ProductOffers productOffers) {
@@ -90,6 +94,13 @@ public class ProductOfferServiceImp implements ProductOfferService{
     public String removeProductOffer(Integer offerId) {
 
         try {
+            ProductOffers productOffers = findByOfferId(offerId);
+            double productPrice = productOffers.getProducts().getPrice();
+            double discountPrice = productOffers.getDiscountAmount();
+            Products products = productOffers.getProducts();
+            products.setPrice(productPrice + discountPrice);
+            productService.save(products);
+
             productOfferRepository.deleteById(offerId);
 
             return "redirect:/admin/product-off";
@@ -98,5 +109,10 @@ public class ProductOfferServiceImp implements ProductOfferService{
             return "Exception/404";
         }
 
+    }
+
+    @Override
+    public ProductOffers findByOfferId(Integer offerId) {
+        return productOfferRepository.findById(offerId).get();
     }
 }

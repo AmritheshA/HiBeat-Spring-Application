@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @Transactional
 public class OrderController {
 
-
     private final OrderService orderService;
 
     @Autowired
@@ -24,12 +23,21 @@ public class OrderController {
 
     @GetMapping("/checkout")
     public String checkOut(Model model) {
-       return orderService.checkOut(model);
+        return orderService.checkOut(model);
+    }
+
+    @GetMapping("/apply-coupon")
+    public ResponseEntity<String> applyCoupon(@RequestParam("value") String couponCode){
+        return orderService.applyCoupon(couponCode);
+    }
+    @GetMapping("/remove-coupon")
+    public ResponseEntity<String> removeCoupon(){
+        return orderService.removeCoupon();
     }
 
     @GetMapping("/orderDetails")
     public String orderDetails(@RequestParam("orderId") String orderId, Model model) {
-        return orderService.orderDetails(orderId,model);
+        return orderService.orderDetails(orderId, model);
     }
 
     @PostMapping("/orders")
@@ -39,7 +47,7 @@ public class OrderController {
 
     @GetMapping("/my-orders")
     public String myOrders(Model model) {
-       return orderService.myOrder(model);
+        return orderService.myOrder(model);
     }
 
     @GetMapping("/cancelOrder")

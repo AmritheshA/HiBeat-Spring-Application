@@ -15,7 +15,7 @@ public class Brands {
     private Integer id;
 
     @Column(name = "brand_name")
-    private String categoryName;
+    private String brandName;
 
     @Column(name = "status")
     private String status = "ACTIVE";

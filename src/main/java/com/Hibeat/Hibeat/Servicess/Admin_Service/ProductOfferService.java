@@ -15,4 +15,7 @@ public interface ProductOfferService {
 
     String removeProductOffer(Integer productId);
 
+    ProductOffers findByOfferId(Integer offerId);
+
+
 }

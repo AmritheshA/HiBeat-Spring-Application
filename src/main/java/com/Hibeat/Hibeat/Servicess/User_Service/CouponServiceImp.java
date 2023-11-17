@@ -44,12 +44,12 @@ public class CouponServiceImp implements CouponService {
             double couponMinAmount = coupons.getMinimumAmount();
             double couponDiscountAmount = coupons.getDiscountAmount();
 
-            if (cartTotalAmount < couponMinAmount) {
+            if (cartTotalAmount < couponMinAmount || coupons.getUserid().contains(user.getId())) {
                 return ResponseEntity.ok(new Double[]{-1.0}); // Coupon is in-valid
             }
 
             if (cart.getUsedCoupon() != null && !cart.getUsedCoupon().isEmpty()) {
-                if (cart.getUsedCoupon().equals(couponCode)) {
+                if (cart.getUsedCoupon().equals(couponCode) || coupons.getUserid().contains(user.getId())) {
                     return ResponseEntity.ok(new Double[]{couponDiscountAmount, 0.0}); // Coupon already used by the user
                 } else {
                     // Update the existing coupon
@@ -58,10 +58,10 @@ public class CouponServiceImp implements CouponService {
             }
 
             if (isValidCoupon(coupons, cart)) {
-                Set<Integer> ids = coupons.getUserid();
-                ids.add(user.getId());
+//                Set<Integer> ids = coupons.getUserid();
+//                ids.add(user.getId());
                 cart.setUsedCoupon(couponCode);
-                coupons.setUserid(ids);
+//                coupons.setUserid(ids);
                 couponRepository.save(coupons);
                 cartRepository.save(cart);
                 return ResponseEntity.ok(new Double[]{1.0, couponDiscountAmount});
@@ -113,9 +113,16 @@ public class CouponServiceImp implements CouponService {
         User user = userServices.findByName(userServices.currentUserName());
         Cart cart = cartRepository.findByUserId(user.getId());
 
+        log.info("Deleting From the cart.......");
+
         cart.setUsedCoupon(null);
         cartRepository.save(cart);
 
         return ResponseEntity.ok().body("success");
+    }
+
+    @Override
+    public Coupons save(Coupons coupons) {
+        return couponRepository.save(coupons);
     }
 }

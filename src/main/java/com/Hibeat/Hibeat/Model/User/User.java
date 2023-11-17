@@ -3,7 +3,8 @@ package com.Hibeat.Hibeat.Model.User;
 import com.Hibeat.Hibeat.Model.Admin.Address;
 import jakarta.persistence.*;
 import lombok.Data;
-
+import lombok.Getter;
+import lombok.Setter;
 
 
 import java.time.LocalDateTime;
@@ -13,7 +14,9 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 //Adding Lombok
-@Data
+@Setter
+@Getter
+
 public class User {
 
     @Id

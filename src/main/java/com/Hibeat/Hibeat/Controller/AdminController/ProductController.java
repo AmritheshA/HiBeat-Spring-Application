@@ -1,8 +1,10 @@
 package com.Hibeat.Hibeat.Controller.AdminController;
 
+import com.Hibeat.Hibeat.Model.Admin.Brands;
 import com.Hibeat.Hibeat.Model.Admin.Categories;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Product_DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
+import com.Hibeat.Hibeat.Repository.Admin.BrandRepository;
 import com.Hibeat.Hibeat.Repository.Admin.CategoryRepository;
 import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
 import com.Hibeat.Hibeat.Repository.User.UserRepository;
@@ -25,18 +27,19 @@ public class ProductController {
     UserRepository userRepository;
     CategoryRepository categoryRepository;
     ModelMapperConverter modelMapperConverter;
-    
+    private final BrandRepository brandRepository;
     private final AdminProductService adminProductService;
 
     @Autowired
     public ProductController(ProductRepository productRepository,
                              ModelMapperConverter modelMapperConverter,
                              UserRepository userRepository,
-                             CategoryRepository categoryRepository, AdminProductService adminProductService) {
+                             CategoryRepository categoryRepository, BrandRepository brandRepository, AdminProductService adminProductService) {
         this.productRepository = productRepository;
         this.modelMapperConverter = modelMapperConverter;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.brandRepository = brandRepository;
         this.adminProductService = adminProductService;
     }
 
@@ -49,7 +52,11 @@ public class ProductController {
     public String addProduct(Model model) {
 
         List<Categories> categories = categoryRepository.findAll();
+        List<Brands> brands = brandRepository.findAll();
+
         model.addAttribute("categories", categories);
+        model.addAttribute("brands", brands);
+
         return "Admin/addProduct";
     }
 

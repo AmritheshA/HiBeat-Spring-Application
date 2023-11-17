@@ -34,6 +34,16 @@ public class ProductServiceImp implements ProductService {
         return productRepository.findProductsByNameContaining(searchKey);
     }
 
+    @Override
+    public List<Products> searchProductByCategory(Integer value) {
+        return productRepository.findByCategories(value);
+    }
+
+//    @Override
+//    public List<Products> searchProductByBrand(String value) {
+//        return productRepository.findByBrandContaining(value);
+//    }
+
     public Products findAllById(int id) {
         return productRepository.findAllById(id);
     }

@@ -17,6 +17,7 @@ public interface OrderRepository extends JpaRepository<Orders ,Integer> {
 
     List<Orders> findByUser(User user);
 
+    Orders findByOrdersId(Integer ordersId);
 
     @Query("SELECT COUNT(o) FROM Orders o WHERE o.status = 'Delivered' AND o.deliveredDate <= CURRENT_DATE")
     Integer totalSoldProducts();
@@ -33,4 +34,6 @@ public interface OrderRepository extends JpaRepository<Orders ,Integer> {
     @Query("SELECT o FROM Orders o WHERE o.status = 'Delivered' AND o.deliveredDate >= :yearStart AND o.deliveredDate <= :yearEnd")
     List<Orders> getYearlyFromStartToEnd(@Param("yearStart") LocalDate yearStart, @Param("yearEnd") LocalDate yearEnd);
 
+    @Query("SELECT o FROM Orders o WHERE o.status = 'Delivered' AND o.deliveredDate >= :startDate AND o.deliveredDate <= :endDate")
+    List<Orders> monthlySalesReport(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

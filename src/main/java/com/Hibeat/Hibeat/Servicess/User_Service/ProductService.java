@@ -12,11 +12,16 @@ public interface ProductService {
 
     List<Products> searchProductByName(String searchKey);
 
+    List<Products> searchProductByCategory(Integer value);
+
+//    List<Products> searchProductByBrand(String value);
+
     Products findAllById(int id);
 
     List<Products> findByCategories(int categoryId);
 
     Optional<Products> findById(int productId);
+
 
 
 }

@@ -2,38 +2,126 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Listing</title>
+    <title>Invoice</title>
     <style>
-        .offer-tag {
-            position: absolute;
-            background-color: red;
-            color: white;
-            padding: 5px 10px;
-            font-weight: bold;
-            z-index: 1;
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        #invoice {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #header {
+            background-color: #3498db;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #header img {
+            max-width: 100px;
+            height: auto;
+        }
+
+        #content {
+            padding: 20px;
+        }
+
+        h1 {
+            color: #3498db;
+        }
+
+        #customer, #order {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        #footer {
+            background-color: #3498db;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-<div class="product-listing">
-    <div class="product-card">
-        <img src="product-image.jpg" alt="Product Image">
-        <div class="offer-tag">
-            20% OFF
+<div id="invoice">
+    <div id="header">
+        <!-- Your company logo and details go here -->
+        <img src="your_logo.png" alt="Company Logo">
+        <p>Your Company Name</p>
+        <p>Address: Your Company Address</p>
+    </div>
+
+    <div id="content">
+        <h1>Invoice</h1>
+        <p>Invoice Number: INV-12345</p>
+        <p>Date: 2023-11-14</p>
+
+        <!-- Your customer details and order information go here -->
+        <div id="customer">
+            <h2>Customer Information</h2>
+            <p>Customer Name: John Doe</p>
+            <p>Email: john.doe@example.com</p>
+        </div>
+
+        <div id="order">
+            <h2>Order Details</h2>
+            <!-- Add a table or list for itemized order details -->
+            <table>
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Product A</td>
+                    <td>2</td>
+                    <td>$50.00</td>
+                    <td>$100.00</td>
+                </tr>
+                <!-- Add more rows for additional items -->
+                </tbody>
+            </table>
+
+            <p>Total Amount: $100.00</p>
         </div>
     </div>
-    <div class="product-card">
-        <img src="product-image.jpg" alt="Product Image">
-        <div class="offer-tag">
-            30% OFF
-        </div>
-    </div>
-    <div class="product-card">
-        <img src="product-image.jpg" alt="Product Image">
-        <div class="offer-tag">
-            10% OFF
-        </div>
+
+    <div id="footer">
+        <p>Thank you for your business!</p>
     </div>
 </div>
 </body>

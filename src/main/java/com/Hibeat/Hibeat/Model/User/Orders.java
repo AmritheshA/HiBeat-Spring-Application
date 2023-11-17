@@ -2,16 +2,15 @@ package com.Hibeat.Hibeat.Model.User;
 
 import com.Hibeat.Hibeat.Model.Admin.Payments;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Table(name = "orders")
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Orders {

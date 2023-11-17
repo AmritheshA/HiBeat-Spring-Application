@@ -1,6 +1,8 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
+import com.Hibeat.Hibeat.Model.Admin.Brands;
 import com.Hibeat.Hibeat.Model.Admin.Categories;
+import com.Hibeat.Hibeat.Repository.Admin.BrandRepository;
 import com.Hibeat.Hibeat.Repository.Admin.CategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,12 @@ import java.util.Optional;
 public class AdminCategoryServiceImp implements AdminCategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final BrandRepository brandRepository;
 
     @Autowired
-    public AdminCategoryServiceImp(CategoryRepository categoryRepository) {
+    public AdminCategoryServiceImp(CategoryRepository categoryRepository, BrandRepository brandRepository) {
         this.categoryRepository = categoryRepository;
+        this.brandRepository = brandRepository;
     }
 
     @Override
@@ -44,19 +48,31 @@ public class AdminCategoryServiceImp implements AdminCategoryService {
     }
 
     @Override
+    public Brands save(Brands brands) {
+        return brandRepository.save(brands);
+    }
+
+    @Override
     public String getCategories(String searchKey, Model model) {
         try {
 
             List<Categories> category = findAll((Sort.by(Sort.Direction.ASC, "id")));
             List<Categories> categories = findByCategoryNameContaining(searchKey);
 
+            List<Brands> brands = brandRepository.findAll((Sort.by(Sort.Direction.ASC, "id")));
+            List<Brands> brand = brandRepository.findByBrandName(searchKey);
+
             category.sort(Comparator.comparing(Categories::getId));
+            brands.sort(Comparator.comparing(Brands::getId));
             categories.sort(Comparator.comparing(Categories::getId));
 
             if (searchKey != null) {
                 model.addAttribute("categories", categories);
+                model.addAttribute("brands",brand);
+
             } else if (!(category.isEmpty())) {
                 model.addAttribute("categories", category);
+                model.addAttribute("brands",brands);
             }
 
             return "Admin/categories";
@@ -118,6 +134,54 @@ public class AdminCategoryServiceImp implements AdminCategoryService {
                     category.setStatus("ACTIVE");
                 }
                 save(category);
+            }
+
+            return "redirect:/admin/categories";
+        } catch (Exception e) {
+            log.info("disableCategories" + e.getMessage());
+            return "Exception/404";
+        }
+    }
+//    ----------------------------------------------Brand----------------------------------------------
+
+    public String addBrand(String BrandName) {
+        Brands brands = new Brands();
+        brands.setBrandName(BrandName);
+        save(brands);
+        return "redirect:/admin/categories";
+    }
+
+    public String editBrand(Integer id, String newBrandName) {
+        try {
+            Optional<Brands> brand = brandRepository.findById(id);
+            Brands brands = brand.get();
+
+            brands.setBrandName(newBrandName);
+            save(brands);
+            return "redirect:/admin/categories";
+        } catch (Exception e) {
+            log.info("editCategories, " + e.getMessage());
+            return "Exception/404";
+        }
+    }
+
+    public String disableBrands(Integer id) {
+        try {
+            Optional<Brands> brands = brandRepository.findById(id);
+
+            if (brands.isPresent()) {
+
+                Brands brand = brands.get();
+
+                if (brand.getStatus().equals("ACTIVE")) {
+
+                    brand.setStatus("IN-ACTIVE");
+
+                } else if (brand.getStatus().equals("IN-ACTIVE")) {
+
+                    brand.setStatus("ACTIVE");
+                }
+                save(brand);
             }
 
             return "redirect:/admin/categories";

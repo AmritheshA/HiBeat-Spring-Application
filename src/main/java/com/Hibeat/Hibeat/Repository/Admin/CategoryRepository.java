@@ -12,6 +12,8 @@ public interface CategoryRepository extends JpaRepository<Categories, Integer> {
     List<Categories> findAll();
 
     List<Categories> findByCategoryNameContaining(String searchKey);
+
+    List<Categories> findByCategoryName(String name);
     
 
 }

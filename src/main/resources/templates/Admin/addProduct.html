@@ -126,6 +126,12 @@
                                     <option name="categories" th:each="category : ${categories}" th:value="${category.id}" th:text="${category.categoryName}"></option>
                                 </select>
                             </div>
+                            <div class="input-field">
+                                <label for="brands">Brands:</label>
+                                <select id="brands" name="brand">
+                                    <option name="brand" th:each="brand : ${brands}" th:value="${brand.id}"th:text="${brand.brandName}"></option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 

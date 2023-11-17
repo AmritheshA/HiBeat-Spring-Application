@@ -62,6 +62,11 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    public Orders findByOrdersId(Integer ordersId) {
+        return orderRepository.findByOrdersId(ordersId);
+    }
+
+    @Override
     public String myOrder(Model model) {
         try {
             String userName = userServices.currentUserName();
@@ -159,6 +164,50 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    public ResponseEntity<String> applyCoupon(String couponCode) {
+        try {
+            Cart cart = cartService.findByUserId(userServices.currentUser().getId());
+
+            Coupons coupons = couponService.findByCouponCode(couponCode);
+            log.info("coupon Code" + couponCode);
+            double totalAmount = cart.getTotalCartAmount();
+            double couponMinAmount = coupons.getMinimumAmount();
+            double discountAmount = coupons.getDiscountAmount();
+
+            if (!(coupons.getUserid().contains(userServices.currentUser().getId()))) {
+                if (totalAmount > couponMinAmount) {
+                    cart.setTotalCartAmount(totalAmount - discountAmount);
+                    cart.setUsedCoupon(couponCode);
+
+                    coupons.getUserid().add(userServices.currentUser().getId());
+
+                    cartService.saveCart(cart);
+                    couponService.save(coupons);
+                } else {
+                    return ResponseEntity.ok("A coupon is in use");
+                }
+                return ResponseEntity.ok().body("coupon applied successfully");
+            }else{
+                return ResponseEntity.ok().body("Sorry You Used This Coupon Before");
+            }
+        } catch (Exception e) {
+            log.info("applyCoupon, " + e.getMessage());
+            return ResponseEntity.ok().body("failed");
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<String> removeCoupon() {
+        Cart cart = cartService.findByUserId(userServices.currentUser().getId());
+        Coupons coupons = couponService.findByCouponCode(cart.getUsedCoupon());
+        cart.setTotalCartAmount(cart.getTotalCartAmount() + coupons.getDiscountAmount());
+        cart.setUsedCoupon(null);
+        cartService.saveCart(cart);
+        return null;
+    }
+
+    @Override
     public String orderDetails(String orderId, Model model) {
         try {
 
@@ -182,34 +231,32 @@ public class OrderServiceImp implements OrderService {
             Cart cart = cartService.findByUserId(user.getId());
             Coupons coupons = couponService.findByCouponCode(cart.getUsedCoupon());
 
-            if (coupons == null) {
-                double discountAmount = 0.0;
-            } else {
-                double discountAmount = coupons.getDiscountAmount();
-            }
             List<CartProduct> cartProducts = cart.getCartProducts();
+            double totalAmount = 0.0;
 
             if (cartProducts.isEmpty()) {
                 return "Exception/CartIsEmpty";
             }
 
+            if (coupons != null) {
+                totalAmount = cart.getTotalCartAmount() - coupons.getDiscountAmount();
+                cart.setTotalCartAmount(cart.getTotalCartAmount() - coupons.getDiscountAmount());
+            } else {
+                totalAmount = cart.getTotalCartAmount();
+            }
+
             model.addAttribute("cartProducts", cartProducts);
             model.addAttribute("addresses", user.getAddresses());
-            model.addAttribute("totalAmount", cart.getTotalCartAmount());
+            model.addAttribute("totalAmount", totalAmount);
             model.addAttribute("walletAmount", user.getWallet().getWalletTotalAmount());
 
             if (coupons != null) {
-                if (coupons.getStatus().equals("ACTIVE") && coupons.getSingleOrMultiple().equals("multiple") ||
-                        coupons.getSingleOrMultiple().equals("single") && coupons.getUserid().isEmpty()) {
-
-                    model.addAttribute("discountAmount", coupons.getDiscountAmount());
-
-                } else {
-                    model.addAttribute("discountAmount", 0.0);
-                }
+                model.addAttribute("discountAmount", coupons.getDiscountAmount());
             } else {
                 model.addAttribute("discountAmount", 0.0);
             }
+
+            cartService.saveCart(cart);
 
         } catch (Exception e) {
             log.info("checkOut" + e.getMessage());
@@ -223,6 +270,7 @@ public class OrderServiceImp implements OrderService {
         try {
             User user = userServices.findByName(userServices.currentUserName());
             Cart cart = cartService.findByUserId(user.getId());
+            Coupons coupons = couponService.findByCouponCode(cart.getUsedCoupon());
             Orders orders = new Orders();
 
 //      mapping cartProduct into orderProduct --->
@@ -254,6 +302,11 @@ public class OrderServiceImp implements OrderService {
             cart.setTotalCartAmount(0.0);
             cart.getCartProducts().clear();
             cart.setUsedCoupon(null);
+            if(coupons != null){
+                coupons.getUserid().add(userServices.currentUser().getId());
+                couponService.save(coupons);
+            }
+
             return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Success");
         } catch (Exception e) {
             return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("error");

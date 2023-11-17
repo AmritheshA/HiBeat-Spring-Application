@@ -1,9 +1,11 @@
 package com.Hibeat.Hibeat.Servicess.Admin_Service;
 
+import com.Hibeat.Hibeat.Model.Admin.Brands;
 import com.Hibeat.Hibeat.Model.Admin.Categories;
 import com.Hibeat.Hibeat.Model.Admin.Products;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Product_DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
+import com.Hibeat.Hibeat.Repository.Admin.BrandRepository;
 import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +26,14 @@ public class AdminProductServiceImp implements AdminProductService {
     private final ProductRepository productRepository;
     private final AdminCategoryService adminCategoryService;
     private final ModelMapperConverter modelMapperConverter;
+    private final BrandRepository brandRepository;
 
     @Autowired
-    public AdminProductServiceImp(ProductRepository productRepository, AdminCategoryService adminCategoryService, ModelMapperConverter modelMapperConverter) {
+    public AdminProductServiceImp(ProductRepository productRepository, AdminCategoryService adminCategoryService, ModelMapperConverter modelMapperConverter, BrandRepository brandRepository) {
         this.productRepository = productRepository;
         this.adminCategoryService = adminCategoryService;
         this.modelMapperConverter = modelMapperConverter;
+        this.brandRepository = brandRepository;
     }
 
     @Override
@@ -50,6 +54,7 @@ public class AdminProductServiceImp implements AdminProductService {
 
             if (!(products.isEmpty())) {
                 model.addAttribute("products", products);
+
             } else {
                 log.info("There is no product in the database...");
             }
@@ -94,8 +99,12 @@ public class AdminProductServiceImp implements AdminProductService {
                 model.addAttribute("products", products);
 
                 List<Categories> category = adminCategoryService.findAll((Sort.by(Sort.Direction.ASC, "id")));
+                List<Brands> brands = brandRepository.findAll((Sort.by(Sort.Direction.ASC, "id")));
+
                 if (!(category.isEmpty())) {
                     model.addAttribute("categories", category);
+                    model.addAttribute("brands", brands);
+
 
                     model.addAttribute("images", products.getImages_path());
                 }

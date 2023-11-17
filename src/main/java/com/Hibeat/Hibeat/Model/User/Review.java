@@ -3,12 +3,15 @@ package com.Hibeat.Hibeat.Model.User;
 import com.Hibeat.Hibeat.Model.Admin.Products;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "review")
-@Data
+@Setter
+@Getter
 public class Review {
 
     @Id

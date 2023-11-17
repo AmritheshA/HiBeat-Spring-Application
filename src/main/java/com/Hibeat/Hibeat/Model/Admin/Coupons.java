@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -39,7 +40,7 @@ public class Coupons {
     private String singleOrMultiple;
 
     @ElementCollection
-    private Set<Integer> userid;
+    private Set<Integer> userid = new HashSet<>();
 
 
 

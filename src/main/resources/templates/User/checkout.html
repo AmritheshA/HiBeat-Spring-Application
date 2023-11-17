@@ -12,8 +12,12 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 
 
     <script>
@@ -299,29 +303,35 @@
                         <tr>
                             <td><strong>Coupon Discount</strong></td>
                             <td></td>
-                            <td>
-                                <sub th:if="${discountAmount == 0.0}">Coupon Is Expired</sub>
-                            </td>
+                            <td></td>
                             <td id="discountAmount" th:text="${discountAmount}"><strong></strong></td>
                         </tr>
                         <tr>
                             <td><strong>Total</strong></td>
                             <td></td>
                             <td></td>
-                            <td id="totalAmountId" th:text="${totalAmount != null && discountAmount != null ? (totalAmount - discountAmount) : ''}"><strong></strong>
+                            <td id="totalAmountId" th:text="${totalAmount}"><strong></strong>
                             </td>
                         </tr>
 
 
                         </tbody>
                     </table>
+                    <div style="width: 50%;float: right" class="input-group mb-3">
+                        <input  type="text" class="form-control" placeholder="Coupon Code" id="coupon">
+                        <div class="input-group-append">
+                            <button onclick="applyCoupon()" th:action="submit" class="btn btn-primary"
+                                    type="button">Apply Coupon
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- Payment Options -->
                     <h5 style="margin-bottom: 25px;" class="card-title mt-3">Payment Options</h5>
 
-<!--                    <button id="payButton">RazorPay</button>-->
+                    <button id="payButton">RazorPay</button>
 
-                    <div id="paypal-button-container"></div>
+                    <div id="paypal-button-container"></div>    
 
                     <br>
                     <div class="form-check">
@@ -500,6 +510,33 @@
     };
 
 
+    function applyCoupon(){
+        const couponCode = document.getElementById("coupon");
+        $.ajax({
+            url:`/user/apply-coupon?value=${couponCode.value}`,
+            method:"get",
+            success:function (response){
+               toast(response);
+            }
+        })
+    }
+function toast(message){
+    Toastify({
+        text: message,
+        duration: 1000,
+        destination: "https://github.com/apvarun/toastify-js",
+        newWindow: true,
+        close: false,
+        gravity: "top", // `top` or `bottom`
+        position: "center", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+        },
+        onClick: function () {
+        }
+    }).showToast();
+}
 
 </script>
 

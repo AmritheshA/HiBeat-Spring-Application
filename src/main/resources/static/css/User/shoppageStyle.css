@@ -14,8 +14,7 @@ margin-right:15px;
     padding: 10px 20px; /* Adjust padding as needed */
     /*background-color: #; /* Change the background color to your preference */
     color: #3498db; /* Text color */
-    border: 1px solid #3498db; /* Border color */
-    border-radius: 5px; /* Rounded corners */
+    border: none;
     text-decoration: none; /* Remove underline from the link */
     transition: background-color 0.3s ease; /* Smooth hover effect */
 }
@@ -47,4 +46,24 @@ margin-right:15px;
 .card-div{
     height: 500px;
     width: 250px;
+}
+.offcanvas {
+    width: 300px !important;
+}
+.offcanvas-body {
+    padding: 1rem;
+}
+.filter-menu {
+    list-style-type: none;
+    padding: 0;
+}
+.filter-menu li {
+    margin-bottom: 1rem;
+}
+.checkbox-list {
+    list-style-type: none;
+    padding: 0;
+}
+.checkbox-list li {
+    margin-bottom: 0.5rem;
 }

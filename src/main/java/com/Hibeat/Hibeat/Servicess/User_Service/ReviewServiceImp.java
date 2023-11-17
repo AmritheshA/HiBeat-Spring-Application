@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -74,30 +73,30 @@ public class ReviewServiceImp implements ReviewService {
         return reviewRepository.findByUser(user);
     }
 
-    @Override
-    public ResponseEntity<String> saveReplay(String replay, int reviewId) {
-        try {
-            Optional<Review> review1 = reviewRepository.findById(reviewId);
-            if (review1.isPresent()) {
-                Review review = review1.get();
-                if(review.getUser().equals(userServices.currentUser())){
-                    return ResponseEntity.ok().body("null");
-                }
-//                List<String> replays = review.getReplays();
-//                replays.add(replay);
-                saveReview(review);
-            }
-            return ResponseEntity.ok().body(userServices.currentUserName());
-        } catch (Exception e) {
-            log.info("saveReplay  " + e.getMessage());
-            return ResponseEntity.ok().body(null);
-        }
-    }
-
-    @Override
-    public Review findReview(Integer reviewId) {
-        return reviewRepository.findAllById(reviewId);
-    }
+//    @Override
+//    public ResponseEntity<String> saveReplay(String replay, int reviewId) {
+//        try {
+//            Optional<Review> review1 = reviewRepository.findById(reviewId);
+//            if (review1.isPresent()) {
+//                Review review = review1.get();
+//                if(review.getUser().equals(userServices.currentUser())){
+//                    return ResponseEntity.ok().body("null");
+//                }
+////                List<String> replays = review.getReplays();
+////                replays.add(replay);
+//                saveReview(review);
+//            }
+//            return ResponseEntity.ok().body(userServices.currentUserName());
+//        } catch (Exception e) {
+//            log.info("saveReplay  " + e.getMessage());
+//            return ResponseEntity.ok().body(null);
+//        }
+//    }
+//
+//    @Override
+//    public Review findReview(Integer reviewId) {
+//        return reviewRepository.findAllById(reviewId);
+//    }
 
     @Override
     public Review getReview(int id) {

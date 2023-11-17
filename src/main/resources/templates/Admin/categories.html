@@ -71,6 +71,37 @@
 
                 </tbody>
             </table>
+            <div class="content-header">
+                <h1>Brands</h1>
+                <a onclick="openNewBrandModal()" class="new-product">New Brand</a>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Brand Name</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="brand : ${brands}"
+                    th:style="${brand.status == 'IN-ACTIVE' ? 'background-color: #ffaaaa;' : 'background-color: #d4d4d4'}">
+                    <td th:text="${brand.id}"></td>
+                    <td th:text="${brand.brandName}"></td>
+                    <td th:text="${brand.status}"></td>
+                    <td>
+                        <!-- Style the action links as buttons -->
+                        <a th:onclick="'openBrandEditModal(\'' + ${brand.id} + '\');'" class="action-link">Edit</a>
+                        <a th:onclick="'openConfirmationBrandModal(\'' + ${brand.id} + '\');'"
+                           class="action-link">Disable</a>
+
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
 
 
         </main>
@@ -100,6 +131,27 @@
             </div>
         </div>
     </div>
+    <!--Edit Brand-->
+    <div class="modal fade" id="editBrandModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editBrandModalLabel">Edit Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="editBrandInput" class="form-control" placeholder="Enter new category name">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="editBrandConfirmButton" type="button" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!--    New categories-->
     <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
@@ -118,6 +170,28 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button id="newConfirmButton" type="button" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--    New brand-->
+    <div class="modal fade" id="newBrandModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newBrandModalLabel">New Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="newBrandInput" class="form-control" placeholder="Enter new category name">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="newBrandConfirmButton" type="button" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -146,6 +220,29 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="confirmationBrandModal" tabindex="-1" role="dialog"
+         aria-labelledby="confirmationModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationBrandModalLabel">Confirmation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure to do this?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button id="brandConfirmButton" type="button" class="btn btn-secondary">Conform</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 
@@ -175,6 +272,20 @@
         });
     }
 
+    function openNewBrandModal() {
+        // Open the modal
+        $('#newBrandModal').modal('show');
+
+
+        // When the user clicks the Save Changes button
+        $('#newBrandConfirmButton').click(function () {
+            let newCategoryName = $('#newBrandInput').val(); // Get the updated category name
+            let targetUrl = '/admin/categories/new-brand?newBrand=' + newCategoryName; // Construct the URL
+            window.location.href = targetUrl;
+        });
+    }
+
+
     function openEditModal(id) {
         // Open the modal
         $('#editModal').modal('show');
@@ -187,12 +298,29 @@
         });
     }
 
+    function openBrandEditModal(id) {
+        // Open the modal
+        $('#editBrandModal').modal('show');
+
+        // When the user clicks the Save Changes button
+        $('#editBrandConfirmButton').click(function () {
+            let newCategoryName = $('#editBrandInput').val(); // Get the updated category name
+            let targetUrl = '/admin/categories/edit-brand?id=' + id + '&newName=' + newCategoryName; // Construct the URL
+            window.location.href = targetUrl;
+        });
+    }
+
     let cat_id;
+    let brand_id;
 
     function openConfirmationModal(categoryId) {
-        // Set the category ID in the modal's Confirm button data attribute for later use
         cat_id = categoryId;
         $('#confirmationModal').modal('show');
+    }
+
+    function openConfirmationBrandModal(categoryId) {
+        brand_id = categoryId;
+        $('#confirmationBrandModal').modal('show');
     }
 
     document.getElementById("confirmButton").addEventListener("click", function () {
@@ -200,6 +328,12 @@
         console.log("on confirm ")
         // Redirect to the admin/disableCategory with the category ID
         window.location.href = '/admin/categories/disable-category/' + cat_id;
+    });
+    document.getElementById("brandConfirmButton").addEventListener("click", function () {
+        // Get the category ID from the Confirm button data attribute
+        console.log("on confirm ")
+        // Redirect to the admin/disableCategory with the category ID
+        window.location.href = '/admin/categories/disable-brand/' + brand_id;
     });
 
 </script>

@@ -66,7 +66,18 @@
                     Name: <span th:text="${product.name}"></span> <br>
                     Over Ear Connectivity Technology: Bluetooth 5.2
                 </p>
-                <p style="font-family:'Montserrat';font-size:25px;font-weight:bold;" th:text="${'₹'+product.price}"></p>
+                <div style="display: flex; align-items: center;">
+                    <p th:style="${product.productOffers ne null ? 'text-decoration: line-through;font-family:Montserrat; font-size:25px; font-weight:bold; margin-right: 10px;' : 'none'}"
+                       th:text="${'₹'+( product.productOffers ne null ? product.price + product.productOffers.discountAmount : product.price) }"></p>
+                    <p style="font-family:'Montserrat'; font-size:20px; font-weight:bold; margin-left: 10px;"
+                       th:if="${product.productOffers ne null}"
+                       th:text="${(product.price)}">
+                    </p>
+                </div>
+
+
+
+
                 <div class="d-flex align-items-center">
                     <button class="btn btn-primary" id="add-to-cart"><a
                             th:href="@{/user/cart/add-to-cart(id=${product.id})}">Add
@@ -257,7 +268,7 @@
         <div class="col-sm-6">
             <div class="rating-block">
                 <h4>Average user rating</h4>
-                <h2 class="bold padding-bottom-7" th:text="${averageRating}"></h2>
+                <h2 class="bold padding-bottom-7" th:text="${averageRating != null && !averageRating.isNaN() ? averageRating : 0}"></h2>
                 <h6>Total Reviewers</h6>
                 <h2 class="bold padding-bottom-7"><small th:text="${totalReviews}"></small></h2>
 

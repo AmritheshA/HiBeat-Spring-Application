@@ -43,4 +43,21 @@ public class CategoryController {
     public String disableCategory(@PathVariable("id") int id) {
         return categoryService.disableCategories(id);
     }
+
+    @GetMapping("/new-brand")
+    public String newBrands(@RequestParam("newBrand") String newBrands) {
+        return categoryService.addBrand(newBrands);
+    }
+
+
+    @GetMapping("/edit-brand")
+    public String edit_Brand(@RequestParam("id") Integer id,
+                             @RequestParam("newName") String newBrandName) {
+        return categoryService.editBrand(id, newBrandName);
+    }
+
+    @GetMapping("/disable-brand/{id}")
+    public String disableBrand(@PathVariable("id") Integer id) {
+        return categoryService.disableBrands(id);
+    }
 }

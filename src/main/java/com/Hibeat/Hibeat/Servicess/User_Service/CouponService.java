@@ -13,4 +13,5 @@ public interface CouponService {
 
     ResponseEntity<String> removeExistingCoupon();
 
+    Coupons save(Coupons coupons);
 }

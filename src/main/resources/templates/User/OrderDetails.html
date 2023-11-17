@@ -65,9 +65,8 @@
                 </div>
             </div>
             <a th:href="@{/user/cancelOrder(orderId=${orders.orderId})}"><button class="btn-primary" style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px;  cursor: pointer;  transition: background-color 0.3s;">Cancel Order</button></a>
+            <a th:href="@{/user/generate(id=${orders.ordersId})}"><button class="btn-primary" style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px;  cursor: pointer;  transition: background-color 0.3s;">Download Invoice</button></a>
         </div>
-
-
     </div>
 </div>
 

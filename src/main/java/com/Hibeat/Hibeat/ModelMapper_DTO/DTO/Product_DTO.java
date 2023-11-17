@@ -14,5 +14,7 @@ public class Product_DTO {
     private int category;
     private String color;
     private String type;
+    private String[] images;
+    private int id;
 
 }

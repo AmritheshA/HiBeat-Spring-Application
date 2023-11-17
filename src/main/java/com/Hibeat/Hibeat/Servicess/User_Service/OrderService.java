@@ -17,11 +17,17 @@ public interface OrderService {
 
     Orders findByOrderId(String orderId);
 
+    Orders findByOrdersId(Integer ordersId);
+
     String myOrder(Model model);
 
     String cancelOrder(String orderId);
     Page<OrderProducts> findAll(Pageable pageable);
 
     Orders save(Orders order);
+
+    ResponseEntity<String> applyCoupon(String couponCode);
+
+    ResponseEntity<String> removeCoupon();
 
 }

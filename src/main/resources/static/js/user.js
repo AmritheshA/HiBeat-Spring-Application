@@ -246,3 +246,114 @@ function previewImage() {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+//----------------------------------------------------shop-----------------------------------------
+// $(document).ready(function () {
+//     // Event listener for checkbox change
+//     $('input[type="checkbox"]').change(function () {
+//         // Check if the checkbox is checked
+//         if ($(this).prop('checked')) {
+//             // Get label text
+//             let label = $(this).parent().text().trim();
+//
+//             // Get filter type (Brand, Category, Type)
+//             let filterType = $(this).closest('ul.checkbox-list').prev('span').text().trim();
+//
+//             // AJAX request for checked state
+//             $.ajax({
+//                 url: `/user/filter`,
+//                 method: 'GET',
+//                 data:{
+//                     type: filterType,
+//                     value:label
+//                 },
+//                 success: function (response) {
+//
+//                     console.log(response);
+//                     // updateProductHTML(response,true);
+//
+//                 }
+//             });
+//         } else {
+//
+//             let label = $(this).parent().text().trim();
+//
+//             let filterType = $(this).closest('ul.checkbox-list').prev('span').text().trim();
+//
+//             $.ajax({
+//                 url: `/user/filterProducts?type=${filterType}&value=${label}&checked=false`,
+//                 method: 'GET',
+//                 success: function (response) {
+//                     console.log("unchecked")
+//                     console.log(response)
+//                     updateProductHTML(response,false);
+//
+//                 }
+//             });
+//
+//         }
+//     });
+// });
+
+$(document).ready(function () {
+
+
+    let filterData = {};
+    let checked = 0;
+    let unchecked = 0;
+
+    $('input[type="checkbox"]').change(function () {
+        // Get label text
+        let label = $(this).parent().text().trim();
+
+        // Get filter type (Brand, Category, Type)
+        let filterType = $(this).closest('ul.checkbox-list').prev('span').text().trim();
+
+        // If the filter type does not exist in the data object, initialize it as an empty array
+        if (!filterData.hasOwnProperty(filterType)) {
+            filterData[filterType] = [];
+        }
+
+        // If the checkbox is checked, add the label to the array
+        if ($(this).is(':checked')) {
+            filterData[filterType].push(label);
+            checked++;
+        } else {
+            filterData[filterType] = filterData[filterType].filter(item => item !== label);
+            unchecked++;
+        }
+
+        if (checked - unchecked != 0) {
+            $.ajax({
+                url: '/user/filter',
+                method: 'post',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    filterData
+                }),
+                success: function (response) {
+                    console.log(response);
+                    updateProductHTML(response);
+                }
+            });
+        }else{
+            $.ajax({
+                url: '/user/filter',
+                method: 'post',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "status" : "true"
+                }),
+                success: function (response) {
+                    console.log(response);
+                    updateProductHTML(response);
+                }
+            });
+        }
+    });
+});
+
+
+

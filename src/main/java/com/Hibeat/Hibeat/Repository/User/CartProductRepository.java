@@ -9,4 +9,5 @@ public interface CartProductRepository extends   JpaRepository<CartProduct, Inte
 
     void deleteByCartId(Integer cartId);
 
+
 }

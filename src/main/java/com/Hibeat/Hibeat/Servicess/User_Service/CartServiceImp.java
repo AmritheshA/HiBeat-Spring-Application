@@ -46,19 +46,20 @@ public class CartServiceImp implements CartService {
             Coupons coupons = couponService.findByCouponCode(cart.getUsedCoupon());
 
             List<CartProduct> cartProducts = cart.getCartProducts();
-
+            if (coupons != null) {
+                if (coupons.getStatus().equals("ACTIVE")) {
+                    model.addAttribute("discountAmount", coupons.getDiscountAmount());
+                    model.addAttribute("couponMinAmount", coupons.getMinimumAmount());
+                }
+            } else {
+                model.addAttribute("discountAmount", 0);
+            }
 
             if (cartProducts != null) {
 
                 model.addAttribute("cardProducts", cartProducts.stream().filter(cartProduct -> cartProduct.getProduct().getStatus().equals("ACTIVE")));
                 model.addAttribute("cartIsEmpty", false);
 
-                if (!(cartProducts.isEmpty()) && coupons != null && cart.getTotalCartAmount() > coupons.getDiscountAmount()) {
-                    model.addAttribute("couponsDiscount", coupons.getDiscountAmount());
-                    model.addAttribute("couponMinAmount", coupons.getMinimumAmount());
-                } else {
-                    model.addAttribute("couponsDiscount", 0);
-                }
             } else {
                 model.addAttribute("cartIsEmpty", true);
             }
@@ -66,6 +67,8 @@ public class CartServiceImp implements CartService {
             model.addAttribute("currentTotal", cart.getTotalCartAmount());
 
         } catch (Exception e) {
+            log.info("cart, " + e.getMessage());
+            e.printStackTrace();
             return "Exception/cartNotFound";
         }
         return "User/cart";
@@ -192,7 +195,11 @@ public class CartServiceImp implements CartService {
 
             cart.getCartProducts().removeIf(cartProduct -> cartProduct.getProduct().getId() == productId);
 
-            cart.setTotalCartAmount(cart.getTotalCartAmount() - (products.getPrice() *quantity));
+            if (!(cart.getCartProducts().size() == 0)) {
+                cart.setTotalCartAmount(cart.getTotalCartAmount() - (products.getPrice() * quantity));
+            }else {
+                cart.setTotalCartAmount(0.0);
+            }
 
             cartRepository.save(cart);
             return ResponseEntity.ok().body("success");

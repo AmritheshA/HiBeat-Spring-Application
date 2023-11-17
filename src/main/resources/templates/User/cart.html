@@ -7,11 +7,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 
 
     <style>
@@ -160,7 +163,7 @@
                                     <h1 style="font-size: 15px;">Coupon Discount</h1>
 
                                 </div>
-                                <p id="CouponDiscount" th:text="${couponsDiscount}">0</p>
+                                <p id="CouponDiscount" th:text="${discountAmount}"></p>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
                                 <div>
@@ -169,7 +172,7 @@
                                         <p class="mb-0">(including GST)</p>
                                     </strong>
                                 </div>
-                                <p id="totalAmountIds">[[${currentTotal}]]</p>
+                                <p id="totalAmountIds" th:text="${currentTotal}"></p>
                             </li>
                         </ul>
                         <div class="input-group mb-3">
@@ -180,7 +183,7 @@
                                 </button>
                             </div>
                         </div>
-                        <a href="/user/checkout" type="button" class="btn btn-primary btn-lg btn-block">
+                        <a href="/user/checkout"  type="button" class="btn btn-primary btn-lg btn-block">
                             Go to checkout
                         </a>
                     </div>
@@ -298,32 +301,15 @@
         const multiplierValue = parseFloat(multiplierContent.replace(/[^0-9.]/g, ''));
 
         newTotal = oldTotal;
-
-        console.log("total amount" + subResultElement.innerText);
-        console.log("product" + multiplierValue);
-        console.log("couponMin" + couponMinAmounts.value);
         const subResultContent = parseFloat(subResultElement.innerText.replace(/[^0-9.]/g, '')); // Convert content to a number
 
-        console.log((subResultContent - multiplierValue));
-        console.log(couponMinAmounts.value);
-
         if ((subResultContent - multiplierValue) <= parseFloat(couponMinAmounts.value) && counter === -1) {
+            console.log("inside")
             $('#reducingModal').modal('show');
             return;
+        } else {
+            console.log("else")
         }
-
-        button.addEventListener("click", function () {
-            removeHelper(productId, card, oldTotal, multiplierValue);
-            $('#removeConformation').modal('hide');
-            couponDiscount.innerText = "0.0";
-            $.ajax({
-                url: '/user/cart/removeCoupon',
-                method: "GET",
-                success: function (response) {
-                    console.log("Response from removeCoupon" + response);
-                }
-            });
-        });
 
         if (count <= 1 && counter <= 0) {
             return;
@@ -338,10 +324,9 @@
         } else if (counter === 1) {
             newTotal = oldTotal + multiplierValue;
         }
-
-
         subResultElement.textContent = "₹ " + newTotal;
         resultElement.textContent = " ₹ " + newTotal;
+        ;
 
         $.ajax({
             url: `/user/cart/quantity-counter?counter=${counter}&id=${productId}`,
@@ -360,12 +345,10 @@
         countElement.value = count;
     }
 
-    // Function to remove products
+    let globalElement;
     function removeProducts(element) {
-        const button = document.getElementById("conformToRemove");
         const productId = element.getAttribute('data-product-id');
         const card = document.getElementById("card-" + productId);
-
         const multiplierElement = document.getElementById("multiplier-" + productId);
 
         const multiplierContent = multiplierElement.textContent.trim();
@@ -373,25 +356,38 @@
         const oldTotal = parseFloat(subResultElement.textContent.replace(/[^0-9.]/g, ''));
         newTotal = oldTotal;
 
+        globalElement = element;
+
+        console.log(couponDiscount.innerText);
+
         if (isReached(String(multiplierValue))) {
             $('#removeConformation').modal('show');
-        } else {
-            removeHelper(productId, card, oldTotal, multiplierValue);
+            return;
         }
-
-        button.addEventListener("click", function () {
             removeHelper(productId, card, oldTotal, multiplierValue);
-            $('#removeConformation').modal('hide');
-            couponDiscount.innerText = "0.0";
-            $.ajax({
-                url: '/user/cart/removeCoupon',
-                method: "GET",
-                success: function (response) {
-                    console.log("Response from removeCoupon" + response);
-                }
-            });
-        });
+            // location.reload();
+
+
     }
+
+    const button = document.getElementById("conformToRemove");
+    button.addEventListener("click", function () {
+
+
+        $('#removeConformation').modal('hide');
+        couponDiscount.innerText = "0";
+
+        $.ajax({
+            url: '/user/cart/removeCoupon',
+            method: "GET",
+            success: function (response) {
+                console.log("Response from removeCoupon" + response);
+            }
+        });
+
+        removeProducts(globalElement);
+
+    });
 
     // Function to help remove products
     function removeHelper(productId, card, oldTotal, multiplierValue) {
@@ -412,7 +408,7 @@
                 if (response === "success") {
                     card.innerHTML = null;
                 }else if (response === "failed"){
-                    alert("Failed To Remove Product From Cart");
+                    toast("Failed To Remove Product From Cart");
                 }
             }
         });
@@ -420,9 +416,13 @@
 
     // Function to check if coupon limit is reached
     function isReached(productAmount) {
+
         const totalAmount = String(document.getElementById("currentTotalAmount").value);
         const couponMinAmount = parseFloat(document.getElementById("couponMinAmount").value);
-        return (totalAmount - productAmount) < couponMinAmount;
+
+        const intValue = parseInt(resultElement.innerText, 10);
+
+        return (intValue - productAmount) < couponMinAmount;
     }
 
     function conformedToChange() {
@@ -433,10 +433,11 @@
             method: "GET",
             success: function (response) {
                 if (response[0] === -1.0) {
-                    alert("Invalid Coupon")
+                    toast("Invalid Coupon");
                 } else {
                     $('#confirmationModal').modal('hide');
                     couponDiscount.innerText = response[1];
+
                 }
             }
         });
@@ -452,12 +453,12 @@
             method: "GET",
             success: function (response) {
                 if (response[0] === -1.0) {
-                    alert("Unfortunately, coupon is invalid");
+                    toast("Unfortunately, coupon is invalid");
                 } else if (response[1] === 0.0) {
-                    alert("Coupon is already in use.");
                     couponDiscount.innerText = response[0];
+                    toast("Coupon is already in use.");
                 } else if (response[0] === 1.0) {
-                    alert("Hurry, Coupon applied successfully");
+                    toast("Hurry, Coupon applied successfully");
                     couponDiscount.innerText = response[1];
                     location.reload();
                 } else if (response[0] === 0.0) {
@@ -465,6 +466,18 @@
                 }
             }
         });
+    }
+
+    function toast(message){
+        Toastify({
+            text: message,
+            duration: 3000,
+            position: "center",
+            className: "info",
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            }
+        }).showToast();
     }
 
 
@@ -479,6 +492,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 
 </body>

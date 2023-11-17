@@ -3,10 +3,13 @@ package com.Hibeat.Hibeat.Model.Admin;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "productOffer")
-@Data
+@Setter
+@Getter
 public class ProductOffers {
 
     @Id
@@ -16,7 +19,7 @@ public class ProductOffers {
     private Integer offerId;
 
     @OneToOne
-    @JoinColumn(name = "product_id", unique = true)
+    @JoinColumn(name = "product_id")
     private Products products;
 
     @Column(name = "percentage")

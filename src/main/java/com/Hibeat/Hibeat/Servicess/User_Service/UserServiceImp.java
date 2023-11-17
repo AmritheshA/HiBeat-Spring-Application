@@ -1,18 +1,18 @@
 package com.Hibeat.Hibeat.Servicess.User_Service;
 
 import com.Hibeat.Hibeat.Model.Admin.Banner;
+import com.Hibeat.Hibeat.Model.Admin.Brands;
+import com.Hibeat.Hibeat.Model.Admin.Categories;
 import com.Hibeat.Hibeat.Model.Admin.Products;
-import com.Hibeat.Hibeat.Model.User.Cart;
-import com.Hibeat.Hibeat.Model.User.Orders;
-import com.Hibeat.Hibeat.Model.User.Review;
-import com.Hibeat.Hibeat.Model.User.User;
+import com.Hibeat.Hibeat.Model.User.*;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.DTO;
+import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Product_DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
 import com.Hibeat.Hibeat.Repository.Admin.BannerRepository;
-import com.Hibeat.Hibeat.Repository.User.CartRepository;
-import com.Hibeat.Hibeat.Repository.User.OrderRepository;
-import com.Hibeat.Hibeat.Repository.User.ReviewRepository;
-import com.Hibeat.Hibeat.Repository.User.UserRepository;
+import com.Hibeat.Hibeat.Repository.Admin.BrandRepository;
+import com.Hibeat.Hibeat.Repository.Admin.CategoryRepository;
+import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
+import com.Hibeat.Hibeat.Repository.User.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -22,8 +22,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
 
 @Service
 @Slf4j
@@ -34,22 +37,28 @@ public class UserServiceImp implements UserServices {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ProductService productService;
+    private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
     private final BannerRepository bannerRepository;
     private final ModelMapperConverter modelMapperConverter;
+    private final CategoryRepository categoryRepository;
+    private final WishlistRepository wishlistRepository;
+    private final BrandRepository brandRepository;
 
 
     @Autowired
-    public UserServiceImp(UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository, ModelMapperConverter modelMapperConverter, PasswordEncoder passwordEncoder, ProductService productService, ReviewRepository reviewRepository, BannerRepository bannerRepository) {
+    public UserServiceImp(UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository, ModelMapperConverter modelMapperConverter, PasswordEncoder passwordEncoder, ProductRepository productRepository, ReviewRepository reviewRepository, BannerRepository bannerRepository, CategoryRepository categoryRepository, WishlistRepository wishlistRepository, BrandRepository brandRepository) {
         this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
         this.modelMapperConverter = modelMapperConverter;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.productService = productService;
+        this.productRepository = productRepository;
         this.reviewRepository = reviewRepository;
         this.bannerRepository = bannerRepository;
+        this.categoryRepository = categoryRepository;
+        this.wishlistRepository = wishlistRepository;
+        this.brandRepository = brandRepository;
     }
 
     public String currentUserName() {
@@ -58,15 +67,27 @@ public class UserServiceImp implements UserServices {
     }
 
     @Override
-    public String shopPage(String searchKey, Model model) {
-        if (searchKey == null) {
-            List<Products> products1 = productService.findAllProduct();
+    public String shopPage(String searchKey, Model model, String type, String value) {
+
+        List<Categories> categories = categoryRepository.findAll();
+        List<Brands> brands = brandRepository.findAll();
+        model.addAttribute("categories", categories);
+        model.addAttribute("brands", brands);
+
+        if (searchKey == null && type == null && value == null) {
+            List<Products> products1 = productRepository.findAll();
 
             List<Products> products = products1.stream().filter(products2 -> products2.getStatus().equals("ACTIVE")).toList();
 
             model.addAttribute("products", products);
+        } else if (type != null && value != null) {
+
+            List<Products> filetProducts = filterByTypeValue(type, value);
+
+            model.addAttribute("products", filetProducts);
+
         } else {
-            List<Products> productsList = productService.searchProductByName(searchKey);
+            List<Products> productsList = productRepository.findByNameContaining(searchKey);
 
             if (!(productsList.isEmpty())) {
                 model.addAttribute("products", productsList);
@@ -76,14 +97,127 @@ public class UserServiceImp implements UserServices {
     }
 
     @Override
+    public List<Product_DTO> filterProducts(Map<String, List<String>> filters, String status) {
+
+        List<Products> result;
+
+        log.info("status" + status);
+
+        if (status == null) {
+            result = new ArrayList<>();
+            for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
+                String key = entry.getKey();
+
+                switch (key) {
+                    case "Category":
+                        List<String> categoryIdsAsString = entry.getValue();
+                        for (String categoryName : categoryIdsAsString) {
+                            List<Categories> categories = categoryRepository.findByCategoryName(categoryName);
+                            for (Categories category : categories) {
+                                List<Products> categoryProducts = productRepository.findByCategories(category.getId());
+                                result.addAll(categoryProducts);
+                            }
+                        }
+                        break;
+                    case "Brand":
+                        log.info("Yaa Inside");
+                        List<String> brandIdsAsString = entry.getValue();
+                        for (String brandName : brandIdsAsString) {
+                            List<Brands> brands = brandRepository.findByBrandName(brandName);
+                            for (Brands brand : brands) {
+                                List<Products> brandProducts = productRepository.findByBrand(brand.getId());
+                                result.addAll(brandProducts);
+                            }
+                        }
+                        break;
+//
+                case "Color":
+                    List<String> colorIdsAsString = entry.getValue();
+                    for (String color : colorIdsAsString) {
+                        List<Products> colorProducts = productRepository.findByColour(color);
+                            result.addAll(colorProducts);
+                    }
+                    break;
+                }
+            }
+        } else {
+            result = productRepository.findAll();
+        }
+
+        List<Products> uniqueProducts = result.stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        return productsToProductDTO(uniqueProducts);
+    }
+
+    @Override
+    public Integer totalCartCount() {
+       Cart cart = cartRepository.findByUser(currentUser());
+       if(cart == null){
+           return 0;
+       }
+       return cart.getCartProducts().size();
+    }
+
+    @Override
+    public Integer totalWishlistCount() {
+        Wishlist wishlist = wishlistRepository.findByUser(currentUser());
+        if(wishlist.getUser() == null){
+            return 0;
+        }
+        return wishlist.getWishlistItems().size();
+    }
+
+
+    public List<Product_DTO> productsToProductDTO(List<Products> productsList) {
+        return productsList.stream()
+                .filter(products -> "ACTIVE".equals(products.getStatus()))
+                .map(this::productToProductDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    private Product_DTO productToProductDTO(Products product) {
+
+        Product_DTO productDTO = new Product_DTO();
+        productDTO.setProductName(product.getName());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setPrice(Double.toString(product.getPrice()));
+        productDTO.setId(product.getId());
+        productDTO.setImages(product.getImages_path());
+
+        return productDTO;
+    }
+
+
+    private List<Products> filterByTypeValue(String type, String value) {
+
+        List<Products> productsList = null;
+
+        if (type.equals("Category")) {
+
+            productsList = productRepository.findByCategories(Integer.parseInt(value));
+//        } else if (type.equals("Brand")) {
+//
+//            productService.searchProductByBrand(value);
+//
+        } else if (type.equals("Type")) {
+
+        }
+
+        return productsList;
+    }
+
+    @Override
     public String productDetails(int id, Model model) {
         try {
-            Products product = productService.findAllById(id);
+            Products product = productRepository.findAllById(id);
             int categoryId = product.getCategories();
             List<Review> reviews = reviewRepository.findByProducts(product);
             ArrayList<Integer> num = reviewRepository.findAllRating(product);
-            double sum = reviews.stream().mapToDouble(Review ::getRating).sum();
-            double adjustedAverageRating = Math.min(Math.max(sum/reviews.size(), 0), 5);
+            double sum = reviews.stream().mapToDouble(Review::getRating).sum();
+            double adjustedAverageRating = Math.min(Math.max(sum / reviews.size(), 0), 5);
 
 
             List<Review> reviewList = reviews.stream().filter(review -> review.getProducts().getId().equals(id)).limit(5).toList();
@@ -106,25 +240,24 @@ public class UserServiceImp implements UserServices {
                     ));
 
             model.addAttribute("product", product);
-            model.addAttribute("userId",currentUser().getId());
+            model.addAttribute("userId", currentUser().getId());
             model.addAttribute("reviews", reviewList);
-            model.addAttribute("averageRating",adjustedAverageRating);
-            model.addAttribute("totalReviews",reviews.size());
-            model.addAttribute("starOne",ratingCountMap.get(1));
-            model.addAttribute("starTwo",ratingCountMap.get(2));
-            model.addAttribute("starThree",ratingCountMap.get(3));
-            model.addAttribute("starFour",ratingCountMap.get(4));
-            model.addAttribute("starFive",ratingCountMap.get(5));
-            model.addAttribute("onePer",ratingPercentageMap.get(1));
-            model.addAttribute("twoPer",ratingPercentageMap.get(2));
-            model.addAttribute("threePer",ratingPercentageMap.get(3));
-            model.addAttribute("fourPer",ratingPercentageMap.get(4));
-            model.addAttribute("fivePer",ratingPercentageMap.get(5));
-
+            model.addAttribute("averageRating", adjustedAverageRating);
+            model.addAttribute("totalReviews", reviews.size());
+            model.addAttribute("starOne", ratingCountMap.get(1));
+            model.addAttribute("starTwo", ratingCountMap.get(2));
+            model.addAttribute("starThree", ratingCountMap.get(3));
+            model.addAttribute("starFour", ratingCountMap.get(4));
+            model.addAttribute("starFive", ratingCountMap.get(5));
+            model.addAttribute("onePer", ratingPercentageMap.get(1));
+            model.addAttribute("twoPer", ratingPercentageMap.get(2));
+            model.addAttribute("threePer", ratingPercentageMap.get(3));
+            model.addAttribute("fourPer", ratingPercentageMap.get(4));
+            model.addAttribute("fivePer", ratingPercentageMap.get(5));
 
 
             if (categoryId != 0) {
-                List<Products> products = productService.findByCategories(categoryId);
+                List<Products> products = productRepository.findByCategories(categoryId);
                 List<Products> limitedProducts = products.stream().filter(products1 -> products1.getStatus().equals("ACTIVE") && products1.getId() != id).limit(4).toList();
 
                 model.addAttribute("relatedProduct", limitedProducts);
@@ -153,6 +286,7 @@ public class UserServiceImp implements UserServices {
     public List<Banner> allBanners() {
         return bannerRepository.findAll();
     }
+
 
     @Override
     public User saveUser(DTO userDetails) {
