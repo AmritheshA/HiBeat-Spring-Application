@@ -57,7 +57,7 @@ public class CartServiceImp implements CartService {
 
             if (cartProducts != null) {
 
-                model.addAttribute("cardProducts", cartProducts.stream().filter(cartProduct -> cartProduct.getProduct().getStatus().equals("ACTIVE")));
+                model.addAttribute("cardProducts", cartProducts);
                 model.addAttribute("cartIsEmpty", false);
 
             } else {

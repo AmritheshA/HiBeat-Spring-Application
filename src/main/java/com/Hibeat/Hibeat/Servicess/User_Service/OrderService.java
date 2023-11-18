@@ -30,4 +30,6 @@ public interface OrderService {
 
     ResponseEntity<String> removeCoupon();
 
+    ResponseEntity<Boolean> checkOutValidation();
+
 }

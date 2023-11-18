@@ -8,6 +8,8 @@
     <title>Document</title>
 
     <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <link th:href="@{/css/Admin/addProduct.css}" rel="stylesheet" type="text/css">
 
 </head>
@@ -65,7 +67,8 @@
 
         <div class=" content">
             <main class="col-lg-9 col-md-8 col-sm-12 content">
-                <form th:action="@{/admin/add-product}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/admin/add-product}" method="post" enctype="multipart/form-data"
+                      onsubmit="return validateForm()">
                     <div class="content-header">
                         <h1>Add Products</h1>
                         <div class="button-container">
@@ -159,6 +162,8 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 <script>
     $(document).ready(function () {
         $('#sidebarCollapse').on('click', function () {
@@ -187,7 +192,70 @@
         }
     }
 
+    function validateForm() {
+        var productName = document.getElementById('productName').value;
+        var productDescription = document.getElementById('productDescription').value;
+        var basePrice = document.getElementById('basePrice').value;
+        var quantity = document.getElementById('quantity').value;
+        var colorType1 = document.getElementById('colorType1').value;
+        var imageInput = document.getElementById('imageInput1');
 
+
+
+        // Reset previous error messages
+
+        if (productName.trim() === '') {
+            toast('Please enter the product name');
+            return false;
+        }
+
+        if (productDescription.trim() === '') {
+            toast("Please enter the product description")
+            return false;
+        }
+        if (getWordCount(productDescription) < 30) {
+            toast('Product description must be at least 30 words');
+            return false;
+        }
+
+        if (basePrice.trim() === '') {
+            toast("Please enter the base price")
+            return false;
+        }
+
+
+        if (quantity.trim() === '') {
+            toast('Please enter the quantity')
+            return false;
+        }
+
+        if (colorType1.trim() === '') {
+           toast('Please enter the color type');
+            return false;
+        }
+
+        // Additional validation rules can be added here
+
+        return true;
+    }
+
+    function getWordCount(text) {
+
+        var words = text.match(/\S+/g) || [];
+        return words.length;
+    }
+
+    function toast(message){
+        Toastify({
+            text: message,
+            duration: 3000,
+            position: "center",
+            className: "info",
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            }
+        }).showToast();
+    }
 
 </script>
 </body>

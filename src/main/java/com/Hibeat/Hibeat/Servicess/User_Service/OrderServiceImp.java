@@ -27,6 +27,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -205,6 +206,19 @@ public class OrderServiceImp implements OrderService {
         cart.setUsedCoupon(null);
         cartService.saveCart(cart);
         return null;
+    }
+
+    @Override
+    public ResponseEntity<Boolean> checkOutValidation() {
+        try {
+            Cart cart = cartService.findByUserId(userServices.currentUser().getId());
+            boolean isAnyProductInactive = cart.getCartProducts().stream()
+                    .anyMatch(cartProduct -> cartProduct.getProduct().getStatus().equals("IN-ACTIVE") || cartProduct.getProduct().getStock() < 2);
+            return ResponseEntity.ok(isAnyProductInactive);
+        }catch (Exception e){
+
+            return ResponseEntity.ok(false);
+        }
     }
 
     @Override

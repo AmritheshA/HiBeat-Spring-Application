@@ -68,9 +68,9 @@
                                 <!-- Data -->
                                 <p><strong style="font-size: 20px;"
                                            th:text="${productDetails.getProduct().name}"></strong></p>
-                                <p>Color: Red</p>
-                                <p>Type : On Ear</p>
-                                <p>Availability : In Stock</p>
+                                <p th:text=" 'Colour  :'+ ${productDetails.product.colour}"></p>
+                                <p th:text="'Type     &nbsp  :' + ${productDetails.product.type}"></p>
+
                                 <button type="button" class="btn btn-warning btn-sm me-1 mb-2"
                                         data-mdb-toggle="tooltip"
                                         title="Remove item">
@@ -125,6 +125,13 @@
                                 <p class="text-start text-md-center" style="font-size: 20px;display: none;"
                                    th:id="'error-' + ${productDetails.product.id}">
                                 </p>
+                                <p th:if="${productDetails.product.status == 'IN-ACTIVE'}"
+                                   class="text-start text-md-center out-of-stock" style="font-size: 20px;color: red;font-weight: bold;">
+                                    Out Of Stock
+                                </p>
+
+
+
 
                                 <!-- Price -->
                             </div>
@@ -183,7 +190,7 @@
                                 </button>
                             </div>
                         </div>
-                        <a href="/user/checkout"  type="button" class="btn btn-primary btn-lg btn-block">
+                        <a  onclick="checkOutValidation()" type="button" class="btn btn-primary btn-lg btn-block">
                             Go to checkout
                         </a>
                     </div>
@@ -260,6 +267,27 @@
 
 
 <script th:inline="javascript">
+
+
+    function checkOutValidation(){
+
+        $.ajax({
+            url:"/user/checkout/validation",
+            method:'GET',
+            success:function (response){
+                console.log(response);
+                if(response){
+                    toast("Out Of Stock");
+                    window.location.reload();
+                    return;
+                }else{
+                    toast("Something Went Wrong");
+
+                }
+                location.href = "/user/checkout";
+            }
+        })
+    }
 
     // Define reusable variables
     const subResultElement = document.getElementById("subTotal");

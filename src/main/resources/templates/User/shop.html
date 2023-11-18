@@ -105,7 +105,7 @@
 
 
         <div class="row sample" >
-            <div class="col-lg-3 col-md-4 col-sm-12 mb-4 sample1 " th:id="'productListing-'+${product.id}" th:each="product, productIndex : ${products}">
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4 sample1 " th:id="'productListing-'+${product.id}" th:each="product, productIndex : ${products}">
                 <!-- Check if product.status is active -->
                 <div th:if="${product.status == 'ACTIVE'}">
                     <a th:href="@{'/user/product-details/' + ${product.id}}">
@@ -114,7 +114,7 @@
                              style="border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;">
                             <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
                                  data-mdb-ripple-color="light">
-                                <img alt="Product Image" class="card-img-top"
+                                <img alt="Product Image" class="img-fluid card-img-top"
                                      th:src="@{'/uploads/' + ${product.getImages_path[0]}}">
                                 <a onclick="addToWishlist(this)"
                                    onmouseout="this.getElementsByTagName('img')[0].style.filter = 'none';"

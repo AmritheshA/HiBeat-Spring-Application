@@ -26,6 +26,13 @@ public class OrderController {
         return orderService.checkOut(model);
     }
 
+    @GetMapping("/checkout/validation")
+    public ResponseEntity<Boolean> checkOutValidation(Model model) {
+        return orderService.checkOutValidation();
+    }
+
+
+
     @GetMapping("/apply-coupon")
     public ResponseEntity<String> applyCoupon(@RequestParam("value") String couponCode){
         return orderService.applyCoupon(couponCode);
