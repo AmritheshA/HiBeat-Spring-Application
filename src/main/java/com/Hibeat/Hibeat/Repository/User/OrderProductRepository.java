@@ -12,7 +12,6 @@ import java.util.List;
 @Repository
 public interface OrderProductRepository extends JpaRepository<OrderProducts,Long> {
 
-    List<OrderProducts> findAllByOrderByProductAsc();
     @Query("SELECT op.product, SUM(op.quantity) AS totalQuantity " +
             "FROM OrderProducts op " +
             "GROUP BY op.product " +

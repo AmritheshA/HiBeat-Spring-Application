@@ -1,128 +1,369 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice</title>
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            background-image: url('https://cdn.wallpapersafari.com/26/64/d0UDNT.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
         }
 
-        #invoice {
+        .container {
             max-width: 800px;
             margin: 20px auto;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
         }
 
-        #header {
-            background-color: #3498db;
-            color: #fff;
-            text-align: center;
+        .left-section {
+            flex: 1;
             padding: 20px;
         }
 
-        #header img {
-            max-width: 100px;
+        .right-section {
+            flex: 1;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 40px;
+        }
+
+        .form-control {
+            border: none;
+            border-bottom: 1px solid #ced4da;
+            padding: 15px;
+            color: #495057;
+            width: 100%;
+            transition: border-color 0.15s ease-in-out;
+            background-color: transparent;
+            border-radius: 0;
+            font-size: 18px;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+        }
+
+        .btn-primary {
+            background-color: #28a745;
+            border-color: #28a745;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+            border-color: #218838;
+        }
+
+        .form-check-input {
+            margin-top: 3px;
+        }
+
+        .bg-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        img {
+            width: 100%;
             height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
 
-        #content {
-            padding: 20px;
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-section,
+            .right-section {
+                flex: 1;
+                width: 100%;
+                padding: 20px;
+            }
         }
 
-        h1 {
-            color: #3498db;
-        }
-
-        #customer, #order {
-            margin-top: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+        .form-group label {
             text-align: left;
-        }
+            display: block;
+            color: #495057;
+            font-size: 18px;
+            font-weight: bold;
 
-        th {
-            background-color: #3498db;
-            color: #fff;
-        }
-
-        #footer {
-            background-color: #3498db;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
         }
     </style>
 </head>
+
 <body>
-<div id="invoice">
-    <div id="header">
-        <!-- Your company logo and details go here -->
-        <img src="your_logo.png" alt="Company Logo">
-        <p>Your Company Name</p>
-        <p>Address: Your Company Address</p>
+<div class="container bg-overlay">
+    <div class="left-section">
+        <img class="img-fluid" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMpWr39aYIR6b0pyIJ8OALA1GcMXJrgNARKcfzsC8lU6Nf2WQg40-NuA0jGS_JP8ahzLU&usqp=CAU" alt="Signup Image">
     </div>
+    <div class="right-section">
+        <h2>Sign Up</h2>
+        <form>
+            <div class="form-group">
 
-    <div id="content">
-        <h1>Invoice</h1>
-        <p>Invoice Number: INV-12345</p>
-        <p>Date: 2023-11-14</p>
+                <input type="text" class="form-control" id="name" placeholder="Your Name" name="name">
+            </div>
+            <div class="form-group">
 
-        <!-- Your customer details and order information go here -->
-        <div id="customer">
-            <h2>Customer Information</h2>
-            <p>Customer Name: John Doe</p>
-            <p>Email: john.doe@example.com</p>
+                <input type="email" class="form-control" id="email" placeholder="Your Email" name="email">
+            </div>
+            <div class="form-group">
+
+                <input type="password" class="form-control" id="pwd" placeholder="Password" name="pswd">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="pwd2" placeholder="Repeat Password" name="pswd2">
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        <div class="login-link">
+            Already a member? <a href="/login">Login</a>
         </div>
-
-        <div id="order">
-            <h2>Order Details</h2>
-            <!-- Add a table or list for itemized order details -->
-            <table>
-                <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Quantity</th>
-                    <th>Unit Price</th>
-                    <th>Total</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Product A</td>
-                    <td>2</td>
-                    <td>$50.00</td>
-                    <td>$100.00</td>
-                </tr>
-                <!-- Add more rows for additional items -->
-                </tbody>
-            </table>
-
-            <p>Total Amount: $100.00</p>
-        </div>
-    </div>
-
-    <div id="footer">
-        <p>Thank you for your business!</p>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Login</title>-->
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-image: url('https://cdn.wallpapersafari.com/26/64/d0UDNT.jpg');-->
+<!--            background-size: cover;-->
+<!--            background-position: center;-->
+<!--            height: 100vh;-->
+<!--            margin: 0;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;-->
+<!--            color: #fff;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            max-width: 800px;-->
+<!--            margin: 20px auto;-->
+<!--            background-color: rgba(255, 255, 255, 0.8);-->
+<!--            padding: 20px;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);-->
+<!--            display: flex;-->
+<!--            flex-wrap: wrap;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--        }-->
+
+<!--        .left-section {-->
+<!--            flex: 1;-->
+<!--            padding: 20px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .right-section {-->
+<!--            flex: 1;-->
+<!--            padding: 20px;-->
+<!--        }-->
+
+<!--        h2 {-->
+<!--            text-align: center;-->
+<!--            color: #007bff;-->
+<!--        }-->
+
+<!--        form {-->
+<!--            width: 100%;-->
+<!--        }-->
+
+<!--        .form-group {-->
+<!--            margin-bottom: 40px;-->
+<!--        }-->
+
+<!--        .form-control {-->
+<!--            border: none;-->
+<!--            border-bottom: 1px solid #ced4da;-->
+<!--            padding: 15px;-->
+<!--            color: #495057;-->
+<!--            width: 100%;-->
+<!--            transition: border-color 0.15s ease-in-out;-->
+<!--            background-color: transparent;-->
+<!--            border-radius: 0;-->
+<!--            font-size: 18px;-->
+<!--        }-->
+
+<!--        .form-control:focus {-->
+<!--            border-color: #007bff;-->
+<!--        }-->
+
+<!--        .btn-primary {-->
+<!--            background-color: #28a745;-->
+<!--            border-color: #28a745;-->
+<!--            width: 100%;-->
+<!--            padding: 15px;-->
+<!--            font-size: 18px;-->
+<!--            transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;-->
+<!--        }-->
+
+<!--        .btn-primary:hover {-->
+<!--            background-color: #218838;-->
+<!--            border-color: #218838;-->
+<!--        }-->
+
+
+<!--        .bg-overlay {-->
+<!--            background: rgba(0, 0, 0, 0.5);-->
+<!--            border-radius: 10px;-->
+<!--            padding: 20px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        img {-->
+<!--            width: 100%;-->
+<!--            height: auto;-->
+<!--            border-radius: 10px;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        .forgot-password {-->
+<!--            text-align: right;-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+
+<!--        .sign-up-link {-->
+<!--            text-align: center;-->
+<!--            margin-top: 15px;-->
+<!--        }-->
+
+<!--        @media (max-width: 600px) {-->
+<!--            .container {-->
+<!--                flex-direction: column;-->
+<!--            }-->
+
+<!--            .left-section,-->
+<!--            .right-section {-->
+<!--                flex: 1;-->
+<!--                width: 100%;-->
+<!--                padding: 20px;-->
+<!--            }-->
+<!--        }-->
+
+<!--        .form-group label {-->
+<!--            text-align: left;-->
+<!--            display: block;-->
+<!--            color: #495057;-->
+<!--            font-size: 18px;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--        /* Add this style to your existing styles in the <style> tag */-->
+
+<!--        .btn-google {-->
+<!--            background-color: transparent;-->
+<!--            border: 2px solid #fff;-->
+<!--            color: #fff;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            width: 100%;-->
+<!--            padding: 15px;-->
+<!--            font-size: 18px;-->
+<!--            transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;-->
+<!--            border-radius: 50px; /* Round border */-->
+<!--        }-->
+
+<!--        .btn-google i {-->
+<!--            margin-right: 10px;-->
+<!--        }-->
+
+<!--        .btn-google:hover {-->
+<!--            background-color: rgba(255, 255, 255, 0.2);-->
+<!--            border-color: #fff;-->
+<!--        }-->
+
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--<div class="container bg-overlay">-->
+<!--    <div class="left-section">-->
+<!--        <img class="img-fluid" src="/static/image/loginImage.png" alt="Login Image">-->
+<!--    </div>-->
+<!--    <div class="right-section">-->
+<!--        <h2>Login</h2>-->
+<!--        <form>-->
+<!--            <div class="form-group">-->
+<!--                <input type="text" class="form-control" id="username" placeholder="Enter your username" name="username">-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <input type="password" class="form-control" id="password" placeholder="Enter your password" name="password">-->
+<!--            </div>-->
+
+<!--            <div class="forgot-password">-->
+<!--                <a href="#">Forgot Password?</a>-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <button type="button" style="margin-bottom: 15px;" class="btn btn-outline-light rounded-pill btn-google">-->
+<!--                    <i class="fab fa-google google-icon"></i> Login with Google-->
+<!--                </button>-->
+<!--                <button type="submit" class="btn btn-outline-light rounded-pill btn-primary">Login</button>-->
+
+<!--            </div>-->
+<!--            <div class="sign-up-link">-->
+<!--                New Member? <a href="#">Sign Up</a>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>-->
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
+<!--</body>-->
+
+<!--</html>-->

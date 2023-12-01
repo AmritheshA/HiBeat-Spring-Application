@@ -337,14 +337,14 @@ $(document).ready(function () {
                     updateProductHTML(response);
                 }
             });
-        }else{
+        } else {
             $.ajax({
                 url: '/user/filter',
                 method: 'post',
                 dataType: 'json',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    "status" : "true"
+                    "status": "true"
                 }),
                 success: function (response) {
                     console.log(response);
@@ -356,4 +356,121 @@ $(document).ready(function () {
 });
 
 
+//---------------------------------------------shop---------------------------------------------
 
+function updateProductHTML(products) {
+    $('.childDiv').remove();
+
+    for (let i = 0; i < products.length; i++) {
+
+        let product = products[i];
+
+        let newElement = $('<div class="product childDiv" id="productListing-' + product.id + '">\n' +
+            '            <a style="text-decoration: none;color:black !important;"\n' +
+            '               href="/user/product-details/' + product.id + '">\n' +
+            '                <img alt="Product Image" src="/uploads/' + product.images[0] + '">\n' +
+            '                <h3>' + product.name + '</h3>\n' +
+            '                <p style="font-family: \'Poppins\'; font-size: 12px;overflow: hidden; text-overflow: ellipsis;">\n' +
+            '                    ' + product.description + '\n' +
+            '                </p>\n' +
+            '                <a class="add-to-wishlist" onclick="addToWishlist(this)"\n' +
+            '                   style="position: absolute; top: 10px; right: 10px; cursor: pointer"\n' +
+            '                   data-product-id="' + product.id + '">\n' +
+            '                    <img id="wishlistButton-' + product.id + '" alt="Add to Favorites"\n' +
+            '                         style="width: 24px; height: 24px;"\n' +
+            '                         src="/image/heart-regular.svg">\n' +
+            '                </a>\n' +
+            '            </a>\n' +
+            '            <div class="price-and-cart">\n' +
+            '                <p>\n' +
+            '                    <span>' + product.price + '</span>\n' +
+            '                    <del>$119</del>\n' +
+            '                </p>\n' +
+            '                <button class="add-to-cart" onclick="addToCart(this)" data-product-id="' + product.id + '">Add to Cart\n' +
+            '                </button>\n' +
+            '            </div>\n' +
+            '        </div>');
+
+
+        $('.parentDiv').append(newElement);
+
+    }
+}
+
+let entry = 0;
+
+function addToWishlist(element) {
+    let productId = element.getAttribute('data-product-id');
+    let wishlistButton = document.getElementById('wishlistButton-' + productId);
+    let wishlistCount = document.getElementById('wishlist-badge');
+    let count = parseInt(wishlistCount.innerText);
+
+    if (entry === 0) {
+        $.ajax({
+            url: '/user/add-to-wishlist?id=' + productId,
+            method: "GET",
+            success: function (response) {
+
+                if (response === "success") {
+                    toast("Added To Wishlist");
+                    wishlistButton.src = "/image/red-heart.png";
+                    wishlistCount.innerText = count + 1;
+                    entry = 1;
+                } else if (response === "sameProduct") {
+                    toast("Product Already Exist In Wishlist")
+                    entry = 1;
+                } else {
+                    location.href = "/login"
+                }
+            }
+        });
+    } else {
+        $.ajax({
+            url: '/user/removeFromWishlist?id=' + productId,
+            method: "GET",
+            success: function (response) {
+                if (response === "success") {
+                    toast("Product Removed");
+                    wishlistButton.src = "/image/heart-regular.svg";
+                    wishlistCount.innerText = count - 1;
+                    entry = 0;
+                } else {
+                    location.href = "/login"
+                }
+            }
+        });
+    }
+}
+
+function addToCart(element) {
+    let productId = element.getAttribute('data-prdoucts-id');
+
+    $.ajax({
+        url: '/user/cart/add-to-cart-fromShop?id=' + productId,
+        method: "GET",
+        success: function (response) {
+            let cartBadge = document.getElementById('cart-badge');
+            const cartCount = parseInt(cartBadge.innerText);
+            if (response === "success") {
+                    cartBadge.innerText = cartCount +1;
+                toast("Added To Cart");
+            } else if (response === "sameProduct") {
+                toast("Product Already Exist In Cart");
+            } else {
+                location.href = "/login";
+            }
+        }
+    });
+}
+
+function toast(message) {
+    Toastify({
+        text: message,
+        duration: 3000,
+        position: "center",
+        className: "info",
+        style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+        }
+    }).showToast();
+}

@@ -10,7 +10,7 @@
     <!-- nav bar -->
     <nav class="navbar navbar-expand-lg navbar-dark ">
         <div class="container-fluid nvbr">
-            <a class="navbar-brand" th:href="@{/user/home}">
+            <a class="navbar-brand" th:href="@{/home}">
                 <h3 class="text-dark" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Hibeat</h3>
             </a>
 
@@ -36,47 +36,19 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link active nvitems text-dark" aria-current="page"
-                           th:href="@{/user/home}"><b>HOME</b></a>
+                           th:href="@{/}"><b>HOME</b></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nvitems text-dark" th:href="@{/user/shop}"><b>SHOP</b></a>
+                        <a class="nav-link nvitems text-dark" th:href="@{/shop}"><b>SHOP</b></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link nvitems text-dark" href="#"><b>ABOUT US</b></a>
                     </li>
-                    <li class="nav-item dropdown"> <!-- This list item is now a dropdown -->
-                        <a class="nav-link dropdown-toggle nvitems text-dark" href="#" id="navbarDropdown"
-                           role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <b> CATEGORIES</b>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Headphone</a>
-                            <a class="dropdown-item" href="#">Neckband</a>
-                            <a class="dropdown-item" href="#">Ear Buds</a>
-                        </div>
-                    </li>
-
                     <li class="nav-item hdt">
                         <a class="nav-link nvitems text-dark" href="#"><b>CONTACT US</b></a>
                     </li>
                 </ul>
 
-                <form class="form-inline">
-                    <!-- Use ml-auto to align to the right -->
-                    <div class="input-group">
-                        <input
-                                class="form-control"
-                                type="text"
-                                placeholder="Search"
-                        />
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="submit">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
 
                 <!-- Wishlist button with no border -->
                 <button class="btn btn-outline-secondary border-0 ml-2" type="button">

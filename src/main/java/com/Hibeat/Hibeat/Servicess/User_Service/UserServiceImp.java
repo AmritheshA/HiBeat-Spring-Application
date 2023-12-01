@@ -120,7 +120,6 @@ public class UserServiceImp implements UserServices {
                         }
                         break;
                     case "Brand":
-                        log.info("Yaa Inside");
                         List<String> brandIdsAsString = entry.getValue();
                         for (String brandName : brandIdsAsString) {
                             List<Brands> brands = brandRepository.findByBrandName(brandName);
@@ -163,7 +162,7 @@ public class UserServiceImp implements UserServices {
     @Override
     public Integer totalWishlistCount() {
         Wishlist wishlist = wishlistRepository.findByUser(currentUser());
-        if(wishlist.getUser() == null){
+        if(wishlist == null){
             return 0;
         }
         return wishlist.getWishlistItems().size();
@@ -213,11 +212,17 @@ public class UserServiceImp implements UserServices {
     public String productDetails(int id, Model model) {
         try {
             Products product = productRepository.findAllById(id);
-            int categoryId = product.getCategories();
+            Integer categoryId = product.getCategories();
             List<Review> reviews = reviewRepository.findByProducts(product);
             ArrayList<Integer> num = reviewRepository.findAllRating(product);
             double sum = reviews.stream().mapToDouble(Review::getRating).sum();
             double adjustedAverageRating = Math.min(Math.max(sum / reviews.size(), 0), 5);
+            List<Orders> orders = orderRepository.findByUser(currentUser());
+            boolean bought = false;
+            for (Orders order : orders) {
+                 bought = order.getOrderProducts().stream()
+                        .anyMatch(orderProduct -> orderProduct.getProduct().equals(product));
+            }
 
 
             List<Review> reviewList = reviews.stream().filter(review -> review.getProducts().getId().equals(id)).limit(5).toList();
@@ -241,6 +246,8 @@ public class UserServiceImp implements UserServices {
 
             model.addAttribute("product", product);
             model.addAttribute("userId", currentUser().getId());
+            log.info("value"+bought);
+            model.addAttribute("bought",bought);
             model.addAttribute("reviews", reviewList);
             model.addAttribute("averageRating", adjustedAverageRating);
             model.addAttribute("totalReviews", reviews.size());
@@ -337,9 +344,6 @@ public class UserServiceImp implements UserServices {
         return orderRepository.save(orders);
     }
 
-    //    public List<Products> findAllByIsdIn(List<Integer> productIds) {
-//        return productRepository.findAllByIdIn(productIds);
-//    }
     @Override
     public List<Orders> findByUser(User user) {
         return orderRepository.findByUser(user);

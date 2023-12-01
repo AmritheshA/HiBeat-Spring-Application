@@ -68,6 +68,7 @@ public class AdminDashboardServiceImp implements AdminDashboardService {
             model.addAttribute("soldProducts", soldProducts);
             model.addAttribute("activeCustomers", activeCustomers);
             model.addAttribute("topSellingProducts", topSellingProducts);
+
             model.addAttribute("daily", dailyJson);
             model.addAttribute("weekly", weeklyJson);
             model.addAttribute("monthly", monthlyJson);
@@ -227,9 +228,6 @@ public class AdminDashboardServiceImp implements AdminDashboardService {
                     .count();
             weeklySalesCount.put(weekStart + "-" + weekEnd, count);
         }
-
-        log.info("-----------------------" + weeklySalesCount);
-
         return weeklySalesCount;
     }
 

@@ -69,15 +69,7 @@ public class WishlistServiceImp implements WishlistService {
 
             Wishlist wishlist = wishlistRepository.findByUser(user);
 
-            if (wishlist == null) {
-                wishlist = new Wishlist();
-                wishlist.setUser(user);
-                wishlistRepository.save(wishlist);
-            }
-
             model.addAttribute("wishlistItems", wishlist.getWishlistItems());
-
-
             return "User/wishlist";
         } catch (Exception e) {
             log.info("wishlist" + e.getMessage());

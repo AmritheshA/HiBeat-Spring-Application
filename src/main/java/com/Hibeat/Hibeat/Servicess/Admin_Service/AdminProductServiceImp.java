@@ -126,7 +126,7 @@ public class AdminProductServiceImp implements AdminProductService {
         try {
             Products products = productRepository.findAllById(productId);
 
-            log.info("Category"+productDetails.getCategory());
+            log.info("Category"+productDetails.getCategories());
 
             String[] images = products.getImages_path();
             String file = "D:\\Brocamp_Task\\week_11\\Project\\Hibeat\\src\\main\\resources\\static\\uploads\\";
@@ -148,7 +148,7 @@ public class AdminProductServiceImp implements AdminProductService {
             products.setName(productDetails.getProductName());
             products.setPrice(Double.parseDouble(productDetails.getPrice()));
             products.setStock(productDetails.getStock());
-            products.setCategories(productDetails.getCategory());
+            products.setCategories(productDetails.getCategories());
             products.setDescription(productDetails.getDescription());
             productRepository.save(products);
 

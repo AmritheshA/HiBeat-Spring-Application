@@ -50,10 +50,10 @@
             <div class="collapse navbar-collapse margin-left:10px;" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link active nvitems text-white" aria-current="page" th:href="@{/user/home}"><b>HOME</b></a>
+                        <a class="nav-link active nvitems text-white" aria-current="page" th:href="@{/}"><b>HOME</b></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nvitems text-white" th:href="@{/user/shop}"><b>SHOP</b></a>
+                        <a class="nav-link nvitems text-white" th:href="@{/shop}"><b>SHOP</b></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link nvitems text-white" href="#"><b>ABOUT US</b></a>
@@ -76,22 +76,6 @@
                     </li>
                 </ul>
 
-                <form class="form-inline">
-                    <!-- Use ml-auto to align to the right -->
-                    <div class="input-group">
-                        <input
-                                class="form-control"
-                                type="text"
-                                placeholder="Search"
-                        />
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="submit">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
                 <!-- Wishlist button with no border -->
                 <button class="btn btn-outline-secondary border-0 ml-2" type="button">
                     <a th:href="@{/user/wishlist}"><i class="fa fa-heart" style="color: #ffffff;"></i></a>
@@ -106,17 +90,22 @@
                 <div class="btn-group">
                     <button class="btn btn-outline-secondary dropdown-toggle border-0" type="button"
                             style="color: #e8d71e;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-user" style="color: #ffffff;" ></i><span th:text="${userName}"style="color: yellow"></span>
+                        <i class="fa fa-user" style="color: #ffffff;"></i>
+                        <span th:text="${userName}" style="color: yellow"></span>
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" th:href="@{/user/profile}">Profile</a>
-                        <a class="dropdown-item" th:href="@{/user/my-orders}">My Orders</a>
-                        <a class="dropdown-item" th:href="@{/user/wallet}">My Wallet</a>
-                        <a class="dropdown-item" th:href="@{/user/my-address}">My Address</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+
+                        <!-- Conditionally render Profile, My Orders, My Wallet, My Address links -->
+                        <a class="dropdown-item" th:href="@{/user/profile}" th:if="${userName != 'Login'}">Profile</a>
+                        <a class="dropdown-item" th:href="@{/user/my-orders}" th:if="${userName != 'Login'}">My Orders</a>
+                        <a class="dropdown-item" th:href="@{/user/wallet}" th:if="${userName != 'Login'}">My Wallet</a>
+                        <a class="dropdown-item" th:href="@{/user/my-address}" th:if="${userName != 'Login'}">My Address</a>
+                        <a class="dropdown-item" th:href="@{/logout}" th:if="${userName != 'Login'}">Logout</a>
+                        <a class="dropdown-item" th:href="@{/login}" th:if="${userName == 'Login'}">Login</a>
+
                     </div>
                 </div>
+
             </div>
         </div>
     </nav>
@@ -126,14 +115,14 @@
 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="1500">
     <!-- Set data-interval to control the slide duration in milliseconds -->
     <!-- Remove the previous and next buttons -->
-    <a th:href="@{/user/shop}">
-        <div class="carousel-inner" style="height: 500px;">
+    <a th:href="@{/shop}">
+        <div class="carousel-inner" style="height: auto;">
             <div class="carousel-item active">
-                <img class="d-block  w-100" th:src="@{/image/sli.jpg}" alt="First slide">
+                <img class="d-block img-fluid  w-100" th:src="@{/image/sli.jpg}" alt="First slide">
             </div>
 
             <div class="carousel-item" th:each="slider : ${sliders}" >
-                <img class="d-block  w-100" style="filter: brightness(0.8);height: 100%;object-fit: cover;" th:src="@{'/uploads/' + ${slider.image}}"
+                <img class="d-block img-fluid w-100" style="filter: brightness(0.8);height: 100%;object-fit: cover;" th:src="@{'/uploads/' + ${slider.image}}"
                      alt="First slide">
             </div>
         </div>

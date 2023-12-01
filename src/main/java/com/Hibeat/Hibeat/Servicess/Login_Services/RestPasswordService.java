@@ -44,7 +44,7 @@ public class RestPasswordService {
             user.setResetToken(resetToken);
             userRepository.save(user);
 
-            String restLink = "http://localhost:8080/reset-password?token=" + resetToken;
+            String restLink = "https://hi-beat.tech/reset-password?token=" + resetToken;
             sendResetPasswordEmail(email,restLink);
 
         }

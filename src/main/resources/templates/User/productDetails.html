@@ -273,9 +273,10 @@
                 <h2 class="bold padding-bottom-7"><small th:text="${totalReviews}"></small></h2>
 
                 <button type="button" class="btn btn-warning btn-sm" style="float: right;" aria-label="Left Align"
-                        data-toggle="modal" data-target="#formModal">
+                        data-toggle="modal" data-target="#formModal" th:if="${bought}">
                     Write A Review
                 </button>
+
             </div>
         </div>
         <div class="row">

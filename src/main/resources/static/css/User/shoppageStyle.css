@@ -1,69 +1,146 @@
-.images{
-
-width:30px;
-height:30px;
-margin-right:15px;
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
 }
 
-.custom-text-shadow {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 20px;
+}
+.containers{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-left: 10%;
+    padding: 20px;
 }
 
-.filter-button {
-    display: inline-block;
-    padding: 10px 20px; /* Adjust padding as needed */
-    /*background-color: #; /* Change the background color to your preference */
-    color: #3498db; /* Text color */
-    border: none;
-    text-decoration: none; /* Remove underline from the link */
-    transition: background-color 0.3s ease; /* Smooth hover effect */
-}
-
-.filter-button a {
-    color: inherit; /* Inherit the text color from the parent */
-    text-decoration: none; /* Remove underline from the link */
-}
-.product-image{
-    width:50%;
-    height:50%;
-}
-.card{
-    width:50%;
-}
-
-.card-img-top{
-    width: 80%;
-    height: 250px;
-    margin-left: 20px;
-    margin-top: 20px;
-}
-.card-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: white; /* Change the color of the heart icon as needed */
-}
-.card-div{
-    height: 500px;
+.product {
     width: 250px;
+    margin: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
 }
+
+.product img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+}
+
+.product h3 {
+    margin: 15px 0;
+    font-size: 18px;
+}
+
+.product p {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.product span {
+    color: red;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.product:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+p {
+    font-family: 'Poppins';
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Number of lines to show */
+    -webkit-box-orient: vertical;
+}
+
+@media screen and (max-width: 768px) {
+    .product {
+        width: 100%;
+    }
+}
+.add-to-wishlist {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+}
+
+.add-to-cart {
+    background-color: #007BFF;
+    border: none;
+    color: white;
+    padding: 8px 16px; /* Adjust the padding to reduce the height */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    height: 35px;
+    transition: background-color 0.3s ease;
+
+}
+
+.add-to-cart:hover {
+    background-color: #0056b3;
+}
+
+
+.btn {
+    border: none;
+    height: 50px; /* Adjust the height as needed */
+}
+
+.button-content {
+    display: flex;
+    align-items: center;
+}
+
+.filter-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px; /* Adjust the margin as needed for spacing */
+}
+
+.button-text {
+    color: #3498db; /* Text color */
+}
+
 .offcanvas {
     width: 300px !important;
 }
+
 .offcanvas-body {
     padding: 1rem;
 }
+
 .filter-menu {
     list-style-type: none;
     padding: 0;
 }
+
 .filter-menu li {
     margin-bottom: 1rem;
 }
+
 .checkbox-list {
     list-style-type: none;
     padding: 0;
 }
+
 .checkbox-list li {
     margin-bottom: 0.5rem;
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1524850533197-f3f09a90bd4d');
+            background-size: cover;
+            background-position: center;
+        }
+        .card {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        h1 {
+            font-size: 28px;
+            color: #333;
+        }
+        .form-group label {
+            font-size: 18px;
+            color: #333;
+        }
+        .form-control {
+            font-size: 18px;
+            color: #333;
+        }
+        .btn {
+            font-size: 18px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1 class="text-center">OTP Verification</h1>
+    <form action="/verify-email" method="post">
+        <div class="form-group">
+            <label for="otp">Enter OTP:</label>
+            <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter OTP" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
+    </form>
+
+    <div th:if="${error}" style="color: red;">
+        <p th:text="${error}"></p>
+    </div>
+</div>
+</body>
+</html>

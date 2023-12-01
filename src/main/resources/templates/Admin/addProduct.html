@@ -83,7 +83,7 @@
 
                         <label for="productDescription">Product Description:</label>
                         <div class="textarea-container">
-                        <textarea id="productDescription" name="productDescription"
+                        <textarea id="productDescription" name="description"
                                   placeholder="Enter product description"></textarea>
                             <div class="word-count"><span id="wordCount">0</span>/100</div>
                         </div>
@@ -126,7 +126,7 @@
                             <div class="input-field">
                                 <label for="categories">Categories:</label>
                                 <select id="categories" name="categories">
-                                    <option name="categories" th:each="category : ${categories}" th:value="${category.id}" th:text="${category.categoryName}"></option>
+                                    <option name="categoriess" th:each="category : ${categories}" th:value="${category.id}" th:text="${category.categoryName}"></option>
                                 </select>
                             </div>
                             <div class="input-field">

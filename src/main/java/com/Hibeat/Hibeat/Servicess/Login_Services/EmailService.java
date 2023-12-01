@@ -7,6 +7,7 @@ import com.Hibeat.Hibeat.Repository.Admin.AdminRepository;
 import com.Hibeat.Hibeat.Repository.User.CartRepository;
 import com.Hibeat.Hibeat.Repository.User.UserRepository;
 import com.Hibeat.Hibeat.Repository.User.WalletRepository;
+import com.Hibeat.Hibeat.Repository.User.WishlistRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +26,16 @@ import java.util.Random;
 @Slf4j
 public class EmailService {
 
-    JavaMailSender javaMailSender;
-    HttpSession session;
-    UserRepository userRepository;
+    private final JavaMailSender javaMailSender;
+    private final HttpSession session;
+    private final UserRepository userRepository;
+    private final ModelMapperConverter modelMapperConverter;
+    private final PasswordEncoder passwordEncoder;
+    private final AdminRepository adminRepository;
 
-    ModelMapperConverter modelMapperConverter;
-    PasswordEncoder passwordEncoder;
-
-    AdminRepository adminRepository;
-
-    WalletRepository walletRepository;
-    CartRepository cartRepository;
+    private final WalletRepository walletRepository;
+    private final CartRepository cartRepository;
+    private final WishlistRepository wishlistRepository;
 
     @Autowired
     public EmailService(JavaMailSender javaMailSender,
@@ -45,7 +45,7 @@ public class EmailService {
                         PasswordEncoder passwordEncoder,
                         AdminRepository adminRepository,
                         WalletRepository walletRepository,
-                        CartRepository cartRepository) {
+                        CartRepository cartRepository, WishlistRepository wishlistRepository) {
         this.javaMailSender = javaMailSender;
         this.session = session;
         this.userRepository = userRepository;
@@ -54,6 +54,7 @@ public class EmailService {
         this.adminRepository = adminRepository;
         this.walletRepository = walletRepository;
         this.cartRepository = cartRepository;
+        this.wishlistRepository = wishlistRepository;
     }
 
     public void sendEmails(String to) {
@@ -113,17 +114,20 @@ public class EmailService {
                 wallet.setWalletTotalAmount(0.0); // Set an initial balance for the wallet
                 wallet.setUser(userInfo); // Set the user for this wallet
 
+                Wishlist wishlist = new Wishlist();
+                wishlist.setUser(userInfo);
+
                 Cart cart = new Cart();
                 List<CartProduct> cartProducts = new ArrayList<>();
                 cart.setUser(userInfo);
                 cart.setCartProducts(cartProducts);
                 cart.setTotalCartAmount(0.0);
 
-                // Save both User and Wallet entities
+                // Save User,Wallet,wishlist entities
                 userRepository.save(userInfo);
                 cartRepository.save(cart);
                 walletRepository.save(wallet);
-
+                wishlistRepository.save(wishlist);
             }
             return true;
         } catch (Exception e){

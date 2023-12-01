@@ -2,6 +2,7 @@ package com.Hibeat.Hibeat.Controller.userController;
 
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.FilterDataRequest;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Product_DTO;
+import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
 import com.Hibeat.Hibeat.Servicess.User_Service.UserServices;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 @Slf4j
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/")
 public class UserController {
 
     private final UserServices userServices;
@@ -26,7 +27,7 @@ public class UserController {
         this.userServices = userServices;
     }
 
-    @GetMapping("/home")
+    @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("sliders",userServices.allBanners());
         return "User/home";
@@ -41,7 +42,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/filter")
+    @PostMapping("user/filter")
     public ResponseEntity<List<Product_DTO>> filterProducts(@RequestBody(required = false) FilterDataRequest filterDataRequest) {
         try {
 
@@ -67,8 +68,9 @@ public class UserController {
         return "Login";
     }
 
-   @GetMapping("/cart-count")
+   @GetMapping("user/cart-count")
    public Integer getCount(Model model) {
+       log.info("error at cart");
         model.addAttribute("cartCount",userServices.totalCartCount());
        return userServices.totalCartCount();
    }
@@ -79,27 +81,25 @@ public class UserController {
     }
     @ModelAttribute("wishlistCount")
     public Integer getWishListCounts( ) {
+        log.info("error");
         return userServices.totalWishlistCount();
 
     }
-    @GetMapping("/wishlist-count")
+    @GetMapping("user/wishlist-count")
     public Integer getWishlistCount(Model model) {
+        log.info("error");
         model.addAttribute("cartCount",userServices.totalWishlistCount());
         return userServices.totalWishlistCount();
     }
 
-    @GetMapping("/product-details/{id}")
+    @GetMapping("user/product-details/{id}")
     public String productDetails(@PathVariable("id") int id, Model model) {
        return userServices.productDetails(id,model);
     }
 
-
-
-    @GetMapping("/sample")
+    @GetMapping("user/sample")
     public String sample() {
-
-        return "sample";
+        return "sam";
     }
-
 
 }

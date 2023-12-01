@@ -35,7 +35,7 @@ public class LoginServiceImp implements LoginService {
                             .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("user")
                                     || grantedAuthority.getAuthority().equals("admin"))) {
                         if (userDetails.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("user"))) {
-                            return "redirect:/user/home";
+                            return "redirect:/";
                         } else if (userDetails.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("super_admin"))) {
                             return "redirect:/admin/dashboard";
                         }
@@ -71,9 +71,9 @@ public class LoginServiceImp implements LoginService {
         try {
             if (emailService.isOTPVerified(otp)) {
                 if (emailService.isOTPExpired()) {
-                    return "redirect:/user/home";
+                    return "redirect:/";
                 } else {
-                    model.addAttribute("error", "OTP is valid but has not expired yet.");
+                    model.addAttribute("error", "OTP is wrong. Please try again.");
                 }
             } else {
                 model.addAttribute("error", "OTP is wrong. Please try again.");

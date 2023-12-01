@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
     <title>Shop</title>
 
 
@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/js/all.min.js"></script>
 
     <link rel="stylesheet" th:href="@{/css/User/shoppageStyle.css}" type="text/css">
 
@@ -31,223 +31,108 @@
 
 </header>
 
-<!--Navi-bar Closed-->
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="text-center">Shop</h1>
-            <div class="filter-button">
-                <button class="btn" style="height: 20px; width: 50px; border: none;" type="button"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                    <img style="width: 30px; height: 30px;" th:src="@{/image/Filter.svg}">
-                </button>
-            </div>
+
+<div class="containers ">
+    <button class="btn" style="height: 20px; width: 50px;" type="button"
+            data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+        <img style="width: 30px; height: 30px;" th:src="@{/image/Filter.svg}">
+    </button>
+</div>
 
 
-        </div>
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample"
+     aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Filter Options</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="filter-menu">
+            <!-- Brand Filter -->
+            <li>
+                <span style="font-size: 20px;font-weight: bold;">Brand</span>
+                <ul class="checkbox-list">
+                    <li th:each="brand : ${brands}" th:if="${brand.status == 'ACTIVE'}">
+                        <label>
+                            <input type="checkbox" th:name="'categoryCheckbox'" th:value="${brand.id}">
+                            <span th:text="${brand.brandName}"></span>
+                        </label>
+                    </li>
+                    <!-- Add more brands as needed -->
+                </ul>
+            </li>
+
+            <!-- Category Filter -->
+            <li>
+                <span style="font-size: 20px;font-weight: bold;">Category</span>
+                <ul class="checkbox-list">
+                    <li th:each="category : ${categories}" th:if="${category.status == 'ACTIVE'}">
+                        <label>
+                            <input type="checkbox" th:name="'categoryCheckbox'" th:value="${category.id}">
+                            <span th:text="${category.categoryName}"></span>
+                        </label>
+                    </li>
+
+                    <!-- Add more categories as needed -->
+                </ul>
+            </li>
+
+            <!-- Type Filter -->
+            <li>
+                <span style="font-size: 20px;font-weight: bold;">Color</span>
+                <ul class="checkbox-list">
+                    <li><label><input type="checkbox"> black</label></li>
+                    <li><label><input type="checkbox"> blue</label></li>
+                    <li><label><input type="checkbox"> red</label></li>
+                    <li><label><input type="checkbox"> grey</label></li>
+                </ul>
+            </li>
+        </ul>
     </div>
 </div>
+
 <!--Product Listing-->
 <section>
-    <div class="container py-5">
+    <div class="container parentDiv">
+        <div class="product childDiv " th:each="product, productIndex : ${products}"
+             th:id="'productListing-'+${product.id}">
+            <a style="text-decoration: none;color:black !important;"
+               th:href="@{'/user/product-details/' + ${product.id}}">
+                <img alt="Product Image" th:src="@{'/uploads/' + ${product.getImages_path[0]}}">
+                <h3 th:text="${product.name}"></h3>
+                <p style="font-family: 'Poppins'; font-size: 12px;overflow: hidden; text-overflow: ellipsis;"
+                   th:text="${product.description}">
+                </p>
+                <a class="add-to-wishlist" onclick="addToWishlist(this)"
 
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample"
-             aria-labelledby="offcanvasExampleLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasExampleLabel">Filter Options</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                   style="position: absolute; top: 10px; right: 10px; cursor: pointer"
+                   th:data-product-id="${product.id}">
+                    <img th:id="'wishlistButton-' +${product.id}" alt="Add to Favorites"
+                         style="width: 24px; height: 24px;"
+                         th:src="@{/image/heart-regular.svg}">
+                </a>
+                <span class="badge bg-warning text-dark" style="position: absolute; top: 10px; left: 10px;"
+                      th:if="${product.productOffers != null && product.productOffers.offerPercentage > 0}"
+                      th:text="${product.productOffers.offerPercentage} + '%Offer'"></span>
+            </a>
+            <div class="price-and-cart">
+                <p>
+                    <span th:text="${product.price}"></span>
+                    <del>$119</del>
+                </p>
+                <button class="add-to-cart" onclick="addToCart(this)" th:data-prdoucts-id="${product.id}">Add to Cart
+                </button>
             </div>
-            <div class="offcanvas-body">
-                <ul class="filter-menu">
-                    <!-- Brand Filter -->
-                    <li>
-                        <span style="font-size: 20px;font-weight: bold;">Brand</span>
-                        <ul class="checkbox-list">
-                            <li th:each="brand : ${brands}" th:if="${brand.status == 'ACTIVE'}">
-                                <label>
-                                    <input type="checkbox" th:name="'categoryCheckbox'" th:value="${brand.id}">
-                                    <span th:text="${brand.brandName}"></span>
-                                </label>
-                            </li>
-                            <!-- Add more brands as needed -->
-                        </ul>
-                    </li>
-
-                    <!-- Category Filter -->
-                    <li>
-                        <span style="font-size: 20px;font-weight: bold;">Category</span>
-                        <ul class="checkbox-list">
-                            <li th:each="category : ${categories}" th:if="${category.status == 'ACTIVE'}">
-                                <label>
-                                    <input type="checkbox" th:name="'categoryCheckbox'" th:value="${category.id}">
-                                    <span th:text="${category.categoryName}"></span>
-                                </label>
-                            </li>
-
-                            <!-- Add more categories as needed -->
-                        </ul>
-                    </li>
-
-                    <!-- Type Filter -->
-                    <li>
-                        <span style="font-size: 20px;font-weight: bold;">Color</span>
-                        <ul class="checkbox-list">
-                            <li><label><input type="checkbox"> black</label></li>
-                            <li><label><input type="checkbox"> blue</label></li>
-                            <li><label><input type="checkbox"> red</label></li>
-                            <li><label><input type="checkbox"> grey</label></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-
-        <div class="row sample" >
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4 sample1 " th:id="'productListing-'+${product.id}" th:each="product, productIndex : ${products}">
-                <!-- Check if product.status is active -->
-                <div th:if="${product.status == 'ACTIVE'}">
-                    <a th:href="@{'/user/product-details/' + ${product.id}}">
-                        <div class="card"
-                             href="/home"
-                             style="border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;">
-                            <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                                 data-mdb-ripple-color="light">
-                                <img alt="Product Image" class="img-fluid card-img-top"
-                                     th:src="@{'/uploads/' + ${product.getImages_path[0]}}">
-                                <a onclick="addToWishlist(this)"
-                                   onmouseout="this.getElementsByTagName('img')[0].style.filter = 'none';"
-                                   onmouseover="this.getElementsByTagName('img')[0].style.filter = 'invert(50%)';"
-                                   style="position: absolute; top: 10px; right: 10px; cursor: pointer"
-                                   th:data-product-id="${product.id}">
-                                    <img alt="Add to Favorites" style="width: 24px; height: 24px;"
-                                         th:src="@{/image/heart-regular.svg}">
-                                </a>
-                                <span class="badge bg-warning text-dark"
-                                      style="position: absolute; top: 10px; left: 10px;"
-                                      th:if="${product.productOffers != null && product.productOffers.offerPercentage > 0}"
-                                      th:text="${product.productOffers.offerPercentage} + '%Offer'">
-
-                                </span>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title text-primary" th:text="${product.name}">Product name</h5>
-
-                                <p class="card-text"
-                                   style="font-family: 'Poppins'; font-size: 12px; margin-top: -5px; max-height: 40px; overflow: hidden; text-overflow: ellipsis;"
-                                   th:text="${product.description}">Product description</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h6 class="card-text" th:text="${'Price: $' + product.price}">Product price</h6>
-                                    <a class="btn btn-primary" onclick="addToCart(this)"
-                                       th:data-prdoucts-id="${product.id}">Add to
-                                        Cart</a>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
         </div>
     </div>
 </section>
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script>
 
-    function updateProductHTML(products)  {
-
-        $('.sample1').remove();
-
-            for (let i = 0; i < products.length; i++) {
-
-                let product = products[i];
-
-                let newElement = $('<div class="col-lg-3 col-md-4 col-sm-12 mb-4 sample1" id="productListing-' + product.id + '"> <div>\n' +
-                    '                    <a href="/user/product-details/' + product.id + '">\n' +
-                    '                        <div class="card" style="border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;">\n' +
-                    '                            <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"\n' +
-                    '                                 data-mdb-ripple-color="light">\n' +
-                    '                                <img alt="Product Image" class="card-img-top" src="/uploads/' + product.images[0] + '">\n' +
-                    '                                <a onclick="addToWishlist(this)"\n' +
-                    '                                   onmouseout="this.getElementsByTagName(\'img\')[0].style.filter = \'none\';"\n' +
-                    '                                   onmouseover="this.getElementsByTagName(\'img\')[0].style.filter = \'invert(50%)\';"\n' +
-                    '                                   style="position: absolute; top: 10px; right: 10px; cursor: pointer"\n' +
-                    '                                   data-product-id="' + product.id + '">\n' +
-                    '                                    <img alt="Add to Favorites" style="width: 24px; height: 24px;" src="/image/heart-regular.svg">\n' +
-                    '                                </a>\n' +
-                    '                            </div>\n' +
-                    '                            <div class="card-body">\n' +
-                    '                                <h5 class="card-title text-primary">' + product.productName + '</h5>\n' +
-                    '\n' +
-                    '                                <p class="card-text" style="font-family: \'Poppins\'; font-size: 12px; margin-top: -5px; max-height: 40px; overflow: hidden; text-overflow: ellipsis;">' + product.description + '</p>\n' +
-                    '                                <div class="d-flex justify-content-between align-items-center">\n' +
-                    '                                    <h6 class="card-text">' + 'Price: $' + product.price + '</h6>\n' +
-                    '                                    <a class="btn btn-primary" onclick="addToCart(this)" data-products-id="' + product.id + '">Add to Cart</a>\n' +
-                    '                                </div>\n' +
-                    '                            </div>\n' +
-                    '                        </div>\n' +
-                    '                    </a>\n' +
-                    '                </div> </div>');
-
-
-                $('.sample').append(newElement);
-
-            }
-    }
-
-
-
-    function addToWishlist(element) {
-        let productId = element.getAttribute('data-product-id');
-        $.ajax({
-            url: '/user/add-to-wishlist?id=' + productId,
-            method: "GET",
-            success: function (response) {
-
-                if (response === "success") {
-                    toast("Added To Wishlist");
-                } else if (response === "sameProduct") {
-                    toast("Product Already Exist In Wishlist")
-                } else {
-                    location.href = "/login"
-                }
-            }
-        });
-    }
-
-    function addToCart(element) {
-        let productId = element.getAttribute('data-prdoucts-id');
-        $.ajax({
-            url: '/user/cart/add-to-cart-fromShop?id=' + productId,
-            method: "GET",
-            success: function (response) {
-                if (response === "success") {
-                    toast("Added To Cart");
-                } else if (response === "sameProduct") {
-                    toast("Product Already Exist In Cart")
-                } else {
-                    location.href = "/login"
-                }
-            }
-        });
-    }
-
-    function toast(message){
-        Toastify({
-            text: message,
-            duration: 3000,
-            position: "center",
-            className: "info",
-            style: {
-                background: "linear-gradient(to right, #00b09b, #96c93d)",
-            }
-        }).showToast();
-    }
 
 </script>
-<!-- Bootstrap JavaScript -->
 
 </body>
 </html>
