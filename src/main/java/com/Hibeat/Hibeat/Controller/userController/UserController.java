@@ -1,8 +1,10 @@
 package com.Hibeat.Hibeat.Controller.userController;
 
+import com.Hibeat.Hibeat.Model.Admin.Products;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.FilterDataRequest;
 import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Product_DTO;
 import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
+import com.Hibeat.Hibeat.Repository.User.OrderProductRepository;
 import com.Hibeat.Hibeat.Servicess.User_Service.UserServices;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +23,25 @@ import java.util.Map;
 public class UserController {
 
     private final UserServices userServices;
+    private final OrderProductRepository orderProductRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public UserController(UserServices userServices) {
+    public UserController(UserServices userServices, OrderProductRepository orderProductRepository, ProductRepository productRepository) {
         this.userServices = userServices;
+        this.orderProductRepository = orderProductRepository;
+        this.productRepository = productRepository;
     }
 
     @GetMapping("/")
     public String home(Model model) {
+        List<Products> products = orderProductRepository.findTopSellingProducts();
+        if(products.size() < 4){
+            products = productRepository.findAll();
+        }
         model.addAttribute("sliders",userServices.allBanners());
+        model.addAttribute("topProduct",products.stream().limit(4));
+        model.addAttribute("newProducts",productRepository.findAll().stream().limit(4));
         return "User/home";
     }
 

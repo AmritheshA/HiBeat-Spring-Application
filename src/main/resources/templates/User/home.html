@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:color="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,7 @@
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
 
     <link rel="stylesheet" href="/css/User/home.css" type="text/css">
+    <script src="/static/js/user.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -97,9 +98,11 @@
 
                         <!-- Conditionally render Profile, My Orders, My Wallet, My Address links -->
                         <a class="dropdown-item" th:href="@{/user/profile}" th:if="${userName != 'Login'}">Profile</a>
-                        <a class="dropdown-item" th:href="@{/user/my-orders}" th:if="${userName != 'Login'}">My Orders</a>
+                        <a class="dropdown-item" th:href="@{/user/my-orders}" th:if="${userName != 'Login'}">My
+                            Orders</a>
                         <a class="dropdown-item" th:href="@{/user/wallet}" th:if="${userName != 'Login'}">My Wallet</a>
-                        <a class="dropdown-item" th:href="@{/user/my-address}" th:if="${userName != 'Login'}">My Address</a>
+                        <a class="dropdown-item" th:href="@{/user/my-address}" th:if="${userName != 'Login'}">My
+                            Address</a>
                         <a class="dropdown-item" th:href="@{/logout}" th:if="${userName != 'Login'}">Logout</a>
                         <a class="dropdown-item" th:href="@{/login}" th:if="${userName == 'Login'}">Login</a>
 
@@ -121,8 +124,9 @@
                 <img class="d-block img-fluid  w-100" th:src="@{/image/sli.jpg}" alt="First slide">
             </div>
 
-            <div class="carousel-item" th:each="slider : ${sliders}" >
-                <img class="d-block img-fluid w-100" style="filter: brightness(0.8);height: 100%;object-fit: cover;" th:src="@{'/uploads/' + ${slider.image}}"
+            <div class="carousel-item" th:each="slider : ${sliders}">
+                <img class="d-block img-fluid w-100" style="filter: brightness(0.8);height: 100%;object-fit: cover;"
+                     th:src="@{'/uploads/' + ${slider.image}}"
                      alt="First slide">
             </div>
         </div>
@@ -132,105 +136,31 @@
 <!--Best Selling-->
 
 <section>
-
     <h1 style="text-align: center;margin-top: 30px;">Best Selling</h1>
     <div class="container py-5">
         <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-4">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
+            <div class="col-lg-3 col-md-4 col-sm-4" th:each="product : ${topProduct}">
+                <a th:href="@{'/user/product-details/' + ${product.id}}">
+                    <div class="card h-100"
+                         style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;">
+                        <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
+                             data-mdb-ripple-color="light">
+                            <img th:src="@{'/uploads/' + ${product.getImages_path[0]}}" class="card-img-top"
+                                 alt="Product Image">
+                            <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
+                                    style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
+                                    alt="Add to Favorites"></a>
+                        </div>
+                        <div class="card-body">
+                            <a href="#" class="text-reset">
+                                <h5 class="card-title" th:text="${product.name}"></h5>
+                            </a>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="card-text" th:text="'₹'+ ${product.price}"></h6>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-4 ">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-4 ">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0;max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-4 ">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
@@ -248,210 +178,62 @@
     </section>
 </div>
 
-
 <!--New Arrive-->
 
 <section>
     <h1 style="text-align: center;margin-top: 30px;">New Arrival</h1>
     <div class="container py-5">
         <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-4 mt-3">
-                <!-- Check if product.status is active -->
-                <div class=" card"
-                     style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
+            <div th:each="product : ${newProducts}" class="col-lg-3 col-md-4 col-sm-4 mt-3">
+                <a>
+                    <div class="card"
+                         style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%; height: 100%;">
+                        <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
+                             data-mdb-ripple-color="light" style="height: 70%;">
+                            <img th:src="@{'/uploads/' + ${product.getImages_path[0]}}" class="card-img-top"
+                                 alt="Product Image" style="object-fit: cover; width: 100%; height: 100%;">
+                            <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
+                                    style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
+                                    alt="Add to Favorites"></a>
+                        </div>
+                        <div class="card-body" style="height: 30%;">
+                            <a href="#" class="text-reset">
+                                <h5 class="card-title" th:text="${product.name}"></h5>
+                            </a>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="card-text" th:text="'₹'+${product.price}"></h6>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-4 mt-3 ">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-4 mt-3 ">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0;max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-4 mt-3">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-4 mt-3">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-4 mt-3">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-4 mt-3">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-4 mt-3">
-                <!-- Check if product.status is active -->
-                <div class="card"
-                     style="border: 1px solid #e0e0e0; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                     href="/home">
-                    <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-                         data-mdb-ripple-color="light">
-                        <img th:src="@{/uploads/headPhone5.png}" class="card-img-top"
-                             alt="Product Image">
-                        <a href="#" style="position: absolute; top: 10px; right: 10px;"><img
-                                style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
-                                alt="Add to Favorites"></a>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="text-reset">
-                            <h5 class="card-title">Product name</h5>
-                        </a>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="card-text">Product price</h6>
-                            <button class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
-        <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
-            <button class="btn " style="border: 2px solid #000;">View More
-            </button>
+    </div>
+</section>
+
+<section class="subscription-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="subscription-wrapper">
+                    <div class="subscription-content text-center">
+                        <h3>Subscribe to Our Newsletter</h3>
+                        <form action="#" class="subscription-form">
+                            <div class="form-group row">
+                                <div class="col-md-8 mx-auto">
+                                    <input type="email" class="form-control" id="email" placeholder="Your Email"
+                                           name="email">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-8 mx-auto">
+                                    <button type="submit" class="btn btn-primary">Subscribe Now</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
