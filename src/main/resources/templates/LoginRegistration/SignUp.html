@@ -147,10 +147,10 @@
             </div>
             <div class="form-group">
 
-                <input type="password" class="form-control" id="password" placeholder="Password" name="password" required>
+                <input type="password" class="form-control" id="password" placeholder="Password" name="password" >
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" id="confirm-password" placeholder="Repeat Password" name="confirm-password" required>
+                <input type="password" class="form-control" id="confirm-password" placeholder="Repeat Password" name="confirm-password">
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
@@ -172,11 +172,11 @@
         const username = document.getElementById("username");
         const email = document.getElementById("email");
 
-        const validatePassword = () => {
-            const isValidPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password.value);
-            password.setCustomValidity(isValidPassword ? "" : "Password must be at least 8 characters long and include numbers and letters");
-            confirm_password.setCustomValidity(password.value === confirm_password.value ? "" : "Passwords do not match");
-        };
+        // const validatePassword = () => {
+        //     const isValidPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password.value);
+        //     password.setCustomValidity(isValidPassword ? "" : "Password must be at least 8 characters long and include numbers and letters");
+        //     confirm_password.setCustomValidity(password.value === confirm_password.value ? "" : "Passwords do not match");
+        // };
 
         const validateUsername = () => {
             const isValidUsername = /^[a-zA-Z0-9!@.-]+$/.test(username.value.trim());

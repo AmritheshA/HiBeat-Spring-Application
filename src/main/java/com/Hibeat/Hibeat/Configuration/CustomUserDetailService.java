@@ -30,6 +30,7 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = userRepository.findByName(username);
+
         Admin admin = adminRepository.findByAdminName(username);
 
         if(user != null && user.getStatus().equals("UN-BLOCKED")) {
@@ -39,8 +40,6 @@ public class CustomUserDetailService implements UserDetailsService {
         else if (admin != null) {
 
             return new CustomUserDetails(modelMapperConverter.adminToDTO(admin));
-        }else{
-
         }
         throw  new UsernameNotFoundException("User Not Found");
     }

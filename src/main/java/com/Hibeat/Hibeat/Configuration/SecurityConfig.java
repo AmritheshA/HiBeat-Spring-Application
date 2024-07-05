@@ -6,15 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -28,7 +24,6 @@ public class SecurityConfig {
 
 
     CustomLoginSuccessHandler customSuccessHandler;
-
     @Autowired
 
     public SecurityConfig(CustomLoginSuccessHandler customSuccessHandler) {
@@ -41,7 +36,6 @@ public class SecurityConfig {
 
         http
                 .authorizeRequests((requests) -> requests
-//For testing Purpose i just make it commend
                         .requestMatchers("/admin/**").hasAuthority("super_admin")
                         .requestMatchers("/user/home","user/shop","user/filter").permitAll()
                         .requestMatchers("/user/**").hasAnyAuthority("user","super_admin")
@@ -66,8 +60,8 @@ public class SecurityConfig {
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(true)
                         .expiredUrl("/login")
-                ).cors( cors -> cors.disable())
-                .csrf(csrf -> csrf.disable());
+                ).cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable);
         return http.build();
 
     }

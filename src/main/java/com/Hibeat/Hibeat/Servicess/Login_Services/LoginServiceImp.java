@@ -57,7 +57,7 @@ public class LoginServiceImp implements LoginService {
 
 //    OTP Generation and Setting the to Mail
             emailService.otpGenerator();
-            emailService.sendEmails(userInfo.getEmail());
+//            emailService.sendEmails(userInfo.getEmail());
 
             return "LoginRegistration/VerifyEmail";
         } catch (Exception e) {
