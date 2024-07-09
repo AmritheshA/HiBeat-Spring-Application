@@ -7,6 +7,8 @@ import com.Hibeat.Hibeat.ModelMapper_DTO.DTO.Product_DTO;
 import com.Hibeat.Hibeat.ModelMapper_DTO.ModelMapper.ModelMapperConverter;
 import com.Hibeat.Hibeat.Repository.Admin.BrandRepository;
 import com.Hibeat.Hibeat.Repository.Admin.ProductRepository;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -15,8 +17,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Slf4j
@@ -27,13 +36,18 @@ public class AdminProductServiceImp implements AdminProductService {
     private final AdminCategoryService adminCategoryService;
     private final ModelMapperConverter modelMapperConverter;
     private final BrandRepository brandRepository;
+    private final Cloudinary cloudinary;
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(3);
+
 
     @Autowired
-    public AdminProductServiceImp(ProductRepository productRepository, AdminCategoryService adminCategoryService, ModelMapperConverter modelMapperConverter, BrandRepository brandRepository) {
+    public AdminProductServiceImp(ProductRepository productRepository, AdminCategoryService adminCategoryService, ModelMapperConverter modelMapperConverter, BrandRepository brandRepository, Cloudinary cloudinary) {
         this.productRepository = productRepository;
         this.adminCategoryService = adminCategoryService;
         this.modelMapperConverter = modelMapperConverter;
         this.brandRepository = brandRepository;
+        this.cloudinary = cloudinary;
     }
 
     @Override
@@ -65,28 +79,47 @@ public class AdminProductServiceImp implements AdminProductService {
         }
     }
 
+
     @Override
     public String addProducts(Product_DTO productDetails) {
         try {
-            String file = "D:\\Brocamp_Task\\week_11\\Project\\Hibeat\\src\\main\\resources\\static\\uploads\\";
-
+            // Convert DTO to entity
             Products productInfo = modelMapperConverter.DTOToProduct(productDetails);
 
             MultipartFile[] files = productDetails.getImage();
-            String[] images = productInfo.getImages_path();
-
-            for (int i = 0; i < files.length; i++) {
-                images[i] = files[i].getOriginalFilename();
-                files[i].transferTo(new File(file + files[i].getOriginalFilename()));
+            if (files == null || files.length == 0) {
+                throw new IllegalArgumentException("No files uploaded");
             }
+
+            String[] images = new String[files.length]; // Initialize array with the correct size
+
+            // This help us to compute uploading for file simultaneously
+            List<CompletableFuture<Void>> futures = IntStream.range(0, files.length)
+                    .mapToObj(i -> CompletableFuture.runAsync(() -> {
+                        try {
+                            if (files[i] != null) {
+                                String url = uploadImage(files[i]);
+                                images[i] = url;
+                            }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }, executorService))
+                    .toList();
+
+            // Wait for all uploads to complete
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
             productInfo.setImages_path(images);
 
-
+            // Save the product information to the database
             save(productInfo);
 
             return "redirect:/admin/add-product";
+        } catch (IllegalArgumentException e) {
+            log.error("No files uploaded: " + e.getMessage());
+            return "Exception/404";
         } catch (Exception e) {
-            log.info("addProducts " + e.getMessage());
+            log.error("addProducts " + e.getMessage());
             return "Exception/404";
         }
     }
@@ -104,7 +137,6 @@ public class AdminProductServiceImp implements AdminProductService {
                 if (!(category.isEmpty())) {
                     model.addAttribute("categories", category);
                     model.addAttribute("brands", brands);
-
 
                     model.addAttribute("images", products.getImages_path());
                 }
@@ -126,7 +158,7 @@ public class AdminProductServiceImp implements AdminProductService {
         try {
             Products products = productRepository.findAllById(productId);
 
-            log.info("Category"+productDetails.getCategories());
+            log.info("Category" + productDetails.getCategories());
 
             String[] images = products.getImages_path();
             String file = "D:\\Brocamp_Task\\week_11\\Project\\Hibeat\\src\\main\\resources\\static\\uploads\\";
@@ -181,5 +213,11 @@ public class AdminProductServiceImp implements AdminProductService {
         }
     }
 
+    // Helper methods
+    public String uploadImage(MultipartFile file) throws IOException {
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+                ObjectUtils.asMap("resource_type", "auto"));
+        return uploadResult.get("url").toString();
+    }
 
 }

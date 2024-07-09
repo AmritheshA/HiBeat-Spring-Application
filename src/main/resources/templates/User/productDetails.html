@@ -34,25 +34,25 @@
     <div class="row" style="margin-top:20px;">
         <div class="col-md-6">
             <div id="productImages" class="product" style="z-index: 99">
-                <img id="mainImage" class="headphone" th:src="@{'/uploads/' + ${product.getImages_path[0]}}"
+                <img id="mainImage" class="headphone" th:src="@{${product.getImages_path[0]}}"
                      alt="Headphone" style="width: 100%">
             </div>
             <div class="row mt-4" style="margin-left: 5%;">
                 <div class="col">
-                    <img class="thumbnail" th:src="@{'/uploads/' + ${product.getImages_path[1]}}"
-                         th:attr="data-image-src=@{'/uploads/' + ${product.getImages_path[1]}}"
+                    <img class="thumbnail" th:src="@{${product.getImages_path[1]}}"
+                         th:attr="data-image-src=@{${product.getImages_path[1]}}"
                          alt="Thumbnail 1"
                          style="width: 80px; height: 50px">
                 </div>
                 <div class="col">
-                    <img class="thumbnail" th:src="@{'/uploads/' + ${product.getImages_path[2]}}"
-                         th:attr="data-image-src=@{'/uploads/' + ${product.getImages_path[2]}}"
+                    <img class="thumbnail" th:src="@{${product.getImages_path[2]}}"
+                         th:attr="data-image-src=@{${product.getImages_path[2]}}"
                          alt="Thumbnail 2"
                          style="width: 80px; height: 50px">
                 </div>
                 <div class="col">
-                    <img class="thumbnail" th:src="@{'/uploads/' + ${product.getImages_path[0]}}"
-                         th:attr="data-image-src=@{'/uploads/' + ${product.getImages_path[0]}}"
+                    <img class="thumbnail" th:src="@{${product.getImages_path[0]}}"
+                         th:attr="data-image-src=@{${product.getImages_path[0]}}"
                          alt="Thumbnail 3"
                          style="width: 80px; height: 50px">
                 </div>
@@ -473,12 +473,10 @@
             <!-- Check if product.status is active -->
             <div th:if="${product.status == 'ACTIVE'}">
                 <a th:href="@{'/user/product-details/' + ${product.id}}">
-                    <div class="card"
-                         style="border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;"
-                         href="/home">
+                    <div class="card" style="border: 1px solid #e0e0e0; max-height: 380px;  border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%;" href="/home">
                         <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
                              data-mdb-ripple-color="light">
-                            <img th:src="@{'/uploads/' + ${product.getImages_path[0]}}"
+                            <img th:src="@{${product.getImages_path[0]}}"
                                  style="height: 200px;width: 200px;margin-left: 15px;margin-top: 10px;"
                                  class="card-img-top"
                                  alt="Product Image">
@@ -489,10 +487,12 @@
                                 <img style="width: 24px; height: 24px;" th:src="@{/image/heart-regular.svg}"
                                      alt="Add to Favorites">
                             </a>
-
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title text-primary" th:text="${product.name}">Product name</h5>
+                            <h5 class="card-title text-primary"
+                                th:text="${#strings.length(product.name) > 15 ? product.name.substring(0, 15) + '...' : product.name}">
+                                Product name
+                            </h5>
 
                             <p class="card-text"
                                style="font-family: 'Poppins'; font-size: 12px; margin-top: -5px; max-height: 40px; overflow: hidden; text-overflow: ellipsis;"
@@ -500,8 +500,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="card-text" th:text="${'Price: $' + product.price}">Product price</h6>
                                 <a class="btn btn-primary" onclick="addToCart(this)"
-                                   th:data-prdoucts-id="${product.id}">Add to
-                                    Cart</a>
+                                   th:data-prdoucts-id="${product.id}">Add to Cart</a>
                             </div>
                         </div>
                     </div>

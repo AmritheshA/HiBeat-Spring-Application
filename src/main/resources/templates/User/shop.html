@@ -98,7 +98,7 @@
              th:id="'productListing-'+${product.id}">
             <a style="text-decoration: none;color:black !important;"
                th:href="@{'/user/product-details/' + ${product.id}}">
-                <img alt="Product Image" th:src="@{'/uploads/' + ${product.getImages_path[0]}}">
+                <img alt="Product Image" th:src="@{${product.getImages_path[0]}}">
                 <h3 th:text="${product.name}"></h3>
                 <p style="font-family: 'Poppins'; font-size: 12px;overflow: hidden; text-overflow: ellipsis;"
                    th:text="${product.description}">
